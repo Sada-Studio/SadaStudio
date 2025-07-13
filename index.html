@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sada Studio</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <video autoplay loop muted playsinline>
+            <source src="assets/loading_animation.webm" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div id="dots-background"></div>
+
+    <header class="main-header">
+        <div class="container">
+            <div class="logo">
+                <a href="index.html"><img src="assets/web_logo.png" alt="Sada Studio Logo"></a>
+            </div>
+            <button class="menu-toggle" aria-label="Toggle navigation">
+                <div class="burger-lines">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="menu-text">Menu</span>
+            </button>
+        </div>
+    </header>
+
+    <nav class="full-screen-nav">
+        <button class="close-nav" aria-label="Close navigation">×</button>
+        <ul>
+            <li><a href="work.html" class="nav-link-item">Work</a></li>
+            <li><a href="index.html#about" class="nav-link-item">About</a></li>
+            <li><a href="index.html#contact" class="nav-link-item">Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section class="hero-section">
+            <video autoplay loop muted playsinline class="hero-video">
+                <source src="assets/color_logo_animation_1.webm" type="video/webm">
+            </video>
+            <a href="#work" class="scroll-down-indicator">
+                <div class="scroll-arrows">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="scroll-text">Scroll Down</span>
+            </a>
+        </section>
+
+        <section id="work" class="work-section">
+            <div class="container">
+                <div class="work-heading">
+                    <h2 class="main-heading">Our featured Work</h2>
+                    <p class="tagline">LET’S MAKE AN ECHO</p>
+                </div>
+                <div class="work-grid" id="featured-work-grid"></div>
+            </div>
+            <div class="cta-section new-cta-section">
+                <div class="container">
+                    <h2 class="bottom-cta-text">
+                        We do many
+                        <a href="work.html" class="btn see-all-work-btn">
+                            <span>SEE ALL WORK</span>
+                        </a>
+                        things very well.
+                    </h2>
+                </div>
+            </div>
+        </section>
+
+        <hr class="section-divider">
+
+        <section id="about" class="about-section">
+            <div class="about-video-container">
+                <video autoplay loop muted playsinline class="about-video">
+                    <source src="assets/about_us_video.webm" type="video/webm">
+                </video>
+            </div>
+            <div class="container about-content-container">
+                <div class="about-text">
+                    <h2>About Us</h2>
+                    <p>SADA - صدى isn't just a label; it's our philosophy. It draws inspiration from the timeless act of communication and the profound power of reflection.</p>
+                    <p>At SADA - صدى, we are the ultimate reflectors and amplifiers. We take your core ideas, your unique vision, and your brand's very essence, then project them with unparalleled clarity, impact, and reach. Just as an echo fills a space with amplified sound, we ensure your brand fills its market, resonating with your audience and leaving an indelible mark.</p>
+                    <p>Our mission is singular: To provide comprehensive and innovative creative solutions that don't just elevate brands, but forge truly impactful experiences – both online and in physical form.</p>
+                    <div class="work-tags">
+                        <span>Branding</span>
+                        <span>Animation</span>
+                        <span>Brand Strategy</span>
+                        <span>Ads Management</span>
+                        <span>Community Management</span>
+                        <span>SEO</span>
+                        <span>Content Creation</span>
+                        <span>Copywriting</span>
+                        <span>Photography</span>
+                        <span>Videography</span>
+                        <span>Social Media Strategies</span>
+                        <span>Publications</span>
+                        <span>Illustrations</span>
+                        <span>Packaging</span>
+                        <span>Website Design & Development</span>
+                    </div>
+                </div>
+                <div class="about-vector">
+                    <img src="assets/logo_lines.svg" alt="Sada Studio decorative lines">
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer id="contact" class="main-footer">
+        <div class="container">
+            <div class="footer-content-wrapper">
+                <div class="footer-text-content">
+                    <p class="footer-tagline">Let’s Make Some <span class="sonar-word"><strong>SADA.</strong></span></p>
+                    <a href="mailto:hello@sadastudio.com" class="footer-email-link">hello@sadastudio.com</a>
+                    <div class="footer-social-links">
+                        <a href="#" target="_blank">Instagram</a>
+                        <a href="#" target="_blank">LinkedIn</a>
+                        <a href="#" target="_blank">WhatsApp</a>
+                    </div>
+                </div>
+                <div class="footer-logo">
+                    <img src="assets/footer_logo.png" alt="Sada Studio decorative logo">
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <div class="cursor" id="cursor-leader"></div>
+    <div class="cursor cursor-trail"></div>
+    <div class="cursor cursor-trail"></div>
+    <div class="cursor cursor-trail"></div>
+    <div class="cursor cursor-trail"></div>
+    <div class="cursor cursor-trail"></div>
+    <div class="cursor cursor-trail"></div>
+    <div class="cursor cursor-trail"></div>
+    <div class="cursor cursor-trail"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

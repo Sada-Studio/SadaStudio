@@ -1,0 +1,149 @@
+[
+    {
+        "id": "Loop Scooters",
+        "featured": true,
+        "title": "Loop Scooters",
+        "description": "Scooter rent company in Qatar",
+        "longDescription": "Managed the social media",
+        "thumbnail": "assets/projects/loop/loop_1.webp",
+        "images": [
+            "assets/projects/loop/loop_1.webp",
+            "assets/projects/loop/loop_2.webp"
+        ],
+        "tags": [
+            "Social Media"
+        ]
+    },
+    {
+        "id": "Aseel",
+        "featured": true,
+        "title": "Aseel Water",
+        "description": "Water Company in Qatar",
+        "longDescription": "Water Company in Qatar",
+        "thumbnail": "assets/projects/aseel/aseel_1.webp",
+        "images": [
+            "assets/projects/aseel/aseel_1.webp",
+            "assets/projects/aseel/aseel_2.webp"
+        ],
+        "tags": [
+            "social media"
+        ]
+    },
+    {
+        "id": "Tayo",
+        "featured": true,
+        "title": "Tayo",
+        "description": "Asian Fusion Restaurant in Qatar",
+        "longDescription": "Asian Fusion Restaurant in Qatar",
+        "thumbnail": "assets/projects/tayo/tayo_1.webp",
+        "images": [
+            "assets/projects/tayo/tayo_1.webp",
+            "assets/projects/tayo/tayo_2.webp",
+            "assets/projects/tayo/tayo_3.webp",
+            "assets/projects/tayo/tayo_4.webp"
+        ],
+        "tags": [
+            "social media",
+            "menu design"
+        ]
+    },
+    {
+        "id": "Overground",
+        "featured": false,
+        "title": "Over Ground",
+        "description": "Gaming Cafe in Qatar",
+        "longDescription": "Gaming Cafe in Qatar",
+        "thumbnail": "assets/projects/overground/overground_1.webp",
+        "images": [
+            "assets/projects/overground/overground_1.webp",
+            "assets/projects/overground/overground_2.webp",
+            "assets/projects/overground/overground_3.webp",
+            "assets/projects/overground/overground_4.webp",
+            "assets/projects/overground/overground_5.webp",
+            "assets/projects/overground/overground_6.webp",
+            "assets/projects/overground/overground_7.webp"
+        ],
+        "tags": [
+            "Branding"
+        ]
+    },
+    {
+        "id": "Hadethna Podcast",
+        "featured": false,
+        "title": "Hadethna Podcast",
+        "description": "Qatar Based young Podcast",
+        "longDescription": "Qatar Based young Podcast",
+        "thumbnail": "assets/projects/hadethna/hadethna_1.webp",
+        "images": [
+            "assets/projects/hadethna/hadethna_1.webp",
+            "assets/projects/hadethna/hadethna_2.webm",
+            "assets/projects/hadethna/hadethna_3.webp",
+            "assets/projects/hadethna/hadethna_4.webp",
+            "assets/projects/hadethna/hadethna_5.webp"
+        ],
+        "tags": [
+            "Branding",
+            "Animation"
+        ]
+    },
+    {
+        "id": "EVMC",
+        "featured": false,
+        "title": "EVMC",
+        "description": "Equine veterinary Medical Center in Qatar",
+        "longDescription": "Equine veterinary Medical Center in Qatar",
+        "thumbnail": "assets/projects/evmc/evmc_1.webp",
+        "images": [
+            "assets/projects/evmc/evmc_1.webp",
+            "assets/projects/evmc/evmc_2.webp"
+        ],
+        "tags": [
+            "social media"
+        ]
+    },
+    {
+        "id": "Alghad Al Moshreq Kindergarten",
+        "featured": false,
+        "title": "Alghad Al Moshreq Kindergarten",
+        "description": "Kindergarten in Qatar",
+        "longDescription": "Kindergarten in Qatar",
+        "thumbnail": "assets/projects/alghad_kindergarten/alghad_kindergarten_1.webp",
+        "images": [
+            "assets/projects/alghad_kindergarten/alghad_kindergarten_1.webp",
+            "assets/projects/alghad_kindergarten/alghad_kindergarten_2.webp"
+        ],
+        "tags": [
+            "Social Media"
+        ]
+    },
+    {
+        "id": "Battlezone",
+        "featured": false,
+        "title": "Battlezone Entertainment",
+        "description": "Paintball Arena in Qatar",
+        "longDescription": "Paintball Arena in Qatar",
+        "thumbnail": "assets/projects/battlezone/battlezone_1.webp",
+        "images": [
+            "assets/projects/battlezone/battlezone_1.webp",
+            "assets/projects/battlezone/battlezone_2.webp"
+        ],
+        "tags": [
+            "social media"
+        ]
+    },
+    {
+        "id": "Al Mirqab Exchange",
+        "featured": false,
+        "title": "Al Mirqab Exchange",
+        "description": "Exchange Company in Qatar",
+        "longDescription": "Exchange Company in Qatar",
+        "thumbnail": "assets/projects/mirqab/mirqab_1.webp",
+        "images": [
+            "assets/projects/mirqab/mirqab_1.webp",
+            "assets/projects/mirqab/mirqab_2.webp"
+        ],
+        "tags": [
+            "Social Media"
+        ]
+    }
+]

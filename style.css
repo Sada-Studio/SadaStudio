@@ -81,15 +81,29 @@ a:hover {
     background-color: rgba(0,0,0,0.8);
 }
 
-.main-header .container, .menu-toggle, .burger-lines {
+
+.main-header .container { justify-content: space-between; }
+ppx; transition: filter 0.5s ease; }
+.menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    transition: color 0.5s ease;
     display: flex;
     align-items: center;
+    gap: 8px;
+    flex-direction: row;
 }
-.main-header .container { justify-content: space-between; }
-.logo a img { height: 40px; transition: filter 0.5s ease; }
-.menu-toggle { background: none; border: none; cursor: pointer; color: #fff; transition: color 0.5s ease;}
-.burger-lines { flex-direction: column; justify-content: space-between; width: 28px; height: 18px; margin-right: 8px; }
-.burger-lines span { display: block; width: 100%; height: 3px; background-color: #fff; border-radius: 2px; transition: all 0.3s ease; }
+
+.burger-lines span {
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
 .menu-toggle.active .burger-lines span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
 .menu-toggle.active .burger-lines span:nth-child(2) { opacity: 0; }
 .menu-toggle.active .burger-lines span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
@@ -196,6 +210,7 @@ section#work > .container {
 .work-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
 .work-item:hover .work-img { transform: scale(1.05); }
 .work-info-tab {
+    border-radius: 0 !important;
     position: absolute;
     bottom: 25px;
     left: 25px;
@@ -206,7 +221,7 @@ section#work > .container {
     align-items: center;
     color: #fff;
     background-color: #111;
-    border-radius: 12px;
+    
 }
 .work-info h3 { font-size: 1rem; color: #fff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px; }
 .work-info p { margin: 4px 0 0 0; font-size: 0.9rem; color: #aaa; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -355,7 +370,14 @@ body.invert-colors { background-color: #f0f0f0; color: #111; }
 body.invert-colors #dots-background { background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 1px, transparent 1px); }
 body.invert-colors .main-header .logo img { filter: invert(1); }
 body.invert-colors .main-header .menu-text { color: #111; }
-body.invert-colors .main-header .burger-lines span { background-color: #111; }
+body.invert-colors .main-header .burger-lines span {
+    display: block;
+    width: 100%;
+    height: 4px;
+    background-color: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
 body.invert-colors .main-header.scrolled { background-color: rgba(240, 240, 240, 0.8); }
 body.invert-colors .work-heading .main-heading,
 body.invert-colors .work-heading .tagline { color: #111; }
@@ -722,4 +744,82 @@ body.invert-colors .footer-logo { filter: invert(1); }
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+/* --- Secret Projects Callout --- */
+.secret-call {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    padding: 100px 20px;
+}
+.secret-call-link {
+    text-align: center;
+    color: #eee;
+    text-decoration: none;
+}
+.secret-call-title {
+    font-family: 'Public Sans', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    margin: 0;
+}
+ppx;
+    height: auto;
+}
+.secret-call-cta {
+    margin-top: 10px;
+    font-size: 1rem;
+    color: #aaa;
+}
+.secret-call-link:hover .secret-call-title {
+    color: #FF4081;
+}
+
+.secret-call-eye { width: 60px; height: auto; }
+
+/* === FINAL HEADER FORCE OVERRIDE === */
+.main-header .container {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    width: auto !important;
+    height: auto !important;
+}
+
+.menu-toggle {
+    display: flex !important;
+    align-items: center !important;
+    flex-direction: row !important;
+    gap: 8px !important;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.logo a img {
+    height: 40px !important;
+}
+
+.burger-lines {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    width: 28px !important;
+    height: 18px !important;
+    margin-right: 8px !important;
+}
+
+.burger-lines span {
+    display: block !important;
+    width: 100% !important;
+    height: 3px !important;
+    background-color: #fff;
+    border-radius: 2px;
+    transition: all 0.3s ease;
 }

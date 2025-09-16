@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const isVideo = (filename) => {
         if (!filename) return false;
         const lowercased = filename.toLowerCase();
-        return lowercased.endsWith('.webm') || lowercased.endsWith('.mp4');
+        return lowercased.endsWith('.gif') || lowercased.endsWith('.mp4');
     };
 
     async function fetchProjects() {
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isVideo(project.thumbnail)) {
                 mediaHTML = `
                     <video autoplay loop muted playsinline class="work-img">
-                        <source src="${project.thumbnail}" type="video/webm">
+                        <source src="${project.thumbnail}" type="video/gif">
                     </video>`;
             } else {
                 mediaHTML = `<img src="${project.thumbnail}" alt="${project.title} Project Thumbnail" class="work-img">`;
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // MODIFIED: Handle both images and videos in the gallery
             const imagesHTML = project.images.map(mediaSrc => {
                 if (isVideo(mediaSrc)) {
-                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/webm"></video>`;
+                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/gif"></video>`;
                 } else {
                     return `<img src="${mediaSrc}" alt="${project.title} gallery image">`;
                 }

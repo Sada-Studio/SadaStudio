@@ -605,9 +605,13 @@ body.invert-colors .footer-logo { filter: invert(1); }
     opacity: 0;
     visibility: hidden;
 }
-#preloader video {
+#preloader img {
     width: 150px;
     height: auto;
+    /* Adding max-width and max-height as a safeguard */
+    max-width: 100%; /* Ensures it doesn't overflow its container if container is smaller */
+    max-height: 150px; /* Explicitly limits height */
+    display: block; /* Helps in layout and preventing extra space */
 }
 
 

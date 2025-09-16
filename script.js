@@ -109,10 +109,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // NEW: Helper function to check if a file is a video
     const isVideo = (filename) => {
-        if (!filename) return false;
-        const lowercased = filename.toLowerCase();
-        return lowercased.endsWith('.gif') || lowercased.endsWith('.mp4');
-    };
+    if (!filename) return false;
+    const lowercased = filename.toLowerCase();
+    // Only return true for actual video formats like .mp4.
+    // .gif will now be treated as an image for rendering purposes.
+    return lowercased.endsWith('.mp4');
+};
 
     async function fetchProjects() {
         try {
@@ -140,12 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // MODIFIED: Conditionally generate video or image tag
             let mediaHTML = '';
-            if (isVideo(project.thumbnail)) {
+            if (isVideo(project.thumbnail)) { // This will now only be true for .mp4
                 mediaHTML = `
                     <video autoplay loop muted playsinline class="work-img">
-                        <source src="${project.thumbnail}" type="image/gif">
-                    </video>`;
-            } else {
+                        <source src="${project.thumbnail}" type="video/mp4">                    </video>`;
+            } else { // This will now be true for .gif and other image types
                 mediaHTML = `<img src="${project.thumbnail}" alt="${project.title} Project Thumbnail" class="work-img">`;
             }
 
@@ -204,9 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // MODIFIED: Handle both images and videos in the gallery
             const imagesHTML = project.images.map(mediaSrc => {
-                if (isVideo(mediaSrc)) {
-                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="image/gif"></video>`;
-                } else {
+                if (isVideo(mediaSrc)) { // This will now only be true for .mp4
+                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/mp4"></video>`; // Assuming .mp4 if isVideo is true
+                } else { // This will now be true for .gif and other image types
                     return `<img src="${mediaSrc}" alt="${project.title} gallery image">`;
                 }
             }).join('');

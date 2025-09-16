@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isVideo(project.thumbnail)) {
                 mediaHTML = `
                     <video autoplay loop muted playsinline class="work-img">
-                        <source src="${project.thumbnail}" type="video/gif">
+                        <source src="${project.thumbnail}" type="image/gif">
                     </video>`;
             } else {
                 mediaHTML = `<img src="${project.thumbnail}" alt="${project.title} Project Thumbnail" class="work-img">`;
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // MODIFIED: Handle both images and videos in the gallery
             const imagesHTML = project.images.map(mediaSrc => {
                 if (isVideo(mediaSrc)) {
-                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/gif"></video>`;
+                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="image/gif"></video>`;
                 } else {
                     return `<img src="${mediaSrc}" alt="${project.title} gallery image">`;
                 }

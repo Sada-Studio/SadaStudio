@@ -142,11 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // MODIFIED: Conditionally generate video or image tag
             let mediaHTML = '';
-            if (isVideo(project.thumbnail)) { // This will now only be true for .mp4
+            // If project.thumbnail is an actual video (e.g., .mp4), use a video tag.
+            // Otherwise (for .gif, .webp, .jpg, .png), use an img tag.
+            if (isVideo(project.thumbnail)) {
                 mediaHTML = `
                     <video autoplay loop muted playsinline class="work-img">
-                        <source src="${project.thumbnail}" type="video/mp4">                    </video>`;
-            } else { // This will now be true for .gif and other image types
+                        <source src="${project.thumbnail}" type="video/mp4">
+                    </video>`;
+            } else {
                 mediaHTML = `<img src="${project.thumbnail}" alt="${project.title} Project Thumbnail" class="work-img">`;
             }
 
@@ -205,9 +208,11 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // MODIFIED: Handle both images and videos in the gallery
             const imagesHTML = project.images.map(mediaSrc => {
-                if (isVideo(mediaSrc)) { // This will now only be true for .mp4
-                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/mp4"></video>`; // Assuming .mp4 if isVideo is true
-                } else { // This will now be true for .gif and other image types
+                // If mediaSrc is an actual video (e.g., .mp4), use a video tag.
+                // Otherwise (for .gif, .webp, .jpg, .png), use an img tag.
+                if (isVideo(mediaSrc)) {
+                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/mp4"></video>`;
+                } else {
                     return `<img src="${mediaSrc}" alt="${project.title} gallery image">`;
                 }
             }).join('');

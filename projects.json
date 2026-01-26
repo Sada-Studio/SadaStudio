@@ -1,7 +1,74 @@
 [
     {
-        "id": "Loop Scooters",
+        "id": "Ideal Mena",
         "featured": true,
+        "title": "Ideal Mena",
+        "description": "Consulting Company based in Lebanon and Iraq",
+        "longDescription": "IDEAL MENA is a regional consulting firm that designs systems for long-term performance and impact — operating at the intersection of strategy, humanity, and technology to help governments, enterprises, and institutions build what endures. The brand uplift retained the existing logo while transforming the entire identity around it, introducing a modern, future-facing system defined by a refined palette, crisp typography, and a glass-like visual language built on translucency, blur, and depth. From stationery and corporate applications to social media and brand design, the refreshed identity positions IDEAL MENA as precise, resilient, and quietly confident in complex environments.",
+        "thumbnail": "assets/projects/ideal_mena/ideal1.webp",
+        "images": [
+            "assets/projects/ideal_mena/ideal1.webp",
+            "assets/projects/ideal_mena/ideal2.webp",
+            "assets/projects/ideal_mena/ideal3.webp",
+            "assets/projects/ideal_mena/ideal4.webp",
+            "assets/projects/ideal_mena/ideal5.webp",
+            "assets/projects/ideal_mena/ideal6.webp",
+            "assets/projects/ideal_mena/ideal7.webp",
+            "assets/projects/ideal_mena/ideal8.webp",
+            "assets/projects/ideal_mena/ideal9.webp",
+            "assets/projects/ideal_mena/ideal10.webp",
+            "assets/projects/ideal_mena/ideal11.webp",
+            "assets/projects/ideal_mena/ideal12.webp",
+            "assets/projects/ideal_mena/ideal13.webp",
+            "assets/projects/ideal_mena/ideal14.webp",
+            "assets/projects/ideal_mena/ideal15.gif",
+            "assets/projects/ideal_mena/ideal16.gif"
+        ],
+        "tags": [
+            "Branding",
+            "Social media",
+            "Packaging"
+        ]
+    },
+    {
+        "id": "Takawin",
+        "featured": true,
+        "title": "Takawin",
+        "description": "Lebanese Perfume Brand",
+        "longDescription": "Takawin is a perfume brand that translates astrology into scent — crafting fragrances inspired by horoscopes and personal archetypes, where each blend feels like a signature aligned with the stars. The brand identity was built from the ground up, from logo creation to typographic direction, establishing a distinctive visual world that feels mystical yet modern. From the refined type system to the packaging design, every touchpoint was crafted to turn each perfume into a collectible ritual — expressive, intentional, and made to feel personal.",
+        "thumbnail": "assets/projects/takawin/takawin1.png",
+        "images": [
+            "assets/projects/takawin/takawin1.png",
+            "assets/projects/takawin/takawin2.png",
+            "assets/projects/takawin/takawin3.png",
+            "assets/projects/takawin/takawin4.png",
+            "assets/projects/takawin/takawin5.png"
+        ],
+        "tags": [
+            "Branding",
+            "Packaging"
+        ]
+    },
+    {
+        "id": "Karaj",
+        "featured": true,
+        "title": "Karaj",
+        "description": "Lebanese Mobile App",
+        "longDescription": "Karaj is a Lebanon-based platform that connects drivers with nearby garages — making it faster and easier to find trusted automotive help and streamlining the link between workshops and customers. The brand identity was developed end-to-end with a minimal, performance-driven approach inspired by McLaren and the automotive world. From the logo and visual language to key brand applications, Karaj was shaped to feel precise, premium, and engineered for motion.",
+        "thumbnail": "assets/projects/karaj/karaj1.png",
+        "images": [
+            "assets/projects/karaj/karaj1.png",
+            "assets/projects/karaj/karaj2.png",
+            "assets/projects/karaj/karaj3.png",
+            "assets/projects/karaj/karaj4.png"
+        ],
+        "tags": [
+            "Branding"
+        ]
+    },
+    {
+        "id": "Loop Scooters",
+        "featured": false,
         "title": "Loop Scooters",
         "description": "Scooter rent company in Qatar",
         "longDescription": "Managed the social media",
@@ -16,7 +83,7 @@
     },
     {
         "id": "Aseel",
-        "featured": true,
+        "featured": false,
         "title": "Aseel Water",
         "description": "Water Company in Qatar",
         "longDescription": "Water Company in Qatar",
@@ -31,7 +98,7 @@
     },
     {
         "id": "Tayo",
-        "featured": true,
+        "featured": false,
         "title": "Tayo",
         "description": "Asian Fusion Restaurant in Qatar",
         "longDescription": "Asian Fusion Restaurant in Qatar",
@@ -76,7 +143,7 @@
         "thumbnail": "assets/projects/hadethna/hadethna_1.webp",
         "images": [
             "assets/projects/hadethna/hadethna_1.webp",
-            "assets/projects/hadethna/hadethna_2.webm",
+            "assets/projects/hadethna/hadethna_2.gif",
             "assets/projects/hadethna/hadethna_3.webp",
             "assets/projects/hadethna/hadethna_4.webp",
             "assets/projects/hadethna/hadethna_5.webp"
@@ -144,6 +211,28 @@
         ],
         "tags": [
             "Social Media"
+        ]
+    },
+    {
+        "id": "C Cater",
+        "featured": false,
+        "title": "C Cater",
+        "description": "Catering",
+        "longDescription": "C Cater is a catering company built around fresh, elevated everyday moments — bringing people together through food that feels both generous and refined. The social media direction was crafted as a bright, minimal lifestyle system, balancing clean layouts with warm, appetizing imagery and plenty of breathing space. From story templates to grid design and content styling, the visual language keeps the brand modern, upbeat, and instantly recognizable across every post.",
+        "thumbnail": "assets/projects/ccater/ccater1.png",
+        "images": [
+            "assets/projects/ccater/ccater1.png",
+            "assets/projects/ccater/ccater2.png",
+            "assets/projects/ccater/ccater3.png",
+            "assets/projects/ccater/ccater4.png",
+            "assets/projects/ccater/ccater5.png",
+            "assets/projects/ccater/ccater6.png",
+            "assets/projects/ccater/ccater7.png",
+            "assets/projects/ccater/ccater8.png"
+        ],
+        "tags": [
+            "Social Media",
+            "Packaging"
         ]
     }
 ]

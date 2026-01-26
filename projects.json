@@ -8,19 +8,19 @@
         "thumbnail": "assets/projects/ideal_mena/ideal1.webp",
         "images": [
             "assets/projects/ideal_mena/ideal1.webp",
-            "assets/projects/ideal/ideal2.jpg",
-            "assets/projects/ideal/ideal3.jpg",
-            "assets/projects/ideal/ideal4.jpg",
-            "assets/projects/ideal/ideal5.jpg",
-            "assets/projects/ideal/ideal6.jpg",
-            "assets/projects/ideal/ideal7.jpg",
-            "assets/projects/ideal/ideal8.jpg",
-            "assets/projects/ideal/ideal9.jpg",
-            "assets/projects/ideal/ideal10.jpg",
-            "assets/projects/ideal/ideal11.jpg",
-            "assets/projects/ideal/ideal12.jpg",
-            "assets/projects/ideal/ideal13.jpg",
-            "assets/projects/ideal/ideal14.jpg",
+            "assets/projects/ideal_mena/ideal2.jpg",
+            "assets/projects/ideal_mena/ideal3.jpg",
+            "assets/projects/ideal_mena/ideal4.jpg",
+            "assets/projects/ideal_mena/ideal5.jpg",
+            "assets/projects/ideal_mena/ideal6.jpg",
+            "assets/projects/ideal_mena/ideal7.jpg",
+            "assets/projects/ideal_mena/ideal8.jpg",
+            "assets/projects/ideal_mena/ideal9.jpg",
+            "assets/projects/ideal_mena/ideal10.jpg",
+            "assets/projects/ideal_mena/ideal11.jpg",
+            "assets/projects/ideal_mena/ideal12.jpg",
+            "assets/projects/ideal_mena/ideal13.jpg",
+            "assets/projects/ideal_mena/ideal14.jpg",
             "assets/projects/ideal_mena/ideal15.gif",
             "assets/projects/ideal_mena/ideal16.gif"
         ],
@@ -75,7 +75,7 @@
         "thumbnail": "assets/projects/loop/loop_1.webp",
         "images": [
             "assets/projects/loop/loop_1.webp",
-            "assets/projects/loop/loop_2.webp"
+            "assets/projects/loop/loop_2.png"
         ],
         "tags": [
             "Social Media"
@@ -90,7 +90,7 @@
         "thumbnail": "assets/projects/aseel/aseel_1.webp",
         "images": [
             "assets/projects/aseel/aseel_1.webp",
-            "assets/projects/aseel/aseel_2.webp"
+            "assets/projects/aseel/aseel_2.png"
         ],
         "tags": [
             "social media"
@@ -123,11 +123,11 @@
         "thumbnail": "assets/projects/overground/overground_1.webp",
         "images": [
             "assets/projects/overground/overground_1.webp",
-            "assets/projects/overground/overground_2.webp",
+            "assets/projects/overground/overground_2.png",
             "assets/projects/overground/overground_3.webp",
             "assets/projects/overground/overground_4.webp",
-            "assets/projects/overground/overground_5.webp",
-            "assets/projects/overground/overground_6.webp",
+            "assets/projects/overground/overground_5.png",
+            "assets/projects/overground/overground_6.png",
             "assets/projects/overground/overground_7.webp"
         ],
         "tags": [
@@ -162,7 +162,7 @@
         "thumbnail": "assets/projects/evmc/evmc_1.webp",
         "images": [
             "assets/projects/evmc/evmc_1.webp",
-            "assets/projects/evmc/evmc_2.webp"
+            "assets/projects/evmc/evmc_2.png"
         ],
         "tags": [
             "social media"
@@ -192,7 +192,7 @@
         "thumbnail": "assets/projects/battlezone/battlezone_1.webp",
         "images": [
             "assets/projects/battlezone/battlezone_1.webp",
-            "assets/projects/battlezone/battlezone_2.webp"
+            "assets/projects/battlezone/battlezone_2.png"
         ],
         "tags": [
             "social media"

@@ -85,16 +85,39 @@ document.addEventListener('DOMContentLoaded', () => {
         let pointerX = window.innerWidth / 2;
         let pointerY = window.innerHeight / 2;
         let touchActive = false;
+        let lastEchoTime = 0;
+        const touchEchoInterval = 40;
 
-        const setPointerTarget = (x, y) => {
+        const createTouchEcho = (x, y) => {
+            const echo = document.createElement('span');
+            echo.className = 'touch-echo';
+            echo.style.left = `${x}px`;
+            echo.style.top = `${y}px`;
+            document.body.appendChild(echo);
+            echo.addEventListener('animationend', () => echo.remove(), { once: true });
+        };
+
+        const maybeCreateTouchEcho = (x, y, force = false) => {
+            const now = performance.now();
+            if (force || now - lastEchoTime >= touchEchoInterval) {
+                lastEchoTime = now;
+                createTouchEcho(x, y);
+            }
+        };
+
+        const setPointerTarget = (x, y, shouldEcho = false, forceEcho = false) => {
             pointerX = x;
             pointerY = y;
 
             if (isTouchDevice) {
                 cursors.forEach((cursor, index) => {
                     cursor.style.display = 'block';
-                    cursor.style.opacity = index === 0 ? '1' : cursor.style.opacity || '0';
+                    cursor.style.opacity = index === 0 && touchActive ? '1' : '0';
                 });
+
+                if (shouldEcho) {
+                    maybeCreateTouchEcho(x, y, forceEcho);
+                }
             }
         };
 
@@ -105,17 +128,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 cursor.style.opacity = '0';
             });
 
+            const syncCursorPositions = (x, y) => {
+                cursorPositions.forEach(position => {
+                    position.x = x;
+                    position.y = y;
+                });
+            };
+
             const handleTouchStart = (e) => {
                 const touch = e.touches[0];
                 if (!touch) return;
                 touchActive = true;
-                setPointerTarget(touch.clientX, touch.clientY);
+                syncCursorPositions(touch.clientX, touch.clientY);
+                setPointerTarget(touch.clientX, touch.clientY, true, true);
             };
 
             const handleTouchMove = (e) => {
                 const touch = e.touches[0];
                 if (!touch) return;
-                setPointerTarget(touch.clientX, touch.clientY);
+                setPointerTarget(touch.clientX, touch.clientY, true, false);
             };
 
             const hideTouchTrail = () => {
@@ -143,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cursors.forEach((cursor, index) => {
                 const dx = x - cursorPositions[index].x;
                 const dy = y - cursorPositions[index].y;
-                const easingFactor = isTouchDevice ? 0.28 : 0.2;
+                const easingFactor = isTouchDevice ? 0.32 : 0.2;
 
                 cursorPositions[index].x += dx * easingFactor;
                 cursorPositions[index].y += dy * easingFactor;
@@ -152,13 +183,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 cursor.style.transform = `translate3d(${x - cursor.offsetWidth / 2}px, ${y - cursor.offsetHeight / 2}px, 0)`;
 
+                if (isTouchDevice) {
+                    if (index === 0) {
+                        cursor.style.opacity = touchActive ? '1' : '0';
+                    } else {
+                        cursor.style.opacity = '0';
+                    }
+                    return;
+                }
+
                 if (index === 0) {
-                    if (!isTouchDevice) cursor.style.opacity = '1';
+                    cursor.style.opacity = '1';
                 } else {
                     const trailOpacity = 1 - (index / cursors.length);
-                    if (!isTouchDevice || touchActive) {
-                        cursor.style.opacity = trailOpacity.toFixed(3);
-                    }
+                    cursor.style.opacity = trailOpacity.toFixed(3);
                     cursor.style.transform += ` scale(${1 - (index / cursors.length)})`;
                 }
             });

@@ -76,41 +76,97 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Advanced Cursor Trail Logic ---
     const cursors = document.querySelectorAll('.cursor');
     if (cursors.length > 0) {
-        if ('ontouchstart' in window) {
-             document.body.style.cursor = 'auto';
-             cursors.forEach(c => c.style.display = 'none');
-        } else {
-            const cursorPositions = [];
-            for (let i = 0; i < cursors.length; i++) {
-                cursorPositions.push({ x: 0, y: 0 });
-            }
-            let mouseX = 0;
-            let mouseY = 0;
-            window.addEventListener('mousemove', (e) => {
-                mouseX = e.clientX;
-                mouseY = e.clientY;
-            });
-            function animateCursors() {
-                let x = mouseX;
-                let y = mouseY;
+        const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
+        const cursorPositions = Array.from(cursors, () => ({
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2
+        }));
+
+        let pointerX = window.innerWidth / 2;
+        let pointerY = window.innerHeight / 2;
+        let touchActive = false;
+
+        const setPointerTarget = (x, y) => {
+            pointerX = x;
+            pointerY = y;
+
+            if (isTouchDevice) {
                 cursors.forEach((cursor, index) => {
-                    const dx = x - cursorPositions[index].x;
-                    const dy = y - cursorPositions[index].y;
-                    const easingFactor = 0.2;
-                    cursorPositions[index].x += dx * easingFactor;
-                    cursorPositions[index].y += dy * easingFactor;
-                    x = cursorPositions[index].x;
-                    y = cursorPositions[index].y;
-                    cursor.style.transform = `translate3d(${x - cursor.offsetWidth / 2}px, ${y - cursor.offsetHeight / 2}px, 0)`;
-                    if (index > 0) {
-                        cursor.style.opacity = 1 - (index / cursors.length);
-                        cursor.style.transform += ` scale(${1 - (index / cursors.length)})`;
-                    }
+                    cursor.style.display = 'block';
+                    cursor.style.opacity = index === 0 ? '1' : cursor.style.opacity || '0';
                 });
-                requestAnimationFrame(animateCursors);
             }
-            animateCursors();
+        };
+
+        if (isTouchDevice) {
+            document.body.style.cursor = 'auto';
+            cursors.forEach(cursor => {
+                cursor.style.display = 'block';
+                cursor.style.opacity = '0';
+            });
+
+            const handleTouchStart = (e) => {
+                const touch = e.touches[0];
+                if (!touch) return;
+                touchActive = true;
+                setPointerTarget(touch.clientX, touch.clientY);
+            };
+
+            const handleTouchMove = (e) => {
+                const touch = e.touches[0];
+                if (!touch) return;
+                setPointerTarget(touch.clientX, touch.clientY);
+            };
+
+            const hideTouchTrail = () => {
+                touchActive = false;
+                cursors.forEach(cursor => {
+                    cursor.style.opacity = '0';
+                });
+            };
+
+            window.addEventListener('touchstart', handleTouchStart, { passive: true });
+            window.addEventListener('touchmove', handleTouchMove, { passive: true });
+            window.addEventListener('touchend', hideTouchTrail, { passive: true });
+            window.addEventListener('touchcancel', hideTouchTrail, { passive: true });
+        } else {
+            window.addEventListener('mousemove', (e) => {
+                pointerX = e.clientX;
+                pointerY = e.clientY;
+            });
         }
+
+        function animateCursors() {
+            let x = pointerX;
+            let y = pointerY;
+
+            cursors.forEach((cursor, index) => {
+                const dx = x - cursorPositions[index].x;
+                const dy = y - cursorPositions[index].y;
+                const easingFactor = isTouchDevice ? 0.28 : 0.2;
+
+                cursorPositions[index].x += dx * easingFactor;
+                cursorPositions[index].y += dy * easingFactor;
+                x = cursorPositions[index].x;
+                y = cursorPositions[index].y;
+
+                cursor.style.transform = `translate3d(${x - cursor.offsetWidth / 2}px, ${y - cursor.offsetHeight / 2}px, 0)`;
+
+                if (index === 0) {
+                    if (!isTouchDevice) cursor.style.opacity = '1';
+                } else {
+                    const trailOpacity = 1 - (index / cursors.length);
+                    if (!isTouchDevice || touchActive) {
+                        cursor.style.opacity = trailOpacity.toFixed(3);
+                    }
+                    cursor.style.transform += ` scale(${1 - (index / cursors.length)})`;
+                }
+            });
+
+            requestAnimationFrame(animateCursors);
+        }
+
+        animateCursors();
     }
 
 

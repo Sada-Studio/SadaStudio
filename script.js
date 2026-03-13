@@ -90,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const trailStates = trailCursors.map((_, index) => ({
             x: pointerX,
             y: pointerY,
-            opacity: Math.max(0, 0.28 - index * 0.045)
+            opacity: Math.max(0, 0.42 - index * 0.065)
         }));
 
         const syncTrailPositions = (x, y) => {
@@ -185,7 +185,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const trail = trailCursors[index];
                 if (trail) {
                     const scale = Math.max(0.84, 0.98 - index * 0.022);
-                    const opacity = cursorVisible ? Math.max(0, 0.24 - index * 0.042) : 0;
+                    const opacity = cursorVisible ? Math.max(0, 0.40 - index * 0.065) : 0;
                     trail.style.transform = `translate3d(${state.x - trail.offsetWidth / 2}px, ${state.y - trail.offsetHeight / 2}px, 0) scale(${scale})`;
                     trail.style.opacity = `${opacity}`;
                 }

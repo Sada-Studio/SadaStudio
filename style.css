@@ -373,7 +373,7 @@ section#work > .container {
     background-position: center;
     opacity: 0;
     will-change: transform, opacity;
-    filter: blur(0.15px);
+    filter: blur(0.05px);
 }
 
 @media (hover: none), (pointer: coarse) {

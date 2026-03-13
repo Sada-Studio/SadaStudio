@@ -73,138 +73,121 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Advanced Cursor Trail Logic ---
+    // --- Custom Cursor + Echo Trail Logic ---
     const cursors = document.querySelectorAll('.cursor');
-    if (cursors.length > 0) {
+    const leaderCursor = document.getElementById('cursor-leader');
+    if (cursors.length > 0 && leaderCursor) {
         const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
-        const cursorPositions = Array.from(cursors, () => ({
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2
-        }));
+        const trailingCursors = Array.from(cursors).filter(cursor => cursor !== leaderCursor);
+
+        trailingCursors.forEach(cursor => {
+            cursor.style.display = 'none';
+            cursor.style.opacity = '0';
+        });
 
         let pointerX = window.innerWidth / 2;
         let pointerY = window.innerHeight / 2;
+        let cursorX = pointerX;
+        let cursorY = pointerY;
         let touchActive = false;
+        let cursorVisible = false;
         let lastEchoTime = 0;
-        const touchEchoInterval = 40;
 
-        const createTouchEcho = (x, y) => {
+        const desktopEchoInterval = 80;
+        const touchEchoInterval = 55;
+
+        const createPointerEcho = (x, y) => {
             const echo = document.createElement('span');
-            echo.className = 'touch-echo';
+            echo.className = 'pointer-echo';
             echo.style.left = `${x}px`;
             echo.style.top = `${y}px`;
             document.body.appendChild(echo);
             echo.addEventListener('animationend', () => echo.remove(), { once: true });
         };
 
-        const maybeCreateTouchEcho = (x, y, force = false) => {
+        const maybeCreatePointerEcho = (x, y, force = false) => {
             const now = performance.now();
-            if (force || now - lastEchoTime >= touchEchoInterval) {
+            const interval = touchActive ? touchEchoInterval : desktopEchoInterval;
+            if (force || now - lastEchoTime >= interval) {
                 lastEchoTime = now;
-                createTouchEcho(x, y);
+                createPointerEcho(x, y);
             }
         };
 
-        const setPointerTarget = (x, y, shouldEcho = false, forceEcho = false) => {
+        const showLeader = () => {
+            cursorVisible = true;
+            leaderCursor.style.display = 'block';
+            leaderCursor.style.opacity = '1';
+        };
+
+        const hideLeader = () => {
+            cursorVisible = false;
+            leaderCursor.style.opacity = '0';
+        };
+
+        const setPointerTarget = (x, y, options = {}) => {
+            const { echo = false, forceEcho = false } = options;
             pointerX = x;
             pointerY = y;
+            showLeader();
 
-            if (isTouchDevice) {
-                cursors.forEach((cursor, index) => {
-                    cursor.style.display = 'block';
-                    cursor.style.opacity = index === 0 && touchActive ? '1' : '0';
-                });
-
-                if (shouldEcho) {
-                    maybeCreateTouchEcho(x, y, forceEcho);
-                }
+            if (echo) {
+                maybeCreatePointerEcho(x, y, forceEcho);
             }
         };
 
         if (isTouchDevice) {
             document.body.style.cursor = 'auto';
-            cursors.forEach(cursor => {
-                cursor.style.display = 'block';
-                cursor.style.opacity = '0';
-            });
+            hideLeader();
 
-            const syncCursorPositions = (x, y) => {
-                cursorPositions.forEach(position => {
-                    position.x = x;
-                    position.y = y;
-                });
-            };
-
-            const handleTouchStart = (e) => {
-                const touch = e.touches[0];
+            const handleTouchStart = (event) => {
+                const touch = event.touches[0];
                 if (!touch) return;
                 touchActive = true;
-                syncCursorPositions(touch.clientX, touch.clientY);
-                setPointerTarget(touch.clientX, touch.clientY, true, true);
+                cursorX = touch.clientX;
+                cursorY = touch.clientY;
+                setPointerTarget(touch.clientX, touch.clientY, { echo: true, forceEcho: true });
             };
 
-            const handleTouchMove = (e) => {
-                const touch = e.touches[0];
+            const handleTouchMove = (event) => {
+                const touch = event.touches[0];
                 if (!touch) return;
-                setPointerTarget(touch.clientX, touch.clientY, true, false);
+                setPointerTarget(touch.clientX, touch.clientY, { echo: true, forceEcho: false });
             };
 
-            const hideTouchTrail = () => {
+            const handleTouchEnd = () => {
                 touchActive = false;
-                cursors.forEach(cursor => {
-                    cursor.style.opacity = '0';
-                });
+                hideLeader();
             };
 
             window.addEventListener('touchstart', handleTouchStart, { passive: true });
             window.addEventListener('touchmove', handleTouchMove, { passive: true });
-            window.addEventListener('touchend', hideTouchTrail, { passive: true });
-            window.addEventListener('touchcancel', hideTouchTrail, { passive: true });
+            window.addEventListener('touchend', handleTouchEnd, { passive: true });
+            window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
         } else {
-            window.addEventListener('mousemove', (e) => {
-                pointerX = e.clientX;
-                pointerY = e.clientY;
-            });
-        }
-
-        function animateCursors() {
-            let x = pointerX;
-            let y = pointerY;
-
-            cursors.forEach((cursor, index) => {
-                const dx = x - cursorPositions[index].x;
-                const dy = y - cursorPositions[index].y;
-                const easingFactor = isTouchDevice ? 0.32 : 0.2;
-
-                cursorPositions[index].x += dx * easingFactor;
-                cursorPositions[index].y += dy * easingFactor;
-                x = cursorPositions[index].x;
-                y = cursorPositions[index].y;
-
-                cursor.style.transform = `translate3d(${x - cursor.offsetWidth / 2}px, ${y - cursor.offsetHeight / 2}px, 0)`;
-
-                if (isTouchDevice) {
-                    if (index === 0) {
-                        cursor.style.opacity = touchActive ? '1' : '0';
-                    } else {
-                        cursor.style.opacity = '0';
-                    }
-                    return;
-                }
-
-                if (index === 0) {
-                    cursor.style.opacity = '1';
-                } else {
-                    const trailOpacity = 1 - (index / cursors.length);
-                    cursor.style.opacity = trailOpacity.toFixed(3);
-                    cursor.style.transform += ` scale(${1 - (index / cursors.length)})`;
-                }
+            window.addEventListener('mousemove', (event) => {
+                setPointerTarget(event.clientX, event.clientY, { echo: true, forceEcho: false });
             });
 
-            requestAnimationFrame(animateCursors);
+            document.addEventListener('mouseleave', hideLeader);
+            document.addEventListener('mouseenter', showLeader);
         }
 
-        animateCursors();
+        function animateLeaderCursor() {
+            const easingFactor = touchActive ? 0.28 : 0.18;
+            cursorX += (pointerX - cursorX) * easingFactor;
+            cursorY += (pointerY - cursorY) * easingFactor;
+
+            leaderCursor.style.transform = `translate3d(${cursorX - leaderCursor.offsetWidth / 2}px, ${cursorY - leaderCursor.offsetHeight / 2}px, 0)`;
+
+            if (!cursorVisible) {
+                leaderCursor.style.opacity = '0';
+            }
+
+            requestAnimationFrame(animateLeaderCursor);
+        }
+
+        animateLeaderCursor();
     }
 
 
@@ -250,7 +233,7 @@ document.addEventListener('DOMContentLoaded', () => {
         featuredWorkGrid.innerHTML = ''; 
 
         featuredProjects.forEach((project, index) => {
-            const isLarge = index === 0;
+            const isLarge = index === 0 && window.innerWidth > 900;
             const projectItem = document.createElement('a');
             projectItem.href = `project.html?id=${project.id}`;
             projectItem.className = `work-item ${isLarge ? 'work-item-large' : ''}`;

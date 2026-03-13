@@ -192,6 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let cursorY = pointerY;
         let touchActive = false;
         let cursorVisible = !isTouchDevice;
+        let touchHideTimeout = null;
 
         const trailStates = trailCursors.map((_, index) => ({
             x: pointerX,
@@ -206,17 +207,36 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         };
 
+        const setTouchCursorState = (isActive) => {
+            document.body.classList.toggle('touch-cursor-active', isActive);
+        };
+
         const showCursorSystem = () => {
             cursorVisible = true;
             leaderCursor.style.display = 'block';
+            if (isTouchDevice) {
+                setTouchCursorState(true);
+            }
         };
 
-        const hideCursorSystem = () => {
+        const hideCursorSystem = (forceTouchHide = false) => {
             cursorVisible = false;
             leaderCursor.style.opacity = '0';
             trailCursors.forEach((trail) => {
                 trail.style.opacity = '0';
             });
+            if (isTouchDevice && (forceTouchHide || !touchActive)) {
+                setTouchCursorState(false);
+            }
+        };
+
+        const resetCursorSystem = () => {
+            touchActive = false;
+            if (touchHideTimeout) {
+                clearTimeout(touchHideTimeout);
+                touchHideTimeout = null;
+            }
+            hideCursorSystem(true);
         };
 
         const setPointerTarget = (x, y, immediate = false) => {
@@ -233,11 +253,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (isTouchDevice) {
             document.body.style.cursor = 'auto';
-            hideCursorSystem();
+            resetCursorSystem();
 
             const handleTouchStart = (event) => {
                 const touch = event.touches[0];
                 if (!touch) return;
+                if (touchHideTimeout) {
+                    clearTimeout(touchHideTimeout);
+                    touchHideTimeout = null;
+                }
                 touchActive = true;
                 setPointerTarget(touch.clientX, touch.clientY, true);
             };
@@ -250,13 +274,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const handleTouchEnd = () => {
                 touchActive = false;
-                hideCursorSystem();
+                if (touchHideTimeout) clearTimeout(touchHideTimeout);
+                touchHideTimeout = setTimeout(() => {
+                    hideCursorSystem(true);
+                }, 90);
             };
 
             window.addEventListener('touchstart', handleTouchStart, { passive: true });
             window.addEventListener('touchmove', handleTouchMove, { passive: true });
             window.addEventListener('touchend', handleTouchEnd, { passive: true });
             window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
+            window.addEventListener('pageshow', resetCursorSystem);
+            window.addEventListener('pagehide', resetCursorSystem);
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) resetCursorSystem();
+            });
         } else {
             window.addEventListener('mousemove', (event) => {
                 setPointerTarget(event.clientX, event.clientY, false);
@@ -668,49 +700,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const thumbnailViewer = document.getElementById('project-thumbnail-viewer');
 
     if (workPageList && thumbnailViewer) {
+        const canHoverPreview = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let mouseX = 0, mouseY = 0;
         let lastMouseX = 0;
         let rotation = 0;
         let animationFrameId = null;
 
+        const stopThumbnailAnimation = () => {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+                animationFrameId = null;
+            }
+        };
+
+        const hideThumbnailViewer = () => {
+            thumbnailViewer.classList.remove('visible');
+            thumbnailViewer.style.backgroundImage = '';
+            stopThumbnailAnimation();
+            rotation = 0;
+        };
+
         const animate = () => {
             const velocityX = mouseX - lastMouseX;
             lastMouseX = mouseX;
-            const rotationForce = 0.1; 
-            const damping = 0.92;      
+            const rotationForce = 0.1;
+            const damping = 0.92;
             rotation += velocityX * rotationForce;
             rotation *= damping;
             thumbnailViewer.style.transform = `translate(${mouseX + 15}px, ${mouseY + 15}px) rotate(${rotation}deg)`;
             animationFrameId = requestAnimationFrame(animate);
         };
 
-        workPageList.addEventListener('mouseover', e => {
-            const projectItem = e.target.closest('.project-item');
-            if (projectItem && projectItem.dataset.image) {
-                thumbnailViewer.style.backgroundImage = `url(${projectItem.dataset.image})`;
-                thumbnailViewer.classList.add('visible');
-            }
+        window.addEventListener('pageshow', hideThumbnailViewer);
+        window.addEventListener('pagehide', hideThumbnailViewer);
+        window.addEventListener('blur', hideThumbnailViewer);
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) hideThumbnailViewer();
         });
 
-        workPageList.addEventListener('mousemove', e => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-        });
+        if (canHoverPreview) {
+            workPageList.addEventListener('mouseover', e => {
+                const projectItem = e.target.closest('.project-item');
+                if (projectItem && projectItem.dataset.image) {
+                    thumbnailViewer.style.backgroundImage = `url(${projectItem.dataset.image})`;
+                    thumbnailViewer.classList.add('visible');
+                }
+            });
 
-        workPageList.addEventListener('mouseenter', e => {
-            lastMouseX = e.clientX;
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
-            animate();
-        });
+            workPageList.addEventListener('mousemove', e => {
+                mouseX = e.clientX;
+                mouseY = e.clientY;
+            });
 
-        workPageList.addEventListener('mouseleave', () => {
-            thumbnailViewer.classList.remove('visible');
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-                animationFrameId = null;
-            }
-            rotation = 0;
-        });
+            workPageList.addEventListener('mouseenter', e => {
+                lastMouseX = e.clientX;
+                stopThumbnailAnimation();
+                animate();
+            });
+
+            workPageList.addEventListener('mouseleave', hideThumbnailViewer);
+        } else {
+            hideThumbnailViewer();
+            workPageList.addEventListener('touchstart', hideThumbnailViewer, { passive: true });
+        }
     }
 
     // --- Main function to initialize pages ---

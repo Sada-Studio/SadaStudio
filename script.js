@@ -43,22 +43,128 @@ document.addEventListener('DOMContentLoaded', () => {
         const closeMenu = () => {
             fullScreenNav.classList.remove('active');
             menuToggle.classList.remove('active');
+            if (header) header.classList.remove('header-hidden');
             document.body.style.overflow = '';
         };
         menuToggle.addEventListener('click', () => {
             fullScreenNav.classList.add('active');
             menuToggle.classList.add('active');
+            if (header) header.classList.remove('header-hidden');
             document.body.style.overflow = 'hidden';
         });
         closeNavButton.addEventListener('click', closeMenu);
         navLinkItems.forEach(link => link.addEventListener('click', closeMenu));
     }
 
-    // --- Sticky Header Background ---
+    // --- Header Background + Hide on Scroll Down ---
     if (header) {
+        let lastHeaderScrollY = window.scrollY;
+        let headerTicking = false;
+        const HIDE_THRESHOLD = 10;
+
+        const updateHeaderState = () => {
+            const currentScrollY = window.scrollY;
+            const scrollDelta = currentScrollY - lastHeaderScrollY;
+
+            header.classList.toggle('scrolled', currentScrollY > 50);
+
+            if (fullScreenNav && fullScreenNav.classList.contains('active')) {
+                header.classList.remove('header-hidden');
+            } else if (currentScrollY <= 24) {
+                header.classList.remove('header-hidden');
+            } else if (scrollDelta > HIDE_THRESHOLD) {
+                header.classList.add('header-hidden');
+            } else if (scrollDelta < -6) {
+                header.classList.remove('header-hidden');
+            }
+
+            lastHeaderScrollY = currentScrollY;
+            headerTicking = false;
+        };
+
+        updateHeaderState();
         window.addEventListener('scroll', () => {
-            header.classList.toggle('scrolled', window.scrollY > 50);
-        });
+            if (headerTicking) return;
+            headerTicking = true;
+            requestAnimationFrame(updateHeaderState);
+        }, { passive: true });
+    }
+
+    // --- Dots Background Inertia ---
+    const dotsBackground = document.getElementById('dots-background');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (dotsBackground && !prefersReducedMotion) {
+        const SCROLL_MULTIPLIER = 1.03;
+        const MOMENTUM_PUSH = 0.16;
+        const MOMENTUM_DECAY = 0.89;
+        const OFFSET_DECAY = 0.94;
+
+        let baseOffset = -window.scrollY * SCROLL_MULTIPLIER;
+        let momentumOffset = 0;
+        let momentumVelocity = 0;
+        let renderedOffset = baseOffset;
+        let lastFrameTime = performance.now();
+        let lastScrollY = window.scrollY;
+        let dotsRaf = null;
+
+        const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+        const applyDotsState = () => {
+            renderedOffset = baseOffset + momentumOffset;
+            dotsBackground.style.backgroundPosition = `0px ${renderedOffset.toFixed(2)}px`;
+            const blurAmount = clamp(Math.abs(momentumVelocity) * 0.022, 0, 0.3);
+            dotsBackground.style.filter = `blur(${blurAmount.toFixed(2)}px)`;
+        };
+
+        const animateDots = (now) => {
+            const deltaFactor = Math.min(2.25, (now - lastFrameTime) / 16.6667 || 1);
+            lastFrameTime = now;
+
+            momentumOffset += momentumVelocity * deltaFactor;
+            momentumVelocity *= Math.pow(MOMENTUM_DECAY, deltaFactor);
+            momentumOffset *= Math.pow(OFFSET_DECAY, deltaFactor);
+
+            applyDotsState();
+
+            if (Math.abs(momentumOffset) > 0.08 || Math.abs(momentumVelocity) > 0.02) {
+                dotsRaf = requestAnimationFrame(animateDots);
+            } else {
+                momentumOffset = 0;
+                momentumVelocity = 0;
+                dotsRaf = null;
+                applyDotsState();
+            }
+        };
+
+        const kickDotsAnimation = () => {
+            if (dotsRaf) return;
+            lastFrameTime = performance.now();
+            dotsRaf = requestAnimationFrame(animateDots);
+        };
+
+        const handleDotsScroll = () => {
+            const currentScrollY = window.scrollY;
+            const scrollDelta = currentScrollY - lastScrollY;
+
+            baseOffset = -currentScrollY * SCROLL_MULTIPLIER;
+            momentumVelocity += -scrollDelta * MOMENTUM_PUSH;
+            lastScrollY = currentScrollY;
+
+            applyDotsState();
+            kickDotsAnimation();
+        };
+
+        const handleDotsResize = () => {
+            baseOffset = -window.scrollY * SCROLL_MULTIPLIER;
+            applyDotsState();
+        };
+
+        applyDotsState();
+        window.addEventListener('scroll', handleDotsScroll, { passive: true });
+        window.addEventListener('resize', handleDotsResize);
+    } else if (dotsBackground) {
+        dotsBackground.style.backgroundPosition = '0px 0px';
+        dotsBackground.style.filter = 'none';
     }
     
     // --- Video Speed on Scroll ---
@@ -414,13 +520,45 @@ document.addEventListener('DOMContentLoaded', () => {
         const filterToggle = document.getElementById('work-filter-toggle');
         const filterPanel = document.getElementById('work-filter-panel');
         const currentLabel = document.getElementById('filter-current-label');
-        if (!filterToolbar || !filterToggle || !filterPanel || !currentLabel || !workPageList) return;
+        const currentCount = document.getElementById('filter-current-count');
+        if (!filterToolbar || !filterToggle || !filterPanel || !currentLabel || !currentCount || !workPageList) return;
 
         const serviceMap = new Map();
-        [...baseServiceTags, ...projects.flatMap(project => project.tags)].forEach(tag => {
+        const visibleServiceCounts = new Map();
+        const allServiceCounts = new Map();
+
+        projects.forEach(project => {
+            const uniqueTags = new Set((project.tags || []).map(tag => normalizeTag(tag)).filter(Boolean));
+
+            uniqueTags.forEach(normalized => {
+                const originalTag = (project.tags || []).find(tag => normalizeTag(tag) === normalized) || normalized;
+                allServiceCounts.set(normalized, (allServiceCounts.get(normalized) || 0) + 1);
+
+                if (hiddenFilterSet.has(normalized)) return;
+
+                if (!serviceMap.has(normalized)) {
+                    serviceMap.set(normalized, getTagLabel(originalTag));
+                }
+
+                visibleServiceCounts.set(normalized, (visibleServiceCounts.get(normalized) || 0) + 1);
+            });
+        });
+
+        baseServiceTags.forEach(tag => {
             const normalized = normalizeTag(tag);
-            if (!normalized || hiddenFilterSet.has(normalized) || serviceMap.has(normalized)) return;
-            serviceMap.set(normalized, getTagLabel(tag));
+            if (!normalized || hiddenFilterSet.has(normalized)) return;
+
+            if (!serviceMap.has(normalized)) {
+                serviceMap.set(normalized, getTagLabel(tag));
+            }
+
+            if (!visibleServiceCounts.has(normalized)) {
+                visibleServiceCounts.set(normalized, 0);
+            }
+
+            if (!allServiceCounts.has(normalized)) {
+                allServiceCounts.set(normalized, 0);
+            }
         });
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -433,10 +571,24 @@ document.addEventListener('DOMContentLoaded', () => {
             !serviceMap.has(normalizeTag(activeFilter))
         ) {
             serviceMap.set(normalizeTag(activeFilter), getTagLabel(activeFilter));
+            visibleServiceCounts.set(normalizeTag(activeFilter), allServiceCounts.get(normalizeTag(activeFilter)) || 0);
         }
 
-        const sortedServices = Array.from(serviceMap.values()).sort((a, b) => a.localeCompare(b));
+        const sortedServices = Array.from(serviceMap.entries())
+            .sort((a, b) => {
+                const countDifference = (visibleServiceCounts.get(b[0]) || 0) - (visibleServiceCounts.get(a[0]) || 0);
+                if (countDifference !== 0) return countDifference;
+                return a[1].localeCompare(b[1]);
+            })
+            .map(([, label]) => label);
+
         const filterLabels = ['All', ...sortedServices];
+
+        const getCountForLabel = (label) => {
+            const normalized = normalizeTag(label);
+            if (normalized === 'all') return projects.length;
+            return allServiceCounts.get(normalized) || 0;
+        };
 
         const closeFilterPanel = () => {
             filterToolbar.classList.remove('open');
@@ -455,12 +607,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const renderFilterButtons = () => {
             filterPanel.innerHTML = filterLabels.map(label => {
-                const isActive = normalizeTag(label) === normalizeTag(activeFilter);
-                return `<button type="button" class="filter-chip ${isActive ? 'active' : ''}" data-filter-value="${label}">${label}</button>`;
+                const normalized = normalizeTag(label);
+                const isActive = normalized === normalizeTag(activeFilter);
+                const chipLabel = normalized === 'all' ? 'All work' : label;
+                const chipCount = getCountForLabel(label);
+
+                return `
+                    <button
+                        type="button"
+                        class="filter-chip ${isActive ? 'active' : ''}"
+                        data-filter-value="${label}"
+                        aria-pressed="${isActive ? 'true' : 'false'}"
+                    >
+                        <span class="filter-chip-label">${chipLabel}</span>
+                        <span class="filter-chip-count">${chipCount}</span>
+                    </button>
+                `;
             }).join('');
-            currentLabel.textContent = normalizeTag(activeFilter) === 'all' ? 'All services' : activeFilter;
-            filterToggle.classList.toggle('has-active-filter', normalizeTag(activeFilter) !== 'all');
-            populateWorkList(projects, normalizeTag(activeFilter) === 'all' ? 'all' : activeFilter);
+
+            const normalizedActive = normalizeTag(activeFilter);
+            const isAll = normalizedActive === 'all';
+            currentLabel.textContent = isAll ? 'All work' : activeFilter;
+            currentCount.textContent = `${getCountForLabel(activeFilter)}`;
+            filterToggle.classList.toggle('has-active-filter', !isAll);
+            filterToggle.classList.toggle('is-all-filter', isAll);
+
+            populateWorkList(projects, isAll ? 'all' : activeFilter);
         };
 
         filterToggle.addEventListener('click', () => {
@@ -480,6 +652,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         document.addEventListener('click', (event) => {
             if (!filterToolbar.contains(event.target)) {
+                closeFilterPanel();
+            }
+        });
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
                 closeFilterPanel();
             }
         });

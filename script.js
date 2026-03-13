@@ -1,23 +1,33 @@
-// --- Faster Preloader Logic ---
+// --- Preloader Logic ---
+const preloaderStartTime = Date.now();
+
 const hidePreloader = () => {
     const preloader = document.getElementById('preloader');
     if (!preloader || preloader.classList.contains('hidden')) return;
+
     preloader.classList.add('hidden');
     setTimeout(() => {
         preloader.style.display = 'none';
     }, 500);
 };
 
-// Show the page as soon as the DOM is ready.
-// Do not wait for every GIF and image to fully download.
 document.addEventListener('DOMContentLoaded', () => {
-    requestAnimationFrame(() => {
-        setTimeout(hidePreloader, 250);
-    });
+    const minimumPreloaderTime = 3000;
+    const elapsedTime = Date.now() - preloaderStartTime;
+    const remainingTime = Math.max(0, minimumPreloaderTime - elapsedTime);
+
+    setTimeout(() => {
+        requestAnimationFrame(hidePreloader);
+    }, remainingTime);
 });
 
-// Fallback in case the DOM-ready hide did not run for any reason.
-window.addEventListener('load', hidePreloader);
+window.addEventListener('load', () => {
+    const minimumPreloaderTime = 3000;
+    const elapsedTime = Date.now() - preloaderStartTime;
+    const remainingTime = Math.max(0, minimumPreloaderTime - elapsedTime);
+
+    setTimeout(hidePreloader, remainingTime);
+});
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Basic Setup ---

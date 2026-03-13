@@ -76,6 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Custom Cursor + Echo Trail Logic ---
     const cursors = document.querySelectorAll('.cursor');
     const leaderCursor = document.getElementById('cursor-leader');
+    const trailCursors = Array.from(document.querySelectorAll('.cursor-trail')).slice(0, 5);
     if (cursors.length > 0 && leaderCursor) {
         const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
 
@@ -84,131 +85,66 @@ document.addEventListener('DOMContentLoaded', () => {
         let cursorX = pointerX;
         let cursorY = pointerY;
         let touchActive = false;
-        let cursorVisible = false;
-        let lastEchoX = null;
-        let lastEchoY = null;
-        let lastMoveTimestamp = performance.now();
-        let lastMoveVectorX = 0;
-        let lastMoveVectorY = 0;
+        let cursorVisible = !isTouchDevice;
 
-        const desktopBaseSpacing = 12;
-        const touchBaseSpacing = 10;
-        const minEchoSpacing = 5;
+        const trailStates = trailCursors.map((_, index) => ({
+            x: pointerX,
+            y: pointerY,
+            opacity: Math.max(0, 0.28 - index * 0.045)
+        }));
 
-        const createPointerEcho = (x, y, vectorX = 0, vectorY = 0, speed = 0) => {
-            const echo = document.createElement('span');
-            const vectorLength = Math.hypot(vectorX, vectorY) || 1;
-            const directionX = vectorX / vectorLength;
-            const directionY = vectorY / vectorLength;
-            const followDistance = Math.min(touchActive ? 6 : 5, 1.5 + speed * 0.08);
-            const duration = Math.max(0.18, Math.min(touchActive ? 0.3 : 0.26, 0.2 + speed * 0.0025));
-
-            echo.className = 'pointer-echo';
-            echo.style.left = `${x}px`;
-            echo.style.top = `${y}px`;
-            echo.style.setProperty('--echo-dx', `${directionX * followDistance}px`);
-            echo.style.setProperty('--echo-dy', `${directionY * followDistance}px`);
-            echo.style.setProperty('--echo-duration', `${duration}s`);
-            document.body.appendChild(echo);
-            echo.addEventListener('animationend', () => echo.remove(), { once: true });
+        const syncTrailPositions = (x, y) => {
+            trailStates.forEach((state) => {
+                state.x = x;
+                state.y = y;
+            });
         };
 
-        const emitEchoesAlongPath = (x, y, force = false) => {
-            const now = performance.now();
-            const timeDelta = Math.max(16, now - lastMoveTimestamp);
-
-            if (force || lastEchoX === null || lastEchoY === null) {
-                createPointerEcho(x, y, lastMoveVectorX, lastMoveVectorY, 0);
-                lastEchoX = x;
-                lastEchoY = y;
-                lastMoveTimestamp = now;
-                return;
-            }
-
-            const originX = lastEchoX;
-            const originY = lastEchoY;
-            const dx = x - originX;
-            const dy = y - originY;
-            const distance = Math.hypot(dx, dy);
-            const speed = distance / timeDelta;
-            const baseSpacing = touchActive ? touchBaseSpacing : desktopBaseSpacing;
-            const spacing = Math.max(minEchoSpacing, baseSpacing - Math.min(6, speed * 8));
-
-            lastMoveVectorX = dx;
-            lastMoveVectorY = dy;
-
-            if (distance < spacing) {
-                lastMoveTimestamp = now;
-                return;
-            }
-
-            const steps = Math.floor(distance / spacing);
-            for (let step = 1; step <= steps; step++) {
-                const travelled = step * spacing;
-                const progress = travelled / distance;
-                createPointerEcho(originX + dx * progress, originY + dy * progress, dx, dy, speed * 100);
-            }
-
-            const travelledDistance = steps * spacing;
-            const finalProgress = travelledDistance / distance;
-            lastEchoX = originX + dx * finalProgress;
-            lastEchoY = originY + dy * finalProgress;
-            lastMoveTimestamp = now;
-        };
-
-        const showLeader = () => {
+        const showCursorSystem = () => {
             cursorVisible = true;
             leaderCursor.style.display = 'block';
-            leaderCursor.style.opacity = '1';
         };
 
-        const hideLeader = () => {
+        const hideCursorSystem = () => {
             cursorVisible = false;
             leaderCursor.style.opacity = '0';
+            trailCursors.forEach((trail) => {
+                trail.style.opacity = '0';
+            });
         };
 
-        const setPointerTarget = (x, y, options = {}) => {
-            const { echo = false, forceEcho = false } = options;
+        const setPointerTarget = (x, y, immediate = false) => {
             pointerX = x;
             pointerY = y;
-            showLeader();
+            showCursorSystem();
 
-            if (echo) {
-                emitEchoesAlongPath(x, y, forceEcho);
+            if (immediate) {
+                cursorX = x;
+                cursorY = y;
+                syncTrailPositions(x, y);
             }
         };
 
         if (isTouchDevice) {
             document.body.style.cursor = 'auto';
-            hideLeader();
+            hideCursorSystem();
 
             const handleTouchStart = (event) => {
                 const touch = event.touches[0];
                 if (!touch) return;
                 touchActive = true;
-                cursorX = touch.clientX;
-                cursorY = touch.clientY;
-                lastEchoX = null;
-                lastEchoY = null;
-                lastMoveVectorX = 0;
-                lastMoveVectorY = 0;
-                lastMoveTimestamp = performance.now();
-                setPointerTarget(touch.clientX, touch.clientY, { echo: true, forceEcho: true });
+                setPointerTarget(touch.clientX, touch.clientY, true);
             };
 
             const handleTouchMove = (event) => {
                 const touch = event.touches[0];
                 if (!touch) return;
-                setPointerTarget(touch.clientX, touch.clientY, { echo: true, forceEcho: false });
+                setPointerTarget(touch.clientX, touch.clientY, false);
             };
 
             const handleTouchEnd = () => {
                 touchActive = false;
-                lastEchoX = null;
-                lastEchoY = null;
-                lastMoveVectorX = 0;
-                lastMoveVectorY = 0;
-                hideLeader();
+                hideCursorSystem();
             };
 
             window.addEventListener('touchstart', handleTouchStart, { passive: true });
@@ -217,34 +153,43 @@ document.addEventListener('DOMContentLoaded', () => {
             window.addEventListener('touchcancel', handleTouchEnd, { passive: true });
         } else {
             window.addEventListener('mousemove', (event) => {
-                setPointerTarget(event.clientX, event.clientY, { echo: true, forceEcho: false });
+                setPointerTarget(event.clientX, event.clientY, false);
             });
 
             document.addEventListener('mouseleave', () => {
-                lastEchoX = null;
-                lastEchoY = null;
-                lastMoveVectorX = 0;
-                lastMoveVectorY = 0;
-                hideLeader();
+                hideCursorSystem();
             });
-            document.addEventListener('mouseenter', () => {
-                lastEchoX = null;
-                lastEchoY = null;
-                lastMoveTimestamp = performance.now();
-                showLeader();
+
+            document.addEventListener('mouseenter', (event) => {
+                setPointerTarget(event.clientX, event.clientY, true);
             });
         }
 
         function animateLeaderCursor() {
-            const easingFactor = touchActive ? 0.28 : 0.18;
-            cursorX += (pointerX - cursorX) * easingFactor;
-            cursorY += (pointerY - cursorY) * easingFactor;
+            const leaderEase = touchActive ? 0.30 : 0.22;
+            cursorX += (pointerX - cursorX) * leaderEase;
+            cursorY += (pointerY - cursorY) * leaderEase;
 
             leaderCursor.style.transform = `translate3d(${cursorX - leaderCursor.offsetWidth / 2}px, ${cursorY - leaderCursor.offsetHeight / 2}px, 0)`;
+            leaderCursor.style.opacity = cursorVisible ? '1' : '0';
 
-            if (!cursorVisible) {
-                leaderCursor.style.opacity = '0';
-            }
+            let followX = cursorX;
+            let followY = cursorY;
+            trailStates.forEach((state, index) => {
+                const ease = Math.max(touchActive ? 0.12 : 0.10, (touchActive ? 0.22 : 0.18) - index * 0.017);
+                state.x += (followX - state.x) * ease;
+                state.y += (followY - state.y) * ease;
+                followX = state.x;
+                followY = state.y;
+
+                const trail = trailCursors[index];
+                if (trail) {
+                    const scale = Math.max(0.84, 0.98 - index * 0.022);
+                    const opacity = cursorVisible ? Math.max(0, 0.24 - index * 0.042) : 0;
+                    trail.style.transform = `translate3d(${state.x - trail.offsetWidth / 2}px, ${state.y - trail.offsetHeight / 2}px, 0) scale(${scale})`;
+                    trail.style.opacity = `${opacity}`;
+                }
+            });
 
             requestAnimationFrame(animateLeaderCursor);
         }

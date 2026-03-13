@@ -706,8 +706,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let rotation = 0;
         let animationFrameId = null;
 
-        let activeTouchPreviewItem = null;
-
         const stopThumbnailAnimation = () => {
             if (animationFrameId) {
                 cancelAnimationFrame(animationFrameId);
@@ -715,31 +713,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
 
-        const clearActiveTouchPreview = () => {
-            if (activeTouchPreviewItem) {
-                activeTouchPreviewItem.classList.remove('preview-active');
-                activeTouchPreviewItem = null;
-            }
-        };
-
         const hideThumbnailViewer = () => {
-            thumbnailViewer.classList.remove('visible', 'touch-preview-mode');
+            thumbnailViewer.classList.remove('visible');
             thumbnailViewer.style.backgroundImage = '';
-            thumbnailViewer.style.transform = '';
             stopThumbnailAnimation();
             rotation = 0;
-            clearActiveTouchPreview();
-        };
-
-        const showTouchThumbnailPreview = (projectItem) => {
-            if (!projectItem || !projectItem.dataset.image) return false;
-            clearActiveTouchPreview();
-            activeTouchPreviewItem = projectItem;
-            activeTouchPreviewItem.classList.add('preview-active');
-            thumbnailViewer.style.backgroundImage = `url(${projectItem.dataset.image})`;
-            thumbnailViewer.style.transform = '';
-            thumbnailViewer.classList.add('touch-preview-mode', 'visible');
-            return true;
         };
 
         const animate = () => {
@@ -783,35 +761,7 @@ document.addEventListener('DOMContentLoaded', () => {
             workPageList.addEventListener('mouseleave', hideThumbnailViewer);
         } else {
             hideThumbnailViewer();
-
-            workPageList.addEventListener('click', (event) => {
-                const projectItem = event.target.closest('.project-item');
-                if (!projectItem) return;
-
-                if (!projectItem.dataset.image) {
-                    hideThumbnailViewer();
-                    return;
-                }
-
-                if (activeTouchPreviewItem !== projectItem) {
-                    event.preventDefault();
-                    showTouchThumbnailPreview(projectItem);
-                }
-            });
-
-            document.addEventListener('click', (event) => {
-                const clickedInsideList = workPageList.contains(event.target);
-                const clickedPreview = thumbnailViewer.contains(event.target);
-                if (!clickedInsideList && !clickedPreview) {
-                    hideThumbnailViewer();
-                }
-            });
-
-            window.addEventListener('scroll', () => {
-                if (activeTouchPreviewItem) {
-                    hideThumbnailViewer();
-                }
-            }, { passive: true });
+            workPageList.addEventListener('touchstart', hideThumbnailViewer, { passive: true });
         }
     }
 

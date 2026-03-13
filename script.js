@@ -100,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const vectorLength = Math.hypot(vectorX, vectorY) || 1;
             const directionX = vectorX / vectorLength;
             const directionY = vectorY / vectorLength;
-            const followDistance = Math.min(touchActive ? 10 : 8, 3 + speed * 0.2);
-            const duration = Math.max(0.52, Math.min(touchActive ? 0.8 : 0.72, 0.58 + speed * 0.012));
+            const followDistance = Math.min(touchActive ? 6 : 5, 1.5 + speed * 0.08);
+            const duration = Math.max(0.18, Math.min(touchActive ? 0.3 : 0.26, 0.2 + speed * 0.0025));
 
             echo.className = 'pointer-echo';
             echo.style.left = `${x}px`;

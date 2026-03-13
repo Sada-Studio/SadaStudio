@@ -385,7 +385,7 @@ section#work > .container {
     background-size: contain;
     background-position: center;
     transform: translate3d(0, 0, 0) scale(0.96);
-    animation: pointer-echo-follow var(--echo-duration, 0.7s) cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: pointer-echo-follow var(--echo-duration, 0.24s) cubic-bezier(0.22, 1, 0.36, 1) forwards;
     will-change: transform, opacity;
 }
 
@@ -394,8 +394,8 @@ section#work > .container {
         opacity: 0.72;
         transform: translate3d(0, 0, 0) scale(0.96);
     }
-    65% {
-        opacity: 0.18;
+    45% {
+        opacity: 0.12;
     }
     100% {
         opacity: 0;

@@ -1,10 +1,23 @@
-// --- Preloader Logic ---
-window.addEventListener('load', () => {
+// --- Faster Preloader Logic ---
+const hidePreloader = () => {
     const preloader = document.getElementById('preloader');
-    if (preloader) {
-        preloader.classList.add('hidden');
-    }
+    if (!preloader || preloader.classList.contains('hidden')) return;
+    preloader.classList.add('hidden');
+    setTimeout(() => {
+        preloader.style.display = 'none';
+    }, 500);
+};
+
+// Show the page as soon as the DOM is ready.
+// Do not wait for every GIF and image to fully download.
+document.addEventListener('DOMContentLoaded', () => {
+    requestAnimationFrame(() => {
+        setTimeout(hidePreloader, 250);
+    });
 });
+
+// Fallback in case the DOM-ready hide did not run for any reason.
+window.addEventListener('load', hidePreloader);
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Basic Setup ---
@@ -118,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchProjects() {
         try {
-            const response = await fetch(`projects.json?v=${new Date().getTime()}`);
+            const response = await fetch('projects.json', { cache: 'force-cache' });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {

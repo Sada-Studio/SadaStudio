@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sada Studio</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
     <!-- Favicon -->
     <link rel="icon" href="assets/icon.png" type="image/png" sizes="32x32">
@@ -13,7 +15,7 @@
 
     <!-- Preloader -->
     <div id="preloader">
-        <img src="assets/loading_animation.gif" alt="Loading Animation">
+        <img src="assets/loading_animation.gif" alt="Loading Animation" decoding="async">
     </div>
 
     <div id="dots-background"></div>
@@ -21,7 +23,7 @@
     <header class="main-header">
         <div class="container">
             <div class="logo">
-                <a href="index.html"><img src="assets/web_logo.png" alt="Sada Studio Logo"></a>
+                <a href="index.html"><img src="assets/web_logo.png" alt="Sada Studio Logo" fetchpriority="high"></a>
             </div>
             <button class="menu-toggle" aria-label="Toggle navigation">
                 <div class="burger-lines">
@@ -45,7 +47,7 @@
 
     <main>
         <section class="hero-section">
-            <img src="assets/color_logo_animation_1.gif" alt="Sada Studio Logo Animation" class="hero-video">
+            <img src="assets/color_logo_animation_1.gif" alt="Sada Studio Logo Animation" class="hero-video" fetchpriority="high" decoding="async">
             <a href="#work" class="scroll-down-indicator">
                 <div class="scroll-arrows">
                     <span></span>
@@ -81,7 +83,7 @@
 
         <section id="about" class="about-section">
             <div class="about-video-container">
-                <img src="assets/about_us_video.gif" alt="About Us Video" class="about-video">
+                <img src="assets/about_us_video.gif" alt="About Us Video" class="about-video" loading="lazy" decoding="async">
             </div>
             <div class="container about-content-container">
                 <div class="about-text">
@@ -108,7 +110,7 @@
                     </div>
                 </div>
                 <div class="about-vector">
-                    <img src="assets/logo_lines.svg" alt="Sada Studio decorative lines">
+                    <img src="assets/logo_lines.svg" alt="Sada Studio decorative lines" loading="lazy" decoding="async">
                 </div>
             </div>
         </section>
@@ -123,11 +125,11 @@
                     <a href="mailto:info@sadastudio.me" class="footer-email-link">info@sadastudio.me</a>
                     <div class="footer-social-links">
                         <a href="https://www.instagram.com/sadastudio.me?igsh=MW5oYWg1b2RnMzlwZQ==" target="_blank">Instagram</a>
-                        <a href="http://wa.me/96103118825" target="_blank">WhatsApp</a>
+                        <a href="https://wa.me/96103118825" target="_blank">WhatsApp</a>
                     </div>
                 </div>
                 <div class="footer-logo">
-                    <img src="assets/footer_logo.png" alt="Sada Studio decorative logo">
+                    <img src="assets/footer_logo.png" alt="Sada Studio decorative logo" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>

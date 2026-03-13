@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sada Studio</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="icon" href="assets/icon.png" type="image/png" sizes="32x32">
 </head>
@@ -12,10 +14,7 @@
 
     <!-- Preloader -->
     <div id="preloader">
-        <video autoplay loop muted playsinline>
-            <source src="assets/loading_animation.gif" type="video/gif">
-            Your browser does not support the video tag.
-        </video>
+        <img src="assets/loading_animation.gif" alt="Loading Animation" decoding="async">
     </div>
 
     <div id="dots-background"></div>
@@ -23,7 +22,7 @@
     <header class="main-header">
         <div class="container">
             <div class="logo">
-                <a href="index.html"><img src="assets/web_logo.png" alt="Sada Studio Logo"></a>
+                <a href="index.html"><img src="assets/web_logo.png" alt="Sada Studio Logo" fetchpriority="high"></a>
             </div>
             <button class="menu-toggle" aria-label="Toggle navigation">
                 <div class="burger-lines">
@@ -64,11 +63,11 @@
                     <a href="mailto:info@sadastudio.me" class="footer-email-link">info@sadastudio.me</a>
                     <div class="footer-social-links">
                         <a href="https://www.instagram.com/sadastudio.me?igsh=MW5oYWg1b2RnMzlwZQ==" target="_blank">Instagram</a>
-                        <a href="http://wa.me/96103118825" target="_blank">WhatsApp</a>
+                        <a href="https://wa.me/96103118825" target="_blank">WhatsApp</a>
                     </div>
                 </div>
                 <div class="footer-logo">
-                    <img src="assets/footer_logo.png" alt="Sada Studio decorative logo">
+                    <img src="assets/footer_logo.png" alt="Sada Studio decorative logo" loading="lazy" decoding="async">
                 </div>
             </div>
         </div>

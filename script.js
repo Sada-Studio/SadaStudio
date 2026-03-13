@@ -78,12 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const leaderCursor = document.getElementById('cursor-leader');
     if (cursors.length > 0 && leaderCursor) {
         const isTouchDevice = window.matchMedia('(hover: none), (pointer: coarse)').matches || 'ontouchstart' in window;
-        const trailingCursors = Array.from(cursors).filter(cursor => cursor !== leaderCursor);
-
-        trailingCursors.forEach(cursor => {
-            cursor.style.display = 'none';
-            cursor.style.opacity = '0';
-        });
 
         let pointerX = window.innerWidth / 2;
         let pointerY = window.innerHeight / 2;
@@ -91,10 +85,11 @@ document.addEventListener('DOMContentLoaded', () => {
         let cursorY = pointerY;
         let touchActive = false;
         let cursorVisible = false;
-        let lastEchoTime = 0;
+        let lastEchoX = null;
+        let lastEchoY = null;
 
-        const desktopEchoInterval = 80;
-        const touchEchoInterval = 55;
+        const desktopEchoSpacing = 16;
+        const touchEchoSpacing = 14;
 
         const createPointerEcho = (x, y) => {
             const echo = document.createElement('span');
@@ -105,13 +100,35 @@ document.addEventListener('DOMContentLoaded', () => {
             echo.addEventListener('animationend', () => echo.remove(), { once: true });
         };
 
-        const maybeCreatePointerEcho = (x, y, force = false) => {
-            const now = performance.now();
-            const interval = touchActive ? touchEchoInterval : desktopEchoInterval;
-            if (force || now - lastEchoTime >= interval) {
-                lastEchoTime = now;
+        const emitEchoesAlongPath = (x, y, force = false) => {
+            const spacing = touchActive ? touchEchoSpacing : desktopEchoSpacing;
+
+            if (force || lastEchoX === null || lastEchoY === null) {
                 createPointerEcho(x, y);
+                lastEchoX = x;
+                lastEchoY = y;
+                return;
             }
+
+            const originX = lastEchoX;
+            const originY = lastEchoY;
+            const dx = x - originX;
+            const dy = y - originY;
+            const distance = Math.hypot(dx, dy);
+
+            if (distance < spacing) return;
+
+            const steps = Math.floor(distance / spacing);
+            for (let step = 1; step <= steps; step++) {
+                const travelled = step * spacing;
+                const progress = travelled / distance;
+                createPointerEcho(originX + dx * progress, originY + dy * progress);
+            }
+
+            const travelledDistance = steps * spacing;
+            const finalProgress = travelledDistance / distance;
+            lastEchoX = originX + dx * finalProgress;
+            lastEchoY = originY + dy * finalProgress;
         };
 
         const showLeader = () => {
@@ -132,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
             showLeader();
 
             if (echo) {
-                maybeCreatePointerEcho(x, y, forceEcho);
+                emitEchoesAlongPath(x, y, forceEcho);
             }
         };
 
@@ -146,6 +163,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 touchActive = true;
                 cursorX = touch.clientX;
                 cursorY = touch.clientY;
+                lastEchoX = null;
+                lastEchoY = null;
                 setPointerTarget(touch.clientX, touch.clientY, { echo: true, forceEcho: true });
             };
 
@@ -157,6 +176,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const handleTouchEnd = () => {
                 touchActive = false;
+                lastEchoX = null;
+                lastEchoY = null;
                 hideLeader();
             };
 
@@ -169,8 +190,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 setPointerTarget(event.clientX, event.clientY, { echo: true, forceEcho: false });
             });
 
-            document.addEventListener('mouseleave', hideLeader);
-            document.addEventListener('mouseenter', showLeader);
+            document.addEventListener('mouseleave', () => {
+                lastEchoX = null;
+                lastEchoY = null;
+                hideLeader();
+            });
+            document.addEventListener('mouseenter', () => {
+                lastEchoX = null;
+                lastEchoY = null;
+                showLeader();
+            });
         }
 
         function animateLeaderCursor() {
@@ -216,6 +245,47 @@ document.addEventListener('DOMContentLoaded', () => {
     return lowercased.endsWith('.mp4');
 };
 
+    const baseServiceTags = [
+        'Branding',
+        'Animation',
+        'Brand Strategy',
+        'Ads Management',
+        'Community Management',
+        'SEO',
+        'Content Creation',
+        'Copywriting',
+        'Photography',
+        'Videography',
+        'Social Media Strategies',
+        'Publications',
+        'Illustrations',
+        'Packaging',
+        'Website Design & Development'
+    ];
+
+    const normalizeTag = (tag = '') => tag.trim().toLowerCase().replace(/\s+/g, ' ');
+
+    const tagDisplayMap = new Map(baseServiceTags.map(tag => [normalizeTag(tag), tag]));
+
+    const getTagLabel = (tag = '') => {
+        const normalized = normalizeTag(tag);
+        if (!normalized) return '';
+        if (tagDisplayMap.has(normalized)) return tagDisplayMap.get(normalized);
+        const cleaned = tag.trim().replace(/\s+/g, ' ');
+        const titleCased = cleaned.split(' ').map(word => {
+            if (word.toUpperCase() === word) return word;
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }).join(' ');
+        tagDisplayMap.set(normalized, titleCased);
+        return titleCased;
+    };
+
+    const createFilterTagLink = (tag) => {
+        const label = getTagLabel(tag);
+        const href = `work.html?filter=${encodeURIComponent(label)}`;
+        return `<a class="tag-link" href="${href}" data-filter-tag="${label}">${label}</a>`;
+    };
+
     async function fetchProjects() {
         try {
             const response = await fetch('projects.json', { cache: 'force-cache' });
@@ -230,20 +300,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateFeaturedGrid(projects) {
         if (!featuredWorkGrid) return;
         const featuredProjects = projects.filter(p => p.featured);
-        featuredWorkGrid.innerHTML = ''; 
+        featuredWorkGrid.innerHTML = '';
 
         featuredProjects.forEach((project, index) => {
             const isLarge = index === 0 && window.innerWidth > 900;
-            const projectItem = document.createElement('a');
-            projectItem.href = `project.html?id=${project.id}`;
+            const projectItem = document.createElement('article');
             projectItem.className = `work-item ${isLarge ? 'work-item-large' : ''}`;
-            
-            let tagsHTML = project.tags.map(tag => `<span>${tag}</span>`).join('');
 
-            // MODIFIED: Conditionally generate video or image tag
+            const tagsHTML = project.tags.map(tag => createFilterTagLink(tag)).join('');
+
             let mediaHTML = '';
-            // If project.thumbnail is an actual video (e.g., .mp4), use a video tag.
-            // Otherwise (for .gif, .webp, .jpg, .png), use an img tag.
             if (isVideo(project.thumbnail)) {
                 mediaHTML = `
                     <video autoplay loop muted playsinline class="work-img">
@@ -254,6 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             projectItem.innerHTML = `
+                <a class="work-item-link" href="project.html?id=${encodeURIComponent(project.id)}" aria-label="View ${project.title} project"></a>
                 <div class="work-image-container">
                      ${mediaHTML}
                 </div>
@@ -269,21 +336,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    function populateWorkList(projects) {
+    function populateWorkList(projects, activeFilter = 'all') {
         if (!workPageList) return;
         workPageList.innerHTML = '';
 
-        projects.forEach(project => {
+        const normalizedFilter = activeFilter === 'all' ? 'all' : normalizeTag(activeFilter);
+        const visibleProjects = normalizedFilter === 'all'
+            ? projects
+            : projects.filter(project => project.tags.some(tag => normalizeTag(tag) === normalizedFilter));
+
+        if (!visibleProjects.length) {
+            const emptyState = document.createElement('div');
+            emptyState.className = 'project-filter-empty';
+            emptyState.innerHTML = `
+                <h3>No projects yet for ${getTagLabel(activeFilter)}</h3>
+                <p>Try another service or switch back to all work.</p>
+            `;
+            workPageList.appendChild(emptyState);
+            return;
+        }
+
+        visibleProjects.forEach(project => {
             const projectItem = document.createElement('a');
-            projectItem.href = `project.html?id=${project.id}`;
+            projectItem.href = `project.html?id=${encodeURIComponent(project.id)}`;
             projectItem.className = 'project-item';
-            
-            // IMPORTANT: The hover preview will only work for images.
+
             if (!isVideo(project.thumbnail)) {
                 projectItem.dataset.image = project.thumbnail;
             }
 
-            let tagsHTML = project.tags.map(tag => `<span>${tag}</span>`).join('');
+            const tagsHTML = project.tags.map(tag => `<span>${getTagLabel(tag)}</span>`).join('');
 
             projectItem.innerHTML = `
                 <div class="project-info">
@@ -299,17 +381,14 @@ document.addEventListener('DOMContentLoaded', () => {
     function populateProjectDetail(projects) {
         if (!projectDetailContainer) return;
         const urlParams = new URLSearchParams(window.location.search);
-        const projectId = urlParams.get('id');
+        const projectId = decodeURIComponent(urlParams.get('id') || '');
         const project = projects.find(p => p.id === projectId);
 
         if (project) {
             document.title = `${project.title} - Sada Studio`;
-            const tagsHTML = project.tags.map(tag => `<span>${tag}</span>`).join('');
-            
-            // MODIFIED: Handle both images and videos in the gallery
+            const tagsHTML = project.tags.map(tag => createFilterTagLink(tag)).join('');
+
             const imagesHTML = project.images.map(mediaSrc => {
-                // If mediaSrc is an actual video (e.g., .mp4), use a video tag.
-                // Otherwise (for .gif, .webp, .jpg, .png), use an img tag.
                 if (isVideo(mediaSrc)) {
                     return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/mp4"></video>`;
                 } else {
@@ -341,6 +420,79 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    function setupWorkFilters(projects) {
+        const filterToolbar = document.getElementById('work-filter-toolbar');
+        const filterToggle = document.getElementById('work-filter-toggle');
+        const filterPanel = document.getElementById('work-filter-panel');
+        const currentLabel = document.getElementById('filter-current-label');
+        if (!filterToolbar || !filterToggle || !filterPanel || !currentLabel || !workPageList) return;
+
+        const serviceMap = new Map();
+        [...baseServiceTags, ...projects.flatMap(project => project.tags)].forEach(tag => {
+            const normalized = normalizeTag(tag);
+            if (!normalized || serviceMap.has(normalized)) return;
+            serviceMap.set(normalized, getTagLabel(tag));
+        });
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestedFilter = urlParams.get('filter');
+        let activeFilter = requestedFilter ? getTagLabel(requestedFilter) : 'All';
+
+        if (normalizeTag(activeFilter) !== 'all' && !serviceMap.has(normalizeTag(activeFilter))) {
+            serviceMap.set(normalizeTag(activeFilter), getTagLabel(activeFilter));
+        }
+
+        const sortedServices = Array.from(serviceMap.values()).sort((a, b) => a.localeCompare(b));
+        const filterLabels = ['All', ...sortedServices];
+
+        const closeFilterPanel = () => {
+            filterToolbar.classList.remove('open');
+            filterToggle.setAttribute('aria-expanded', 'false');
+        };
+
+        const updateFilterQuery = (label) => {
+            const nextUrl = new URL(window.location.href);
+            if (normalizeTag(label) === 'all') {
+                nextUrl.searchParams.delete('filter');
+            } else {
+                nextUrl.searchParams.set('filter', label);
+            }
+            history.replaceState({}, '', nextUrl);
+        };
+
+        const renderFilterButtons = () => {
+            filterPanel.innerHTML = filterLabels.map(label => {
+                const isActive = normalizeTag(label) === normalizeTag(activeFilter);
+                return `<button type="button" class="filter-chip ${isActive ? 'active' : ''}" data-filter-value="${label}">${label}</button>`;
+            }).join('');
+            currentLabel.textContent = normalizeTag(activeFilter) === 'all' ? 'All services' : activeFilter;
+            filterToggle.classList.toggle('has-active-filter', normalizeTag(activeFilter) !== 'all');
+            populateWorkList(projects, normalizeTag(activeFilter) === 'all' ? 'all' : activeFilter);
+        };
+
+        filterToggle.addEventListener('click', () => {
+            const willOpen = !filterToolbar.classList.contains('open');
+            filterToolbar.classList.toggle('open', willOpen);
+            filterToggle.setAttribute('aria-expanded', willOpen ? 'true' : 'false');
+        });
+
+        filterPanel.addEventListener('click', (event) => {
+            const filterButton = event.target.closest('.filter-chip');
+            if (!filterButton) return;
+            activeFilter = filterButton.dataset.filterValue;
+            renderFilterButtons();
+            updateFilterQuery(activeFilter);
+            closeFilterPanel();
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!filterToolbar.contains(event.target)) {
+                closeFilterPanel();
+            }
+        });
+
+        renderFilterButtons();
+    }
     // --- WORK PAGE THUMBNAIL HOVER LOGIC ---
     const thumbnailViewer = document.getElementById('project-thumbnail-viewer');
 
@@ -395,13 +547,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const projects = await fetchProjects();
         if (!projects) {
             if (projectDetailContainer) {
-                projectDetailContainer.innerHTML = `<div class="not-found"><h1>Error</h1><p>Could not load project data. Please try again later.</p></div>`
+                projectDetailContainer.innerHTML = `<div class="not-found"><h1>Error</h1><p>Could not load project data. Please try again later.</p></div>`;
             }
             return;
         }
 
         populateFeaturedGrid(projects);
-        populateWorkList(projects);
+        setupWorkFilters(projects);
+        if (!workPageList) {
+            populateWorkList(projects);
+        }
         populateProjectDetail(projects);
     }
 

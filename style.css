@@ -635,7 +635,26 @@ body.invert-colors .footer-logo { filter: invert(1); }
 
 @media (hover: none), (pointer: coarse) {
     .project-thumbnail-preview {
-        display: none !important;
+        display: block;
+        top: auto;
+        left: auto;
+        right: 16px;
+        bottom: 18px;
+        width: min(42vw, 210px);
+        height: min(31vw, 160px);
+        border-radius: 16px;
+        border-width: 1.5px;
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.32);
+        transform: translate3d(0, 12px, 0) scale(0.98);
+        transition: opacity 0.22s ease, visibility 0.22s ease, transform 0.22s ease;
+    }
+
+    .project-thumbnail-preview.visible.touch-preview-mode {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    .project-item.preview-active {
+        background-color: rgba(255, 255, 255, 0.06);
     }
 }
 

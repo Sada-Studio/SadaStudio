@@ -87,26 +87,41 @@ document.addEventListener('DOMContentLoaded', () => {
         let cursorVisible = false;
         let lastEchoX = null;
         let lastEchoY = null;
+        let lastMoveTimestamp = performance.now();
+        let lastMoveVectorX = 0;
+        let lastMoveVectorY = 0;
 
-        const desktopEchoSpacing = 16;
-        const touchEchoSpacing = 14;
+        const desktopBaseSpacing = 12;
+        const touchBaseSpacing = 10;
+        const minEchoSpacing = 5;
 
-        const createPointerEcho = (x, y) => {
+        const createPointerEcho = (x, y, vectorX = 0, vectorY = 0, speed = 0) => {
             const echo = document.createElement('span');
+            const vectorLength = Math.hypot(vectorX, vectorY) || 1;
+            const directionX = vectorX / vectorLength;
+            const directionY = vectorY / vectorLength;
+            const followDistance = Math.min(touchActive ? 10 : 8, 3 + speed * 0.2);
+            const duration = Math.max(0.52, Math.min(touchActive ? 0.8 : 0.72, 0.58 + speed * 0.012));
+
             echo.className = 'pointer-echo';
             echo.style.left = `${x}px`;
             echo.style.top = `${y}px`;
+            echo.style.setProperty('--echo-dx', `${directionX * followDistance}px`);
+            echo.style.setProperty('--echo-dy', `${directionY * followDistance}px`);
+            echo.style.setProperty('--echo-duration', `${duration}s`);
             document.body.appendChild(echo);
             echo.addEventListener('animationend', () => echo.remove(), { once: true });
         };
 
         const emitEchoesAlongPath = (x, y, force = false) => {
-            const spacing = touchActive ? touchEchoSpacing : desktopEchoSpacing;
+            const now = performance.now();
+            const timeDelta = Math.max(16, now - lastMoveTimestamp);
 
             if (force || lastEchoX === null || lastEchoY === null) {
-                createPointerEcho(x, y);
+                createPointerEcho(x, y, lastMoveVectorX, lastMoveVectorY, 0);
                 lastEchoX = x;
                 lastEchoY = y;
+                lastMoveTimestamp = now;
                 return;
             }
 
@@ -115,20 +130,30 @@ document.addEventListener('DOMContentLoaded', () => {
             const dx = x - originX;
             const dy = y - originY;
             const distance = Math.hypot(dx, dy);
+            const speed = distance / timeDelta;
+            const baseSpacing = touchActive ? touchBaseSpacing : desktopBaseSpacing;
+            const spacing = Math.max(minEchoSpacing, baseSpacing - Math.min(6, speed * 8));
 
-            if (distance < spacing) return;
+            lastMoveVectorX = dx;
+            lastMoveVectorY = dy;
+
+            if (distance < spacing) {
+                lastMoveTimestamp = now;
+                return;
+            }
 
             const steps = Math.floor(distance / spacing);
             for (let step = 1; step <= steps; step++) {
                 const travelled = step * spacing;
                 const progress = travelled / distance;
-                createPointerEcho(originX + dx * progress, originY + dy * progress);
+                createPointerEcho(originX + dx * progress, originY + dy * progress, dx, dy, speed * 100);
             }
 
             const travelledDistance = steps * spacing;
             const finalProgress = travelledDistance / distance;
             lastEchoX = originX + dx * finalProgress;
             lastEchoY = originY + dy * finalProgress;
+            lastMoveTimestamp = now;
         };
 
         const showLeader = () => {
@@ -165,6 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 cursorY = touch.clientY;
                 lastEchoX = null;
                 lastEchoY = null;
+                lastMoveVectorX = 0;
+                lastMoveVectorY = 0;
+                lastMoveTimestamp = performance.now();
                 setPointerTarget(touch.clientX, touch.clientY, { echo: true, forceEcho: true });
             };
 
@@ -178,6 +206,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 touchActive = false;
                 lastEchoX = null;
                 lastEchoY = null;
+                lastMoveVectorX = 0;
+                lastMoveVectorY = 0;
                 hideLeader();
             };
 
@@ -193,11 +223,14 @@ document.addEventListener('DOMContentLoaded', () => {
             document.addEventListener('mouseleave', () => {
                 lastEchoX = null;
                 lastEchoY = null;
+                lastMoveVectorX = 0;
+                lastMoveVectorY = 0;
                 hideLeader();
             });
             document.addEventListener('mouseenter', () => {
                 lastEchoX = null;
                 lastEchoY = null;
+                lastMoveTimestamp = performance.now();
                 showLeader();
             });
         }
@@ -263,7 +296,18 @@ document.addEventListener('DOMContentLoaded', () => {
         'Website Design & Development'
     ];
 
+    const hiddenFilterTags = [
+        'Ads Management',
+        'Brand Strategy',
+        'Community Management',
+        'Content Creation',
+        'Copywriting',
+        'Menu Design',
+        'SEO'
+    ];
+
     const normalizeTag = (tag = '') => tag.trim().toLowerCase().replace(/\s+/g, ' ');
+    const hiddenFilterSet = new Set(hiddenFilterTags.map(tag => normalizeTag(tag)));
 
     const tagDisplayMap = new Map(baseServiceTags.map(tag => [normalizeTag(tag), tag]));
 
@@ -430,7 +474,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const serviceMap = new Map();
         [...baseServiceTags, ...projects.flatMap(project => project.tags)].forEach(tag => {
             const normalized = normalizeTag(tag);
-            if (!normalized || serviceMap.has(normalized)) return;
+            if (!normalized || hiddenFilterSet.has(normalized) || serviceMap.has(normalized)) return;
             serviceMap.set(normalized, getTagLabel(tag));
         });
 
@@ -438,7 +482,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const requestedFilter = urlParams.get('filter');
         let activeFilter = requestedFilter ? getTagLabel(requestedFilter) : 'All';
 
-        if (normalizeTag(activeFilter) !== 'all' && !serviceMap.has(normalizeTag(activeFilter))) {
+        if (
+            normalizeTag(activeFilter) !== 'all' &&
+            !hiddenFilterSet.has(normalizeTag(activeFilter)) &&
+            !serviceMap.has(normalizeTag(activeFilter))
+        ) {
             serviceMap.set(normalizeTag(activeFilter), getTagLabel(activeFilter));
         }
 

@@ -384,22 +384,22 @@ section#work > .container {
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
-    transform: scale(0.88);
-    animation: pointer-echo-fade 1.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform: translate3d(0, 0, 0) scale(0.96);
+    animation: pointer-echo-follow var(--echo-duration, 0.7s) cubic-bezier(0.22, 1, 0.36, 1) forwards;
     will-change: transform, opacity;
 }
 
-@keyframes pointer-echo-fade {
+@keyframes pointer-echo-follow {
     0% {
-        opacity: 0.85;
-        transform: scale(0.88);
+        opacity: 0.72;
+        transform: translate3d(0, 0, 0) scale(0.96);
     }
-    60% {
-        opacity: 0.42;
+    65% {
+        opacity: 0.18;
     }
     100% {
         opacity: 0;
-        transform: scale(1.46);
+        transform: translate3d(var(--echo-dx, 0px), var(--echo-dy, 0px), 0) scale(1.02);
     }
 }
 

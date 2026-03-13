@@ -700,13 +700,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const thumbnailViewer = document.getElementById('project-thumbnail-viewer');
 
     if (workPageList && thumbnailViewer) {
-        const canHoverPreview = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        const hasTouchInput = (navigator.maxTouchPoints || 0) > 0
+            || window.matchMedia('(hover: none), (pointer: coarse)').matches
+            || 'ontouchstart' in window;
+        const canHoverPreview = !hasTouchInput && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
         let mouseX = 0, mouseY = 0;
         let lastMouseX = 0;
         let rotation = 0;
         let animationFrameId = null;
 
         let activeTouchPreviewItem = null;
+        let suppressNextTapClickFor = null;
+        let touchMoved = false;
+        let touchStartX = 0;
+        let touchStartY = 0;
 
         const stopThumbnailAnimation = () => {
             if (animationFrameId) {
@@ -729,6 +736,7 @@ document.addEventListener('DOMContentLoaded', () => {
             stopThumbnailAnimation();
             rotation = 0;
             clearActiveTouchPreview();
+            suppressNextTapClickFor = null;
         };
 
         const showTouchThumbnailPreview = (projectItem) => {
@@ -784,8 +792,15 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             hideThumbnailViewer();
 
-            workPageList.addEventListener('click', (event) => {
+            workPageList.addEventListener('touchstart', (event) => {
                 const projectItem = event.target.closest('.project-item');
+                touchMoved = false;
+
+                if (event.touches && event.touches[0]) {
+                    touchStartX = event.touches[0].clientX;
+                    touchStartY = event.touches[0].clientY;
+                }
+
                 if (!projectItem) return;
 
                 if (!projectItem.dataset.image) {
@@ -796,8 +811,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (activeTouchPreviewItem !== projectItem) {
                     event.preventDefault();
                     showTouchThumbnailPreview(projectItem);
+                    suppressNextTapClickFor = projectItem;
+                } else {
+                    suppressNextTapClickFor = null;
                 }
-            });
+            }, { passive: false });
+
+            workPageList.addEventListener('touchmove', (event) => {
+                if (!event.touches || !event.touches[0]) return;
+                const moveX = Math.abs(event.touches[0].clientX - touchStartX);
+                const moveY = Math.abs(event.touches[0].clientY - touchStartY);
+                if (moveX > 10 || moveY > 10) {
+                    touchMoved = true;
+                }
+            }, { passive: true });
+
+            workPageList.addEventListener('click', (event) => {
+                const projectItem = event.target.closest('.project-item');
+                if (!projectItem) return;
+
+                if (!projectItem.dataset.image) {
+                    hideThumbnailViewer();
+                    return;
+                }
+
+                if (touchMoved) {
+                    event.preventDefault();
+                    return;
+                }
+
+                if (suppressNextTapClickFor === projectItem || activeTouchPreviewItem !== projectItem) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    showTouchThumbnailPreview(projectItem);
+                    suppressNextTapClickFor = null;
+                    return;
+                }
+
+                hideThumbnailViewer();
+            }, true);
 
             document.addEventListener('click', (event) => {
                 const clickedInsideList = workPageList.contains(event.target);

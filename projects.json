@@ -17,16 +17,11 @@
             "assets/projects/ideal_mena/ideal8.jpg",
             "assets/projects/ideal_mena/ideal9.jpg",
             "assets/projects/ideal_mena/ideal10.jpg",
-            "assets/projects/ideal_mena/ideal11.jpg",
-            "assets/projects/ideal_mena/ideal12.jpg",
-            "assets/projects/ideal_mena/ideal13.jpg",
-            "assets/projects/ideal_mena/ideal14.jpg",
-            "assets/projects/ideal_mena/ideal15.gif",
-            "assets/projects/ideal_mena/ideal16.gif"
+            "assets/projects/ideal_mena/ideal17.mp4"
         ],
         "tags": [
             "Branding",
-            "Social media",
+            "Social Media",
             "Packaging"
         ]
     },
@@ -93,7 +88,7 @@
             "assets/projects/aseel/aseel_2.png"
         ],
         "tags": [
-            "social media"
+            "Social Media"
         ]
     },
     {
@@ -110,8 +105,8 @@
             "assets/projects/tayo/tayo_4.webp"
         ],
         "tags": [
-            "social media",
-            "menu design"
+            "Social Media",
+            "Menu Design"
         ]
     },
     {
@@ -165,7 +160,7 @@
             "assets/projects/evmc/evmc_2.png"
         ],
         "tags": [
-            "social media"
+            "Social Media"
         ]
     },
     {
@@ -181,21 +176,6 @@
         ],
         "tags": [
             "Social Media"
-        ]
-    },
-    {
-        "id": "Battlezone",
-        "featured": false,
-        "title": "Battlezone Entertainment",
-        "description": "Paintball Arena in Qatar",
-        "longDescription": "Paintball Arena in Qatar",
-        "thumbnail": "assets/projects/battlezone/battlezone_1.webp",
-        "images": [
-            "assets/projects/battlezone/battlezone_1.webp",
-            "assets/projects/battlezone/battlezone_2.png"
-        ],
-        "tags": [
-            "social media"
         ]
     },
     {
@@ -233,6 +213,21 @@
         "tags": [
             "Social Media",
             "Packaging"
+        ]
+    },
+    {
+        "id": "Battlezone",
+        "featured": false,
+        "title": "Battlezone Entertainment",
+        "description": "Paintball Arena in Qatar",
+        "longDescription": "Paintball Arena in Qatar",
+        "thumbnail": "assets/projects/battlezone/battlezone_1.webp",
+        "images": [
+            "assets/projects/battlezone/battlezone_1.webp",
+            "assets/projects/battlezone/battlezone_2.png"
+        ],
+        "tags": [
+            "Social Media"
         ]
     }
 ]

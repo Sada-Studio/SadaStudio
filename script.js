@@ -413,9 +413,19 @@ document.addEventListener('DOMContentLoaded', () => {
         return `<a class="tag-link" href="${href}" data-filter-tag="${label}">${label}</a>`;
     };
 
+    const sanitizeMediaList = (media = []) => {
+        return [...new Map(
+            (Array.isArray(media) ? media : [])
+                .map(item => (item || '').trim())
+                .filter(Boolean)
+                .map(item => [item.toLowerCase(), item])
+        ).values()];
+    };
+
     async function fetchProjects() {
         try {
-            const response = await fetch('projects.json', { cache: 'force-cache' });
+            const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+            const response = await fetch('projects.json', { cache: isLocalPreview ? 'no-store' : 'force-cache' });
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             return await response.json();
         } catch (error) {
@@ -514,12 +524,21 @@ document.addEventListener('DOMContentLoaded', () => {
         if (project) {
             document.title = `${project.title} - Sada Studio`;
             const tagsHTML = project.tags.map(tag => createFilterTagLink(tag)).join('');
+            const galleryMedia = sanitizeMediaList(project.images);
 
-            const imagesHTML = project.images.map(mediaSrc => {
+            const imagesHTML = galleryMedia.map(mediaSrc => {
                 if (isVideo(mediaSrc)) {
-                    return `<video autoplay loop muted playsinline><source src="${mediaSrc}" type="video/mp4"></video>`;
+                    return `
+                        <div class="project-gallery-media" data-media-src="${mediaSrc}">
+                            <video autoplay loop muted playsinline preload="metadata">
+                                <source src="${mediaSrc}" type="video/${mediaSrc.split('.').pop().toLowerCase()}">
+                            </video>
+                        </div>`;
                 } else {
-                    return `<img src="${mediaSrc}" alt="${project.title} gallery image">`;
+                    return `
+                        <div class="project-gallery-media" data-media-src="${mediaSrc}">
+                            <img src="${mediaSrc}" alt="${project.title} gallery image" loading="lazy">
+                        </div>`;
                 }
             }).join('');
 
@@ -535,6 +554,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="project-gallery-column">${imagesHTML}</div>
             `;
+
+            const galleryColumn = projectDetailContainer.querySelector('.project-gallery-column');
+            const removeBrokenMedia = (mediaWrapper) => {
+                if (!mediaWrapper) return;
+                mediaWrapper.remove();
+                if (galleryColumn && !galleryColumn.children.length) {
+                    galleryColumn.innerHTML = '<div class="project-gallery-empty">No gallery media available for this project yet.</div>';
+                }
+            };
+
+            galleryColumn?.querySelectorAll('img').forEach((img) => {
+                img.addEventListener('error', () => removeBrokenMedia(img.closest('.project-gallery-media')));
+            });
+
+            galleryColumn?.querySelectorAll('video').forEach((video) => {
+                video.addEventListener('error', () => removeBrokenMedia(video.closest('.project-gallery-media')));
+            });
         } else {
             projectDetailContainer.innerHTML = `
                 <div class="not-found">

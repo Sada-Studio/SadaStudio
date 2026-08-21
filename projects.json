@@ -2,17 +2,23 @@
     {
         "id": "marsa-inn",
         "featured": false,
-        "title": "marsa-inn",
-        "description": "",
-        "longDescription": "",
+        "title": "Marsa Inn",
+        "description": "Seaside Seafood Restaurant & Guesthouse in Lebanon",
+        "longDescription": "Marsa Inn is a refined seaside destination in Lebanon, bringing together a seafood restaurant and intimate guest rooms by the beach. Sada developed a visual identity inspired by the textures, colors, and character of the Mediterranean, balancing deep sea blues and warm neutrals with a bold wordmark, playful marine iconography, and a bilingual typographic system. Extended across menus, hospitality touchpoints, and a grainy direct-flash photography direction, the identity positions Marsa Inn as an elevated coastal escape for dining, staying, and slowing down.",
         "thumbnail": "https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-1787324437345-cc24c31b-optimised-1787324442741-3935d705.webp",
         "images": [
             "https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-1787324437345-cc24c31b-optimised-1787324442741-3935d705.webp",
             "https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-1787324144238-d6c64074-optimised-1787324345014-2615dd5c.webp"
         ],
-        "tags": [],
+        "tags": [
+            "Branding",
+            "Art Direction"
+        ],
         "visible": false,
-        "status": "draft"
+        "status": "draft",
+        "slug": "marsa-inn",
+        "seoTitle": "Marsa Inn Branding | Sada Studio",
+        "seoDescription": "A Mediterranean-inspired identity for a seaside seafood restaurant and guesthouse in Lebanon."
     },
     {
         "id": "Ideal Mena",

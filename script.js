@@ -578,7 +578,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createFilterTagLink = (tag) => {
         const label = getTagLabel(tag);
-        const href = `work.html?filter=${encodeURIComponent(label)}`;
+        const href = `/work.html?filter=${encodeURIComponent(label)}`;
         return `<a class="tag-link" href="${href}" data-filter-tag="${label}">${label}</a>`;
     };
 
@@ -656,7 +656,7 @@ async function fetchSiteContent() {
         return previewContent;
     }
     try {
-        const response = await fetch('site-content.json', {
+        const response = await fetch('/site-content.json', {
             cache: 'no-store'
         });
 
@@ -759,7 +759,11 @@ function applyPageSeo(seo) {
     setSiteMeta('property', 'og:url', window.location.href);
     setSiteMeta('name', 'twitter:card', 'summary_large_image');
 
-    const image = 'https://assets.sadastudio.me/site/web_logo.png';
+    const existingImage = document.head.querySelector(
+        'meta[property="og:image"]'
+    );
+    const image = existingImage?.getAttribute('content') ||
+        'https://sadastudio.me/favicon.png';
 
     setSiteMeta('property', 'og:image', image);
     setSiteMeta('name', 'twitter:image', image);
@@ -884,7 +888,7 @@ function applySiteContent(content) {
     document.querySelectorAll('.nav-link-item').forEach(link => {
         const destination = link.getAttribute('href') || '';
 
-        if (destination === 'work.html') {
+        if (destination === 'work.html' || destination === '/work.html') {
             link.textContent = navigation.workLabel || link.textContent;
         } else if (destination === '/' || destination === 'index.html') {
             link.textContent = navigation.homeLabel || link.textContent;
@@ -963,7 +967,7 @@ function applySiteContent(content) {
 
                 link.className = 'tag-link';
                 link.textContent = service;
-                link.href = `work.html?filter=${encodeURIComponent(service)}`;
+                link.href = `/work.html?filter=${encodeURIComponent(service)}`;
 
                 serviceTags.appendChild(link);
             });
@@ -1233,7 +1237,7 @@ function enableVisualHomepageEditing() {
             'homepage.services.' + index,
             value => {
                 service.href =
-                    'work.html?filter=' +
+                    '/work.html?filter=' +
                     encodeURIComponent(value);
             }
         );
@@ -1333,7 +1337,7 @@ function enableVisualSharedEditing() {
 
         let path = '';
 
-        if (destination === 'work.html') {
+        if (destination === 'work.html' || destination === '/work.html') {
             path = 'navigation.workLabel';
         } else if (destination === '/' || destination === 'index.html') {
             path = 'navigation.homeLabel';
@@ -1441,7 +1445,7 @@ function enableVisualWebsiteEditing() {
 }
     async function fetchProjects() {
     try {
-        const response = await fetch('projects.json', {
+        const response = await fetch('/projects.json', {
             cache: 'no-store'
         });
 
@@ -1464,14 +1468,18 @@ function enableVisualWebsiteEditing() {
         return null;
     }
 }
+    function getProjectSlug(project) {
+    return String(project.slug || project.id || project.title || '')
+        .normalize('NFKD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-+|-+$/g, '')
+        .slice(0, 80) || 'untitled';
+}
+
     function getProjectLink(project) {
-    const slug = String(project.slug || '').trim();
-
-    if (slug) {
-        return `project.html?slug=${encodeURIComponent(slug)}`;
-    }
-
-    return `project.html?id=${encodeURIComponent(project.id)}`;
+    return `/projects/${encodeURIComponent(getProjectSlug(project))}/`;
 }
 
 function updateProjectMetadata(project) {
@@ -1615,12 +1623,16 @@ function updateProjectMetadata(project) {
     if (!projectDetailContainer) return;
 
     const urlParams = new URLSearchParams(window.location.search);
-    const requestedSlug = urlParams.get('slug');
+    const pathMatch = window.location.pathname.match(
+        /^\/projects\/([^/]+)\/?$/
+    );
+    const requestedSlug = urlParams.get('slug') ||
+        (pathMatch ? decodeURIComponent(pathMatch[1]) : '');
     const requestedId = urlParams.get('id');
 
     const project = projects.find(item => {
         if (requestedSlug) {
-            return String(item.slug || '') === requestedSlug;
+            return getProjectSlug(item) === requestedSlug;
         }
 
         if (requestedId) {
@@ -1683,7 +1695,7 @@ ${project.year ? `
                         <div class="tags">${tagsHTML}</div>
                         <p class="long-desc">${project.longDescription || ''}</p>
                     </div>
-                    <a href="work.html" class="btn see-all-work-btn"><span>← Back</span></a>
+                    <a href="/work.html" class="btn see-all-work-btn"><span>← Back</span></a>
                 </div>
                 <div class="project-gallery-column">${imagesHTML}</div>
             `;
@@ -1797,7 +1809,7 @@ const removeBrokenMedia = (mediaWrapper) => {
         <h1>Project Not Found</h1>
         <p>The project you are looking for does not exist.</p>
         <br>
-        <a href="work.html" class="btn">View All Work</a>
+        <a href="/work.html" class="btn">View All Work</a>
     </div>
 `;
 

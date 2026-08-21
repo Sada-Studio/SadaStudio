@@ -422,8 +422,70 @@ document.addEventListener('DOMContentLoaded', () => {
         ).values()];
     };
 let currentSiteContent = null;
+function waitForSiteContentPreview() {
+    const parameters = new URLSearchParams(window.location.search);
 
+    const isPreview =
+        parameters.get('cmsPreview') === '1' &&
+        window.parent !== window;
+
+    if (!isPreview) {
+        return Promise.resolve(null);
+    }
+
+    return new Promise(resolve => {
+        let finished = false;
+
+        const finish = content => {
+            if (finished) {
+                return;
+            }
+
+            finished = true;
+            window.clearTimeout(timeout);
+            window.removeEventListener('message', receivePreview);
+            resolve(content);
+        };
+
+        const receivePreview = event => {
+            if (event.origin !== 'https://admin.sadastudio.me') {
+                return;
+            }
+
+            const message = event.data;
+
+            if (
+                !message ||
+                message.type !== 'sada-site-content-preview' ||
+                !message.content ||
+                typeof message.content !== 'object'
+            ) {
+                return;
+            }
+
+            finish(message.content);
+        };
+
+        const timeout = window.setTimeout(() => {
+            finish(null);
+        }, 5000);
+
+        window.addEventListener('message', receivePreview);
+
+        window.parent.postMessage(
+            {
+                type: 'sada-site-content-preview-ready'
+            },
+            'https://admin.sadastudio.me'
+        );
+    });
+}
 async function fetchSiteContent() {
+        const previewContent = await waitForSiteContentPreview();
+
+    if (previewContent) {
+        return previewContent;
+    }
     try {
         const response = await fetch('site-content.json', {
             cache: 'no-store'

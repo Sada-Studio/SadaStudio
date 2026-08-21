@@ -1,7 +1,7 @@
 [
     {
         "id": "marsa-inn",
-        "featured": false,
+        "featured": true,
         "title": "Marsa Inn",
         "description": "Seaside Seafood Restaurant & Guesthouse in Lebanon",
         "longDescription": "Marsa Inn is a refined seaside destination in Lebanon, bringing together a seafood restaurant and intimate guest rooms by the beach. Sada developed a visual identity inspired by the textures, colors, and character of the Mediterranean, balancing deep sea blues and warm neutrals with a bold wordmark, playful marine iconography, and a bilingual typographic system. Extended across menus, hospitality touchpoints, and a grainy direct-flash photography direction, the identity positions Marsa Inn as an elevated coastal escape for dining, staying, and slowing down.",
@@ -14,8 +14,8 @@
             "Branding",
             "Art Direction"
         ],
-        "visible": false,
-        "status": "draft",
+        "visible": true,
+        "status": "published",
         "slug": "marsa-inn",
         "seoTitle": "Marsa Inn Branding | Sada Studio",
         "seoDescription": "A Mediterranean-inspired identity for a seaside seafood restaurant and guesthouse in Lebanon."
@@ -71,7 +71,7 @@
     },
     {
         "id": "Karaj",
-        "featured": true,
+        "featured": false,
         "title": "Karaj",
         "description": "Lebanese Mobile App",
         "longDescription": "Karaj is a Lebanon-based platform that connects drivers with nearby garages — making it faster and easier to find trusted automotive help and streamlining the link between workshops and customers. The brand identity was developed end-to-end with a minimal, performance-driven approach inspired by McLaren and the automotive world. From the logo and visual language to key brand applications, Karaj was shaped to feel precise, premium, and engineered for motion.",

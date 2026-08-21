@@ -173,6 +173,174 @@ document.addEventListener('DOMContentLoaded', () => {
         dotsBackground.style.filter = 'none';
     }
     
+    // --- Scroll Motion Cues ---
+    const setupScrollMotionCues = () => {
+        if (
+            prefersReducedMotion ||
+            document.querySelector('.project-page-main')
+        ) {
+            return;
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.className = 'scroll-motion-cues';
+        canvas.setAttribute('aria-hidden', 'true');
+        document.body.appendChild(canvas);
+
+        const context = canvas.getContext('2d');
+
+        if (!context) {
+            canvas.remove();
+            return;
+        }
+
+        const clampCueValue = (value, min, max) =>
+            Math.min(max, Math.max(min, value));
+        const wrapCueValue = (value, span) =>
+            ((value % span) + span) % span;
+
+        let viewportWidth = 0;
+        let viewportHeight = 0;
+        let deviceScale = 1;
+        let cues = [];
+        let travel = 0;
+        let velocity = 0;
+        let lastCueScrollY = window.scrollY;
+        let lastCueFrame = performance.now();
+        let motionFrame = null;
+
+        const buildCues = () => {
+            const countPerSide = viewportWidth < 600 ? 5 : 7;
+            const edgeRange = viewportWidth < 600 ? 18 : 38;
+            const minimumInset = viewportWidth < 600 ? 10 : 16;
+            cues = [];
+
+            ['left', 'right'].forEach((side, sideIndex) => {
+                for (let index = 0; index < countPerSide; index += 1) {
+                    cues.push({
+                        side,
+                        baseY: ((index + 0.5) / countPerSide) * viewportHeight,
+                        inset:
+                            minimumInset +
+                            ((index * 11 + sideIndex * 7) % edgeRange),
+                        radius:
+                            (viewportWidth < 600 ? 2.4 : 3.1) +
+                            ((index * 5 + sideIndex * 3) % 6) * 0.7,
+                        speed: 0.68 + ((index * 3 + sideIndex) % 5) * 0.11,
+                        phase: index * 1.37 + sideIndex * 0.73,
+                    });
+                }
+            });
+        };
+
+        const resizeMotionCues = () => {
+            viewportWidth = window.innerWidth;
+            viewportHeight = window.innerHeight;
+            deviceScale = Math.min(window.devicePixelRatio || 1, 2);
+            canvas.width = Math.round(viewportWidth * deviceScale);
+            canvas.height = Math.round(viewportHeight * deviceScale);
+            canvas.style.width = viewportWidth + 'px';
+            canvas.style.height = viewportHeight + 'px';
+            context.setTransform(deviceScale, 0, 0, deviceScale, 0, 0);
+            buildCues();
+            drawMotionCues();
+        };
+
+        const drawMotionCues = () => {
+            const edgeFadeDistance = viewportWidth < 600 ? 56 : 84;
+            const outsideMargin = edgeFadeDistance;
+            const verticalSpan = viewportHeight + outsideMargin * 2;
+
+            context.clearRect(0, 0, viewportWidth, viewportHeight);
+            context.fillStyle = '#ffffff';
+
+            cues.forEach(cue => {
+                const wrappedY =
+                    wrapCueValue(
+                        cue.baseY + travel * cue.speed + outsideMargin,
+                        verticalSpan
+                    ) - outsideMargin;
+                const distanceFromBoundary = Math.min(
+                    wrappedY + outsideMargin,
+                    viewportHeight + outsideMargin - wrappedY
+                );
+                const edgeScale = clampCueValue(
+                    distanceFromBoundary / edgeFadeDistance,
+                    0,
+                    1
+                );
+                const pulse =
+                    0.84 +
+                    Math.sin(travel * 0.018 * cue.speed + cue.phase) * 0.16;
+                const radius = cue.radius * edgeScale * pulse;
+
+                if (radius < 0.12) {
+                    return;
+                }
+
+                const x =
+                    cue.side === 'left'
+                        ? cue.inset
+                        : viewportWidth - cue.inset;
+
+                context.globalAlpha =
+                    (0.24 + edgeScale * 0.42) * edgeScale;
+                context.beginPath();
+                context.arc(x, wrappedY, radius, 0, Math.PI * 2);
+                context.fill();
+            });
+
+            context.globalAlpha = 1;
+        };
+
+        const animateMotionCues = now => {
+            const frameFactor = Math.min(
+                2.25,
+                (now - lastCueFrame) / 16.6667 || 1
+            );
+            lastCueFrame = now;
+            travel += velocity * frameFactor;
+            velocity *= Math.pow(0.91, frameFactor);
+            drawMotionCues();
+
+            if (Math.abs(velocity) > 0.025) {
+                motionFrame = requestAnimationFrame(animateMotionCues);
+            } else {
+                velocity = 0;
+                motionFrame = null;
+            }
+        };
+
+        const startMotionCueFrame = () => {
+            if (motionFrame) {
+                return;
+            }
+
+            lastCueFrame = performance.now();
+            motionFrame = requestAnimationFrame(animateMotionCues);
+        };
+
+        const handleMotionCueScroll = () => {
+            const currentScrollY = window.scrollY;
+            const scrollDelta = currentScrollY - lastCueScrollY;
+            lastCueScrollY = currentScrollY;
+            velocity = clampCueValue(
+                velocity - scrollDelta * 0.095,
+                -18,
+                18
+            );
+            startMotionCueFrame();
+        };
+
+        resizeMotionCues();
+        window.addEventListener('scroll', handleMotionCueScroll, {
+            passive: true,
+        });
+        window.addEventListener('resize', resizeMotionCues);
+    };
+
+    setupScrollMotionCues();
+
     // --- Video Speed on Scroll ---
     if (video) {
         let scrollTimeout;

@@ -108,7 +108,7 @@
             "Branding",
             "Art Direction"
         ],
-        "visible": false,
+        "visible": true,
         "showCoverOnProject": false,
         "status": "draft",
         "slug": "presstine",

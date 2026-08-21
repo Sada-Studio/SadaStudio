@@ -35,6 +35,18 @@ body {
     transition: background-image 0.5s ease;
 }
 
+.scroll-motion-cues {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+    pointer-events: none;
+    mix-blend-mode: difference;
+    opacity: 0.48;
+    will-change: contents;
+}
+
 .container {
     max-width: 1600px;
     margin: 0 auto;
@@ -605,6 +617,16 @@ body.invert-colors .footer-logo { filter: invert(1); }
     #dots-background {
         filter: none !important;
         background-position: 0 0 !important;
+    }
+
+    .scroll-motion-cues {
+        display: none !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .scroll-motion-cues {
+        opacity: 0.38;
     }
 }
 

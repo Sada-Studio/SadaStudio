@@ -777,6 +777,13 @@ body.invert-colors .footer-logo { filter: invert(1); }
     margin-bottom: 15px;
     color: #eee;
 }
+.project-details-column .project-year {
+    margin: 0 0 14px;
+    color: #aaa;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+}
 .project-details-column .short-desc {
     font-size: clamp(1rem, 2vw, 1.2rem);
     color: #888;

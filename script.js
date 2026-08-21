@@ -447,7 +447,72 @@ document.addEventListener('DOMContentLoaded', () => {
         return null;
     }
 }
-    
+    function getProjectLink(project) {
+    const slug = String(project.slug || '').trim();
+
+    if (slug) {
+        return `project.html?slug=${encodeURIComponent(slug)}`;
+    }
+
+    return `project.html?id=${encodeURIComponent(project.id)}`;
+}
+
+function updateProjectMetadata(project) {
+    const title = String(
+        project.seoTitle || `${project.title} - Sada Studio`
+    ).trim();
+
+    const description = String(
+        project.seoDescription ||
+        project.description ||
+        project.longDescription ||
+        `Explore ${project.title} by Sada Studio.`
+    )
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    const media = [
+        project.thumbnail,
+        ...(Array.isArray(project.images) ? project.images : [])
+    ];
+
+    const image = media.find(item => item && !isVideo(item)) ||
+        'https://assets.sadastudio.me/site/web_logo.png';
+
+    const pageUrl = new URL(
+        getProjectLink(project),
+        window.location.href
+    ).href;
+
+    document.title = title;
+
+    const updateMeta = (selector, value) => {
+        const element = document.head.querySelector(selector);
+
+        if (element) {
+            element.setAttribute('content', value);
+        }
+    };
+
+    updateMeta('meta[name="description"]', description);
+    updateMeta('meta[property="og:title"]', title);
+    updateMeta('meta[property="og:description"]', description);
+    updateMeta('meta[property="og:image"]', image);
+    updateMeta('meta[property="og:url"]', pageUrl);
+    updateMeta('meta[name="twitter:title"]', title);
+    updateMeta('meta[name="twitter:description"]', description);
+    updateMeta('meta[name="twitter:image"]', image);
+
+    let canonical = document.head.querySelector('link[rel="canonical"]');
+
+    if (!canonical) {
+        canonical = document.createElement('link');
+        canonical.setAttribute('rel', 'canonical');
+        document.head.appendChild(canonical);
+    }
+
+    canonical.setAttribute('href', pageUrl);
+}
     function populateFeaturedGrid(projects) {
         if (!featuredWorkGrid) return;
         const featuredProjects = projects.filter(p => p.featured);
@@ -471,7 +536,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             projectItem.innerHTML = `
-                <a class="work-item-link" href="project.html?id=${encodeURIComponent(project.id)}" aria-label="View ${project.title} project"></a>
+                <a class="work-item-link" href="${getProjectLink(project)}" aria-label="View ${project.title} project"></a>
                 <div class="work-image-container">
                      ${mediaHTML}
                 </div>
@@ -509,7 +574,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         visibleProjects.forEach(project => {
             const projectItem = document.createElement('a');
-            projectItem.href = `project.html?id=${encodeURIComponent(project.id)}`;
+            projectItem.href = getProjectLink(project);
             projectItem.className = 'project-item';
 
             if (!isVideo(project.thumbnail)) {
@@ -530,13 +595,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function populateProjectDetail(projects) {
-        if (!projectDetailContainer) return;
-        const urlParams = new URLSearchParams(window.location.search);
-        const projectId = decodeURIComponent(urlParams.get('id') || '');
-        const project = projects.find(p => p.id === projectId);
+    if (!projectDetailContainer) return;
 
-        if (project) {
-            document.title = `${project.title} - Sada Studio`;
+    const urlParams = new URLSearchParams(window.location.search);
+    const requestedSlug = urlParams.get('slug');
+    const requestedId = urlParams.get('id');
+
+    const project = projects.find(item => {
+        if (requestedSlug) {
+            return String(item.slug || '') === requestedSlug;
+        }
+
+        if (requestedId) {
+            return String(item.id || '') === requestedId;
+        }
+
+        return false;
+    });
+
+    if (project) {
+        updateProjectMetadata(project);
             const tagsHTML = project.tags.map(tag => createFilterTagLink(tag)).join('');
             const galleryMedia = sanitizeMediaList(project.images);
 
@@ -560,7 +638,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="project-info-wrapper">
                     <div class="project-details-column">
                         <h1>${project.title}</h1>
-                        <p class="short-desc">${project.description}</p>
+
+${project.year ? `
+    <p class="project-year">${project.year}</p>
+` : ''}
+
+<p class="short-desc">${project.description}</p>
                         <div class="tags">${tagsHTML}</div>
                         <p class="long-desc">${project.longDescription || ''}</p>
                     </div>

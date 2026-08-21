@@ -1,0 +1,108 @@
+{
+  "navigation": {
+    "menuLabel": "Menu",
+    "homeLabel": "Home",
+    "workLabel": "Work",
+    "aboutLabel": "About",
+    "contactLabel": "Contact"
+  },
+  "homepage": {
+    "seo": {
+      "title": "Sada Studio",
+      "description": "Sada Studio is a Lebanon-based creative agency specializing in branding, visual identity, social media, and digital experiences."
+    },
+    "scrollLabel": "Scroll Down",
+    "featuredHeading": "Our featured Work",
+    "featuredTagline": "LET’S MAKE AN ECHO",
+    "callToAction": {
+      "before": "We do many",
+      "button": "SEE ALL WORK",
+      "after": "things very well."
+    },
+    "aboutHeading": "About Us",
+    "aboutParagraphs": [
+      "SADA - صدى isn't just a label; it's our philosophy. It draws inspiration from the timeless act of communication and the profound power of reflection.",
+      "At SADA - صدى, we are the ultimate reflectors and amplifiers. We take your core ideas, your unique vision, and your brand's very essence, then project them with unparalleled clarity, impact, and reach. Just as an echo fills a space with amplified sound, we ensure your brand fills its market, resonating with your audience and leaving an indelible mark.",
+      "Our mission is singular: To provide comprehensive and innovative creative solutions that don't just elevate brands, but forge truly impactful experiences – both online and in physical form."
+    ],
+    "services": [
+      "Branding",
+      "Animation",
+      "Brand Strategy",
+      "Ads Management",
+      "Community Management",
+      "SEO",
+      "Content Creation",
+      "Copywriting",
+      "Photography",
+      "Videography",
+      "Social Media Strategies",
+      "Publications",
+      "Illustrations",
+      "Packaging",
+      "Website Design & Development"
+    ]
+  },
+  "workPage": {
+    "seo": {
+      "title": "Our Work - Sada Studio",
+      "description": "Explore branding, visual identity, social media, and creative projects by Sada Studio."
+    },
+    "heading": "All Projects",
+    "introParagraphs": [
+      "We don’t just create brands; we create echoes",
+      "At SADA - صدى, we believe your vision deserves a single, powerful voice.",
+      "We're not just another creative agency; we are the architects of impact, providing an unparalleled A to Z experience that uniquely integrates innovative branding, strategic digital marketing, and bespoke interior concept development and execution."
+    ],
+    "browseLabel": "Browse",
+    "allWorkLabel": "All work",
+    "calloutHeading": "Want Some more?",
+    "calloutButton": "Contact us"
+  },
+  "projectPage": {
+    "backLabel": "← Back",
+    "notFoundHeading": "Project Not Found",
+    "notFoundText": "The project you are looking for does not exist.",
+    "notFoundButton": "View All Work",
+    "emptyGalleryText": "No gallery media available for this project yet."
+  },
+  "footer": {
+    "tagline": {
+      "before": "Let’s Make Some",
+      "highlight": "SADA.",
+      "after": ""
+    },
+    "projectTagline": {
+      "before": "ready to make an",
+      "highlight": "echo?",
+      "after": "lets talk"
+    },
+    "email": "info@sadastudio.me",
+    "phone": {
+      "label": "+961 3 118 825",
+      "number": "+9613118825"
+    },
+    "socialLinks": [
+      {
+        "label": "Instagram",
+        "url": "https://www.instagram.com/sadastudio.me?igsh=MW5oYWg1b2RnMzlwZQ=="
+      },
+      {
+        "label": "WhatsApp",
+        "url": "https://wa.me/96103118825"
+      },
+      {
+        "label": "Facebook",
+        "url": "https://www.facebook.com/profile.php?id=61587700562066"
+      },
+      {
+        "label": "Linkedin",
+        "url": "https://www.linkedin.com/company/sada-studio-lb"
+      },
+      {
+        "label": "x",
+        "url": "https://x.com/Sadastudiolb"
+      }
+    ]
+  }
+}

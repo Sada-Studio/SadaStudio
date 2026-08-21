@@ -421,7 +421,366 @@ document.addEventListener('DOMContentLoaded', () => {
                 .map(item => [item.toLowerCase(), item])
         ).values()];
     };
+let currentSiteContent = null;
 
+async function fetchSiteContent() {
+    try {
+        const response = await fetch('site-content.json', {
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Could not load website content: ${response.status}`
+            );
+        }
+
+        const content = await response.json();
+
+        if (!content || typeof content !== 'object') {
+            throw new Error('Website content is invalid.');
+        }
+
+        return content;
+    } catch (error) {
+        console.warn('Website content could not be loaded:', error);
+        return null;
+    }
+}
+
+function setSiteText(selector, value) {
+    if (typeof value !== 'string') {
+        return;
+    }
+
+    document.querySelectorAll(selector).forEach(element => {
+        element.textContent = value;
+    });
+}
+
+function replaceSiteParagraphs(container, paragraphs, insertBefore = null) {
+    if (!container || !Array.isArray(paragraphs)) {
+        return;
+    }
+
+    Array.from(container.children)
+        .filter(element => element.tagName === 'P')
+        .forEach(element => element.remove());
+
+    paragraphs.forEach(value => {
+        if (typeof value !== 'string' || !value.trim()) {
+            return;
+        }
+
+        const paragraph = document.createElement('p');
+
+        paragraph.textContent = value;
+
+        if (insertBefore) {
+            container.insertBefore(paragraph, insertBefore);
+        } else {
+            container.appendChild(paragraph);
+        }
+    });
+}
+
+function setSiteMeta(attribute, name, content) {
+    if (typeof content !== 'string') {
+        return;
+    }
+
+    let element = document.head.querySelector(
+        `meta[${attribute}="${name}"]`
+    );
+
+    if (!element) {
+        element = document.createElement('meta');
+        element.setAttribute(attribute, name);
+        document.head.appendChild(element);
+    }
+
+    element.setAttribute('content', content);
+}
+
+function applyPageSeo(seo) {
+    if (!seo || typeof seo !== 'object') {
+        return;
+    }
+
+    const title = String(seo.title || '').trim();
+    const description = String(seo.description || '').trim();
+
+    if (title) {
+        document.title = title;
+
+        setSiteMeta('property', 'og:title', title);
+        setSiteMeta('name', 'twitter:title', title);
+    }
+
+    if (description) {
+        setSiteMeta('name', 'description', description);
+        setSiteMeta('property', 'og:description', description);
+        setSiteMeta('name', 'twitter:description', description);
+    }
+
+    setSiteMeta('property', 'og:type', 'website');
+    setSiteMeta('property', 'og:site_name', 'Sada Studio');
+    setSiteMeta('property', 'og:url', window.location.href);
+    setSiteMeta('name', 'twitter:card', 'summary_large_image');
+
+    const image = 'https://assets.sadastudio.me/site/web_logo.png';
+
+    setSiteMeta('property', 'og:image', image);
+    setSiteMeta('name', 'twitter:image', image);
+}
+
+function updateFooterTagline(tagline) {
+    const container = document.querySelector('.footer-tagline');
+
+    if (!container || !tagline || typeof tagline !== 'object') {
+        return;
+    }
+
+    const before = String(tagline.before || '').trim();
+    const highlight = String(tagline.highlight || '').trim();
+    const after = String(tagline.after || '').trim();
+
+    container.replaceChildren();
+
+    if (before) {
+        container.appendChild(document.createTextNode(before));
+    }
+
+    if (highlight) {
+        if (before) {
+            container.appendChild(document.createTextNode(' '));
+        }
+
+        const animatedWord = document.createElement('span');
+        const strong = document.createElement('strong');
+
+        animatedWord.className = 'sonar-word';
+        strong.textContent = highlight;
+
+        animatedWord.appendChild(strong);
+        container.appendChild(animatedWord);
+    }
+
+    if (after) {
+        if (before || highlight) {
+            container.appendChild(document.createTextNode(' '));
+        }
+
+        container.appendChild(document.createTextNode(after));
+    }
+}
+
+function updateFooterLinks(footer) {
+    if (!footer || typeof footer !== 'object') {
+        return;
+    }
+
+    const emailLink = document.querySelector('.footer-email-link');
+
+    if (emailLink && footer.email) {
+        emailLink.textContent = footer.email;
+        emailLink.href = `mailto:${footer.email}`;
+    }
+
+    const socialContainer = document.querySelector(
+        '.footer-social-links'
+    );
+
+    if (!socialContainer || !Array.isArray(footer.socialLinks)) {
+        return;
+    }
+
+    socialContainer.replaceChildren();
+
+    footer.socialLinks.forEach(item => {
+        if (!item || !item.label || !item.url) {
+            return;
+        }
+
+        let address;
+
+        try {
+            address = new URL(item.url);
+
+            if (
+                address.protocol !== 'https:' &&
+                address.protocol !== 'http:'
+            ) {
+                return;
+            }
+        } catch {
+            return;
+        }
+
+        const link = document.createElement('a');
+
+        link.textContent = item.label;
+        link.href = address.href;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+
+        socialContainer.appendChild(link);
+    });
+
+    if (footer.phone && footer.phone.number) {
+        const phoneLink = document.createElement('a');
+
+        phoneLink.textContent =
+            footer.phone.label || footer.phone.number;
+
+        phoneLink.href = `tel:${footer.phone.number}`;
+
+        socialContainer.appendChild(phoneLink);
+    }
+}
+
+function applySiteContent(content) {
+    if (!content || typeof content !== 'object') {
+        return;
+    }
+
+    currentSiteContent = content;
+
+    const navigation = content.navigation || {};
+
+    setSiteText('.menu-text', navigation.menuLabel);
+
+    document.querySelectorAll('.nav-link-item').forEach(link => {
+        const destination = link.getAttribute('href') || '';
+
+        if (destination === 'work.html') {
+            link.textContent = navigation.workLabel || link.textContent;
+        } else if (destination === 'index.html') {
+            link.textContent = navigation.homeLabel || link.textContent;
+        } else if (destination.includes('#about')) {
+            link.textContent = navigation.aboutLabel || link.textContent;
+        } else if (destination === '#contact') {
+            link.textContent = navigation.contactLabel || link.textContent;
+        }
+    });
+
+    const homepage = content.homepage || {};
+
+    if (document.querySelector('.hero-section')) {
+        applyPageSeo(homepage.seo);
+
+        setSiteText('.scroll-text', homepage.scrollLabel);
+
+        setSiteText(
+            '.work-heading .main-heading',
+            homepage.featuredHeading
+        );
+
+        setSiteText(
+            '.work-heading .tagline',
+            homepage.featuredTagline
+        );
+
+        const callToAction = homepage.callToAction || {};
+        const callout = document.querySelector('.bottom-cta-text');
+
+        if (callout) {
+            const button = callout.querySelector('a');
+
+            if (button) {
+                const buttonText = button.querySelector('span');
+
+                if (buttonText && callToAction.button) {
+                    buttonText.textContent = callToAction.button;
+                }
+
+                callout.replaceChildren(
+                    document.createTextNode(
+                        `${callToAction.before || ''} `
+                    ),
+                    button,
+                    document.createTextNode(
+                        ` ${callToAction.after || ''}`
+                    )
+                );
+            }
+        }
+
+        setSiteText('.about-text h2', homepage.aboutHeading);
+
+        const aboutText = document.querySelector('.about-text');
+
+        const serviceTags = document.querySelector(
+            '.about-service-tags'
+        );
+
+        replaceSiteParagraphs(
+            aboutText,
+            homepage.aboutParagraphs,
+            serviceTags
+        );
+
+        if (serviceTags && Array.isArray(homepage.services)) {
+            serviceTags.replaceChildren();
+
+            homepage.services.forEach(service => {
+                if (typeof service !== 'string' || !service.trim()) {
+                    return;
+                }
+
+                const link = document.createElement('a');
+
+                link.className = 'tag-link';
+                link.textContent = service;
+                link.href = `work.html?filter=${encodeURIComponent(service)}`;
+
+                serviceTags.appendChild(link);
+            });
+        }
+    }
+
+    const workPage = content.workPage || {};
+
+    if (document.querySelector('.work-page-main')) {
+        applyPageSeo(workPage.seo);
+
+        setSiteText('.work-page-title', workPage.heading);
+
+        replaceSiteParagraphs(
+            document.querySelector('.work-page-description'),
+            workPage.introParagraphs
+        );
+
+        setSiteText('.filter-toggle-label', workPage.browseLabel);
+
+        setSiteText(
+            '.filter-current-label',
+            workPage.allWorkLabel
+        );
+
+        setSiteText(
+            '.secret-call-title',
+            workPage.calloutHeading
+        );
+
+        setSiteText(
+            '.secret-call-cta',
+            workPage.calloutButton
+        );
+    }
+
+    const footer = content.footer || {};
+
+    const isProjectPage = Boolean(
+        document.querySelector('.project-page-main')
+    );
+
+    updateFooterTagline(
+        isProjectPage ? footer.projectTagline : footer.tagline
+    );
+
+    updateFooterLinks(footer);
+}
     async function fetchProjects() {
     try {
         const response = await fetch('projects.json', {
@@ -900,7 +1259,14 @@ ${project.year ? `
 
     // --- Main function to initialize pages ---
     async function initializePage() {
-        const projects = await fetchProjects();
+    const [projects, siteContent] = await Promise.all([
+        fetchProjects(),
+        fetchSiteContent()
+    ]);
+
+    if (siteContent) {
+        applySiteContent(siteContent);
+    }
         if (!projects) {
             if (projectDetailContainer) {
                 projectDetailContainer.innerHTML = `<div class="not-found"><h1>Error</h1><p>Could not load project data. Please try again later.</p></div>`;

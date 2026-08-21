@@ -14,9 +14,9 @@
             "Branding",
             "Illustration"
         ],
-        "visible": false,
+        "visible": true,
         "showCoverOnProject": true,
-        "status": "draft",
+        "status": "published",
         "slug": "throfee",
         "seoTitle": "Throfee Branding & Illustration | Sada Studio",
         "seoDescription": "A bold brand identity and illustration system for a concept café blending coffee, clothing, and streetwear culture."
@@ -39,16 +39,16 @@
             "Branding",
             "Social Media"
         ],
-        "visible": false,
+        "visible": true,
         "showCoverOnProject": true,
-        "status": "draft",
+        "status": "published",
         "slug": "m-fit",
         "seoTitle": "M FIT Branding & Social Media | Sada Studio",
         "seoDescription": "A dynamic visual identity and social media direction for a personal training and fitness brand."
     },
     {
         "id": "House of Hush",
-        "featured": false,
+        "featured": true,
         "title": "House of Hush",
         "description": "Sleepwear & Loungewear Brand",
         "longDescription": "House of Hush is a sleepwear and loungewear brand with a bold, feminine attitude. Sada developed a fashion-led visual identity centered on an elegant calligraphic wordmark and monogram, paired with a rich palette of burgundy, blush pink, cream, and soft blue. Repeated script patterns, tactile fabric applications, garment tags, and intimate editorial photography extend the identity across every touchpoint, balancing the softness of comfort with a confident and distinctive visual presence.",
@@ -61,9 +61,9 @@
             "Branding",
             "Art Direction"
         ],
-        "visible": false,
+        "visible": true,
         "showCoverOnProject": false,
-        "status": "draft",
+        "status": "published",
         "slug": "house-of-hush",
         "seoTitle": "House of Hush Branding & Art Direction | Sada Studio",
         "seoDescription": "A fashion-led visual identity and art direction for a bold, feminine sleepwear and loungewear brand."
@@ -85,9 +85,9 @@
         "tags": [
             "Event Branding"
         ],
-        "visible": false,
+        "visible": true,
         "showCoverOnProject": true,
-        "status": "draft",
+        "status": "published",
         "slug": "zanzibar-investment-summit",
         "seoTitle": "Zanzibar Investment Summit Branding | Sada Studio",
         "seoDescription": "A culturally inspired event identity for the Zanzibar Investment Summit, rooted in the island’s heritage."
@@ -133,9 +133,9 @@
             "Editorial",
             "Presentation"
         ],
-        "visible": false,
+        "visible": true,
         "showCoverOnProject": true,
-        "status": "draft",
+        "status": "published",
         "slug": "the-super-power-father",
         "seoTitle": "The Super Power Father Branding | Sada Studio",
         "seoDescription": "A warm, energetic workshop identity with interactive editorial materials and presentation design for fathers."
@@ -194,20 +194,45 @@
     },
     {
         "id": "Takawin",
-        "featured": true,
+        "featured": false,
         "title": "Takawin",
         "description": "Lebanese Perfume Brand",
         "longDescription": "Takawin is a perfume brand that translates astrology into scent — crafting fragrances inspired by horoscopes and personal archetypes, where each blend feels like a signature aligned with the stars. The brand identity was built from the ground up, from logo creation to typographic direction, establishing a distinctive visual world that feels mystical yet modern. From the refined type system to the packaging design, every touchpoint was crafted to turn each perfume into a collectible ritual — expressive, intentional, and made to feel personal.",
-        "thumbnail": "https://assets.sadastudio.me/projects/takawin/takawin1.png",
+        "thumbnail": "https://assets.sadastudio.me/projects/takawin/sada-company-profile25-1787330466895-2111ac5f-optimised-1787330489288-b3a816d2.webp",
         "images": [
-            "https://assets.sadastudio.me/projects/takawin/takawin1.png",
-            "https://assets.sadastudio.me/projects/takawin/takawin2.png",
-            "https://assets.sadastudio.me/projects/takawin/takawin3.png",
-            "https://assets.sadastudio.me/projects/takawin/takawin4.png",
-            "https://assets.sadastudio.me/projects/takawin/takawin5.png"
+            "https://assets.sadastudio.me/projects/takawin/sada-company-profile25-1787330466895-2111ac5f-optimised-1787330489288-b3a816d2.webp",
+            "https://assets.sadastudio.me/projects/takawin/sada-company-profile26-1787330467809-6ce571d7-optimised-1787330490145-a36cfd54.webp",
+            "https://assets.sadastudio.me/projects/takawin/sada-company-profile27-1787330469549-73df3d69-optimised-1787330491375-18586ed7.webp",
+            "https://assets.sadastudio.me/projects/takawin/sada-company-profile28-1787330475353-a5cc32e0-optimised-1787330495025-95a9a2ca.webp",
+            "https://assets.sadastudio.me/projects/takawin/sada-company-profile29-1787330484960-e7d29b0b-optimised-1787330498543-fb3f9d12.webp"
         ],
         "tags": [
             "Branding",
+            "Packaging"
+        ]
+    },
+    {
+        "id": "C Cater",
+        "featured": false,
+        "title": "C Cater",
+        "description": "Catering",
+        "longDescription": "C Cater is a catering company built around fresh, elevated everyday moments — bringing people together through food that feels both generous and refined. The social media direction was crafted as a bright, minimal lifestyle system, balancing clean layouts with warm, appetizing imagery and plenty of breathing space. From story templates to grid design and content styling, the visual language keeps the brand modern, upbeat, and instantly recognizable across every post.",
+        "thumbnail": "https://assets.sadastudio.me/projects/ccater/ccater1-optimised-1787329962350-4c1b46e3.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/ccater/ccater1-optimised-1787329962350-4c1b46e3.webp",
+            "https://assets.sadastudio.me/projects/ccater/grid-1787329771423-d229c9bf-optimised-1787330012352-a8e71f91.webp",
+            "https://assets.sadastudio.me/projects/ccater/chatgpt-image-aug-21-2026-01-37-53-am-1787329708863-2298a497-optimised-1787330017225-04f67f77.webp",
+            "https://assets.sadastudio.me/projects/ccater/sada-company-profile51-1787329852438-50952750-optimised-1787330019609-010c6204.webp",
+            "https://assets.sadastudio.me/projects/ccater/chatgpt-image-aug-21-2026-01-29-00-am-1787329683274-fad9703c-optimised-1787330024354-533c0d6c.webp",
+            "https://assets.sadastudio.me/projects/ccater/chatgpt-image-aug-21-2026-01-23-13-am-1787329662279-08430b02-optimised-1787330030044-adb41882.webp",
+            "https://assets.sadastudio.me/projects/ccater/chatgpt-image-aug-21-2026-01-29-03-am-1787329695780-c356ab34-optimised-1787330034834-72c9b715.webp",
+            "https://assets.sadastudio.me/projects/ccater/chatgpt-image-aug-21-2026-01-23-18-am-1787329674317-7d9ad60b-optimised-1787330039440-f8a4cbb0.webp",
+            "https://assets.sadastudio.me/projects/ccater/general-c-cater-1787330161609-c3a63b2e.mp4",
+            "https://assets.sadastudio.me/projects/ccater/grill-video-1787330283815-f3e14b7d.mp4",
+            "https://assets.sadastudio.me/projects/ccater/catering-video-1787330408662-3645c5bc.mp4"
+        ],
+        "tags": [
+            "Social Media",
             "Packaging"
         ]
     },
@@ -358,28 +383,6 @@
         ],
         "tags": [
             "Social Media"
-        ]
-    },
-    {
-        "id": "C Cater",
-        "featured": false,
-        "title": "C Cater",
-        "description": "Catering",
-        "longDescription": "C Cater is a catering company built around fresh, elevated everyday moments — bringing people together through food that feels both generous and refined. The social media direction was crafted as a bright, minimal lifestyle system, balancing clean layouts with warm, appetizing imagery and plenty of breathing space. From story templates to grid design and content styling, the visual language keeps the brand modern, upbeat, and instantly recognizable across every post.",
-        "thumbnail": "https://assets.sadastudio.me/projects/ccater/ccater1.png",
-        "images": [
-            "https://assets.sadastudio.me/projects/ccater/ccater1.png",
-            "https://assets.sadastudio.me/projects/ccater/ccater2.png",
-            "https://assets.sadastudio.me/projects/ccater/ccater3.jpg",
-            "https://assets.sadastudio.me/projects/ccater/ccater4.jpg",
-            "https://assets.sadastudio.me/projects/ccater/ccater5.jpg",
-            "https://assets.sadastudio.me/projects/ccater/ccater6.jpg",
-            "https://assets.sadastudio.me/projects/ccater/ccater7.jpg",
-            "https://assets.sadastudio.me/projects/ccater/ccater8.jpg"
-        ],
-        "tags": [
-            "Social Media",
-            "Packaging"
         ]
     },
     {

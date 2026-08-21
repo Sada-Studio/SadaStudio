@@ -423,16 +423,30 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     async function fetchProjects() {
-        try {
-            const isLocalPreview = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-            const response = await fetch('projects.json', { cache: isLocalPreview ? 'no-store' : 'force-cache' });
-            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-            return await response.json();
-        } catch (error) {
-            console.error("Could not fetch projects:", error);
-            return null;
+    try {
+        const response = await fetch('projects.json', {
+            cache: 'no-store'
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+
+        const projects = await response.json();
+
+        if (!Array.isArray(projects)) {
+            throw new Error('projects.json must contain an array of projects.');
+        }
+
+        return projects.filter(project =>
+            project.visible !== false &&
+            project.status !== 'draft'
+        );
+    } catch (error) {
+        console.error("Could not fetch projects:", error);
+        return null;
     }
+}
     
     function populateFeaturedGrid(projects) {
         if (!featuredWorkGrid) return;

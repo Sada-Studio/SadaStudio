@@ -1011,14 +1011,47 @@ ${project.year ? `
                 <div class="project-gallery-column">${imagesHTML}</div>
             `;
 
-            const galleryColumn = projectDetailContainer.querySelector('.project-gallery-column');
-            const removeBrokenMedia = (mediaWrapper) => {
-                if (!mediaWrapper) return;
-                mediaWrapper.remove();
-                if (galleryColumn && !galleryColumn.children.length) {
-                    galleryColumn.innerHTML = '<div class="project-gallery-empty">No gallery media available for this project yet.</div>';
-                }
-            };
+            const projectPageSettings =
+    (currentSiteContent && currentSiteContent.projectPage) || {};
+
+const backButtonLabel = projectDetailContainer.querySelector(
+    '.see-all-work-btn span'
+);
+
+if (backButtonLabel && projectPageSettings.backLabel) {
+    backButtonLabel.textContent = projectPageSettings.backLabel;
+}
+
+const galleryColumn = projectDetailContainer.querySelector(
+    '.project-gallery-column'
+);
+
+const renderEmptyGallery = () => {
+    if (!galleryColumn || galleryColumn.children.length) {
+        return;
+    }
+
+    const emptyMessage = document.createElement('div');
+
+    emptyMessage.className = 'project-gallery-empty';
+
+    emptyMessage.textContent =
+        projectPageSettings.emptyGalleryText ||
+        'No gallery media available for this project yet.';
+
+    galleryColumn.replaceChildren(emptyMessage);
+};
+
+renderEmptyGallery();
+
+const removeBrokenMedia = (mediaWrapper) => {
+    if (!mediaWrapper) {
+        return;
+    }
+
+    mediaWrapper.remove();
+    renderEmptyGallery();
+};
 
             galleryColumn?.querySelectorAll('img').forEach((img) => {
                 img.addEventListener('error', () => removeBrokenMedia(img.closest('.project-gallery-media')));
@@ -1029,13 +1062,43 @@ ${project.year ? `
             });
         } else {
             projectDetailContainer.innerHTML = `
-                <div class="not-found">
-                    <h1>Project Not Found</h1>
-                    <p>The project you are looking for does not exist.</p>
-                    <br>
-                    <a href="work.html" class="btn">View All Work</a>
-                </div>
-            `;
+    <div class="not-found">
+        <h1>Project Not Found</h1>
+        <p>The project you are looking for does not exist.</p>
+        <br>
+        <a href="work.html" class="btn">View All Work</a>
+    </div>
+`;
+
+const projectPageSettings =
+    (currentSiteContent && currentSiteContent.projectPage) || {};
+
+const missingHeading = projectDetailContainer.querySelector(
+    '.not-found h1'
+);
+
+const missingMessage = projectDetailContainer.querySelector(
+    '.not-found p'
+);
+
+const missingButton = projectDetailContainer.querySelector(
+    '.not-found a'
+);
+
+if (missingHeading && projectPageSettings.notFoundHeading) {
+    missingHeading.textContent =
+        projectPageSettings.notFoundHeading;
+}
+
+if (missingMessage && projectPageSettings.notFoundText) {
+    missingMessage.textContent =
+        projectPageSettings.notFoundText;
+}
+
+if (missingButton && projectPageSettings.notFoundButton) {
+    missingButton.textContent =
+        projectPageSettings.notFoundButton;
+}
         }
     }
 
@@ -1046,7 +1109,12 @@ ${project.year ? `
         const currentLabel = document.getElementById('filter-current-label');
         const currentCount = document.getElementById('filter-current-count');
         if (!filterToolbar || !filterToggle || !filterPanel || !currentLabel || !currentCount || !workPageList) return;
-
+const allWorkDisplayLabel =
+    currentSiteContent &&
+    currentSiteContent.workPage &&
+    currentSiteContent.workPage.allWorkLabel
+        ? currentSiteContent.workPage.allWorkLabel
+        : 'All work';
         const serviceMap = new Map();
         const visibleServiceCounts = new Map();
         const allServiceCounts = new Map();
@@ -1133,7 +1201,10 @@ ${project.year ? `
             filterPanel.innerHTML = filterLabels.map(label => {
                 const normalized = normalizeTag(label);
                 const isActive = normalized === normalizeTag(activeFilter);
-                const chipLabel = normalized === 'all' ? 'All work' : label;
+                const chipLabel =
+    normalized === 'all'
+        ? allWorkDisplayLabel
+        : label;
                 const chipCount = getCountForLabel(label);
 
                 return `
@@ -1151,7 +1222,10 @@ ${project.year ? `
 
             const normalizedActive = normalizeTag(activeFilter);
             const isAll = normalizedActive === 'all';
-            currentLabel.textContent = isAll ? 'All work' : activeFilter;
+            currentLabel.textContent =
+    isAll
+        ? allWorkDisplayLabel
+        : activeFilter;
             currentCount.textContent = `${getCountForLabel(activeFilter)}`;
             filterToggle.classList.toggle('has-active-filter', !isAll);
             filterToggle.classList.toggle('is-all-filter', isAll);

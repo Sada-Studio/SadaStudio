@@ -31,6 +31,12 @@ window.addEventListener('load', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
     // --- Basic Setup ---
+    if (window.location.pathname.endsWith('/index.html')) {
+        const homepageUrl = new URL(window.location.href);
+        homepageUrl.pathname = homepageUrl.pathname.slice(0, -'index.html'.length);
+        window.history.replaceState(window.history.state, '', homepageUrl);
+    }
+
     const menuToggle = document.querySelector('.menu-toggle');
     const fullScreenNav = document.querySelector('.full-screen-nav');
     const closeNavButton = document.querySelector('.close-nav');
@@ -712,7 +718,7 @@ function applySiteContent(content) {
 
         if (destination === 'work.html') {
             link.textContent = navigation.workLabel || link.textContent;
-        } else if (destination === 'index.html') {
+        } else if (destination === '/' || destination === 'index.html') {
             link.textContent = navigation.homeLabel || link.textContent;
         } else if (destination.includes('#about')) {
             link.textContent = navigation.aboutLabel || link.textContent;
@@ -1161,7 +1167,7 @@ function enableVisualSharedEditing() {
 
         if (destination === 'work.html') {
             path = 'navigation.workLabel';
-        } else if (destination === 'index.html') {
+        } else if (destination === '/' || destination === 'index.html') {
             path = 'navigation.homeLabel';
         } else if (destination.includes('#about')) {
             path = 'navigation.aboutLabel';
@@ -1362,7 +1368,7 @@ function updateProjectMetadata(project) {
         featuredWorkGrid.innerHTML = '';
 
         featuredProjects.forEach((project, index) => {
-            const isLarge = index === 0 && window.innerWidth > 900;
+            const isLarge = index === 0 && featuredProjects.length % 2 === 1;
             const projectItem = document.createElement('article');
             projectItem.className = `work-item ${isLarge ? 'work-item-large' : ''}`;
 

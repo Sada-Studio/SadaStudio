@@ -352,14 +352,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const workPageList = document.getElementById('work-page-list');
     const projectDetailContainer = document.getElementById('project-detail-container');
 
-    // NEW: Helper function to check if a file is a video
-    const isVideo = (filename) => {
-    if (!filename) return false;
-    const lowercased = filename.toLowerCase();
-    // Only return true for actual video formats like .mp4.
-    // .gif will now be treated as an image for rendering purposes.
-    return lowercased.endsWith('.mp4');
-};
+    // GIFs remain images; MP4 and WebM are handled as playable video.
+    const isVideo = (filename) =>
+        /\.(mp4|webm)(?:[?#].*)?$/i.test(String(filename || ''));
 
     const baseServiceTags = [
         'Branding',
@@ -1471,11 +1466,27 @@ function updateProjectMetadata(project) {
 
             const imagesHTML = galleryMedia.map(mediaSrc => {
                 if (isVideo(mediaSrc)) {
+                    const videoType = /\.webm(?:[?#].*)?$/i.test(mediaSrc)
+                        ? 'webm'
+                        : 'mp4';
+
                     return `
-                        <div class="project-gallery-media" data-media-src="${mediaSrc}">
+                        <div class="project-gallery-media project-gallery-video" data-media-src="${mediaSrc}">
                             <video autoplay loop muted playsinline preload="metadata">
-                                <source src="${mediaSrc}" type="video/${mediaSrc.split('.').pop().toLowerCase()}">
+                                <source src="${mediaSrc}" type="video/${videoType}">
                             </video>
+                            <button class="project-video-sound" type="button" aria-label="Turn video sound on" aria-pressed="false">
+                                <svg class="project-video-sound-icon project-video-sound-icon-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M11 5 6 9H2v6h4l5 4V5Z"></path>
+                                    <path d="m23 9-6 6m0-6 6 6"></path>
+                                </svg>
+                                <svg class="project-video-sound-icon project-video-sound-icon-audible" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M11 5 6 9H2v6h4l5 4V5Z"></path>
+                                    <path d="M15.5 8.5a5 5 0 0 1 0 7"></path>
+                                    <path d="M19 5a10 10 0 0 1 0 14"></path>
+                                </svg>
+                                <span class="project-video-sound-label">Sound on</span>
+                            </button>
                         </div>`;
                 } else {
                     return `
@@ -1551,6 +1562,60 @@ const removeBrokenMedia = (mediaWrapper) => {
 
             galleryColumn?.querySelectorAll('video').forEach((video) => {
                 video.addEventListener('error', () => removeBrokenMedia(video.closest('.project-gallery-media')));
+
+                const soundButton = video
+                    .closest('.project-gallery-media')
+                    ?.querySelector('.project-video-sound');
+
+                if (!soundButton) {
+                    return;
+                }
+
+                const updateSoundButton = () => {
+                    const soundIsOn = !video.muted;
+                    const label = soundIsOn ? 'Sound off' : 'Sound on';
+
+                    soundButton.setAttribute('aria-pressed', String(soundIsOn));
+                    soundButton.setAttribute(
+                        'aria-label',
+                        soundIsOn ? 'Turn video sound off' : 'Turn video sound on'
+                    );
+
+                    const soundLabel = soundButton.querySelector(
+                        '.project-video-sound-label'
+                    );
+
+                    if (soundLabel) {
+                        soundLabel.textContent = label;
+                    }
+                };
+
+                video.addEventListener('volumechange', updateSoundButton);
+
+                soundButton.addEventListener('click', async () => {
+                    if (video.muted) {
+                        galleryColumn.querySelectorAll('video').forEach((otherVideo) => {
+                            if (otherVideo !== video) {
+                                otherVideo.muted = true;
+                            }
+                        });
+
+                        video.muted = false;
+
+                        try {
+                            await video.play();
+                        } catch (error) {
+                            video.muted = true;
+                            console.warn('Could not play project video with sound:', error);
+                        }
+                    } else {
+                        video.muted = true;
+                    }
+
+                    updateSoundButton();
+                });
+
+                updateSoundButton();
             });
         } else {
             projectDetailContainer.innerHTML = `

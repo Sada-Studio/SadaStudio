@@ -1,5 +1,20 @@
 [
     {
+        "id": "marsa-inn",
+        "featured": false,
+        "title": "marsa-inn",
+        "description": "",
+        "longDescription": "",
+        "thumbnail": "https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-1787324437345-cc24c31b-optimised-1787324442741-3935d705.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-1787324437345-cc24c31b-optimised-1787324442741-3935d705.webp",
+            "https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-1787324144238-d6c64074-optimised-1787324345014-2615dd5c.webp"
+        ],
+        "tags": [],
+        "visible": false,
+        "status": "draft"
+    },
+    {
         "id": "Ideal Mena",
         "featured": true,
         "title": "Ideal Mena",

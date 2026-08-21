@@ -5,8 +5,11 @@
         "title": "Throfee",
         "description": "Concept Café & Streetwear Brand",
         "longDescription": "Throfee is a concept café where coffee, clothing, and conversation come together. Sada developed a bold visual identity that moves between hospitality and streetwear, combining an energetic orange-led palette, distinctive typography, and a modular system of minimal illustrations inspired by café rituals and fashion. Extended across menus, merchandise, posters, and other brand touchpoints, the identity gives Throfee a youthful presence that feels less like a traditional café and more like a culture of its own.",
-        "thumbnail": "",
-        "images": [],
+        "thumbnail": "https://assets.sadastudio.me/projects/throfee/throfee-identity-cover-1787327596217-1544680d-optimised-1787327603268-588dc2d0.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/throfee/throfee-identity-cover-1787327596217-1544680d-optimised-1787327603268-588dc2d0.webp",
+            "https://assets.sadastudio.me/projects/throfee/throfee-identity-1787327598109-d0c43b1e-optimised-1787327605429-acc3a3ec.webp"
+        ],
         "tags": [
             "Branding",
             "Illustration"
@@ -24,8 +27,14 @@
         "title": "M FIT",
         "description": "Personal Training & Fitness Brand",
         "longDescription": "For M FIT, a personal training brand, Sada developed the logo, visual identity, and social media direction. The logo pairs a fluid, organic “M,” inspired by the movement and curves of the human form, with a bold, structured “FIT” that represents discipline and strength. Its forward-leaning italic construction introduces a sense of speed, momentum, and progress. Together, these contrasting elements create a dynamic identity that balances freedom of movement with the commitment behind training.",
-        "thumbnail": "",
-        "images": [],
+        "thumbnail": "https://assets.sadastudio.me/projects/m-fit/sada-company-profile38-1787327627988-b265b411-optimised-1787327638671-f726bb7e.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/m-fit/sada-company-profile38-1787327627988-b265b411-optimised-1787327638671-f726bb7e.webp",
+            "https://assets.sadastudio.me/projects/m-fit/sada-company-profile39-1787327628493-7a2abafa-optimised-1787327639554-d899cbc2.webp",
+            "https://assets.sadastudio.me/projects/m-fit/sada-company-profile40-1787327629141-3e36eac3-optimised-1787327640226-abacd3a9.webp",
+            "https://assets.sadastudio.me/projects/m-fit/sada-company-profile41-1787327630740-9ab706b4-optimised-1787327642083-9ecbbebb.webp",
+            "https://assets.sadastudio.me/projects/m-fit/sada-company-profile42-1787327632659-cd5b04b0-optimised-1787327643821-46b7c4d3.webp"
+        ],
         "tags": [
             "Branding",
             "Social Media"
@@ -43,14 +52,17 @@
         "title": "House of Hush",
         "description": "Sleepwear & Loungewear Brand",
         "longDescription": "House of Hush is a sleepwear and loungewear brand with a bold, feminine attitude. Sada developed a fashion-led visual identity centered on an elegant calligraphic wordmark and monogram, paired with a rich palette of burgundy, blush pink, cream, and soft blue. Repeated script patterns, tactile fabric applications, garment tags, and intimate editorial photography extend the identity across every touchpoint, balancing the softness of comfort with a confident and distinctive visual presence.",
-        "thumbnail": "",
-        "images": [],
+        "thumbnail": "https://assets.sadastudio.me/projects/house-of-hush/house-of-hush-cover-1787327665933-40d44a63-optimised-1787327671532-ce902c2a.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/house-of-hush/house-of-hush-cover-1787327665933-40d44a63-optimised-1787327671532-ce902c2a.webp",
+            "https://assets.sadastudio.me/projects/house-of-hush/house-of-hush-1787327667808-0352c1bf-optimised-1787327674436-8ad9723e.webp"
+        ],
         "tags": [
             "Branding",
             "Art Direction"
         ],
         "visible": false,
-        "showCoverOnProject": true,
+        "showCoverOnProject": false,
         "status": "draft",
         "slug": "house-of-hush",
         "seoTitle": "House of Hush Branding & Art Direction | Sada Studio",
@@ -62,8 +74,14 @@
         "title": "Zanzibar Investment Summit",
         "description": "Investment Summit in Zanzibar",
         "longDescription": "For the Zanzibar Investment Summit, Sada developed a complete visual identity rooted in the island’s cultural heritage. The logo draws inspiration from the intricately carved doors of Zanzibar’s historic old city, translating their ornamental forms into a contemporary symbol that also incorporates the letters “ZIS.” A culturally inspired color palette and supporting visual direction extend this concept across the summit’s communications, creating an identity that feels distinctive, relevant, and unmistakably connected to Zanzibar.",
-        "thumbnail": "",
-        "images": [],
+        "thumbnail": "https://assets.sadastudio.me/projects/zanzibar-investment-summit/sada-company-profile20-1787327771487-8e293c7f-optimised-1787327784018-20d53925.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/zanzibar-investment-summit/sada-company-profile20-1787327771487-8e293c7f-optimised-1787327784018-20d53925.webp",
+            "https://assets.sadastudio.me/projects/zanzibar-investment-summit/sada-company-profile21-1787327771965-a48778d8-optimised-1787327785279-eee8e532.webp",
+            "https://assets.sadastudio.me/projects/zanzibar-investment-summit/sada-company-profile22-1787327772535-5904f819-optimised-1787327786478-f671d16e.webp",
+            "https://assets.sadastudio.me/projects/zanzibar-investment-summit/sada-company-profile23-1787327774939-506ff41c-optimised-1787327789785-d941bc83.webp",
+            "https://assets.sadastudio.me/projects/zanzibar-investment-summit/sada-company-profile24-1787327776904-8f28eefa-optimised-1787327792080-460e0c96.webp"
+        ],
         "tags": [
             "Event Branding"
         ],
@@ -80,14 +98,17 @@
         "title": "Presstine",
         "description": "Lebanese Custom & Ready-Made Stamp Brand",
         "longDescription": "Presstine is an online shop offering custom and ready-made stamps through a distinctly Lebanese lens. Sada built the brand from the ground up, developing its logo, color palette, typography, graphic style, and photography direction. The logo draws on the fig “tine” in Arabic embedded within the brand’s name. Bright colors, youthful compositions, and intentionally imperfect details give the identity a tactile, handmade quality that reflects the unique irregularities and character of stamped impressions.",
-        "thumbnail": "",
-        "images": [],
+        "thumbnail": "https://assets.sadastudio.me/projects/presstine/presstine-cover-1787327804736-97c1a886-optimised-1787327808199-4c370d62.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/presstine/presstine-cover-1787327804736-97c1a886-optimised-1787327808199-4c370d62.webp",
+            "https://assets.sadastudio.me/projects/presstine/presstine-1787327805890-d5815e87-optimised-1787327809468-629a86cd.webp"
+        ],
         "tags": [
             "Branding",
             "Art Direction"
         ],
         "visible": false,
-        "showCoverOnProject": true,
+        "showCoverOnProject": false,
         "status": "draft",
         "slug": "presstine",
         "seoTitle": "Presstine Branding & Art Direction | Sada Studio",
@@ -99,8 +120,13 @@
         "title": "The Super Power Father",
         "description": "Interactive Fatherhood & Parenting Workshop",
         "longDescription": "The Super Power Father is a workshop designed to help fathers approach parenting with greater confidence and connection. Sada developed a warm, energetic visual identity built around a bold color palette, expressive typography, playful graphics, and a relatable photography style. We then extended the identity across the full workshop experience, creating an interactive booklet with exercises designed to be cut out and used as activity cards, alongside a cohesive presentation deck to guide each session.",
-        "thumbnail": "",
-        "images": [],
+        "thumbnail": "https://assets.sadastudio.me/projects/the-super-power-father/1-1787327831873-0a5fb2a0-optimised-1787327861155-9424b41d.webp",
+        "images": [
+            "https://assets.sadastudio.me/projects/the-super-power-father/1-1787327831873-0a5fb2a0-optimised-1787327861155-9424b41d.webp",
+            "https://assets.sadastudio.me/projects/the-super-power-father/2-1787327836050-6220822c-optimised-1787327864304-467b2512.webp",
+            "https://assets.sadastudio.me/projects/the-super-power-father/3-1787327839912-0420e0a4-optimised-1787327866535-3fde8cfe.webp",
+            "https://assets.sadastudio.me/projects/the-super-power-father/4-1787327845233-3602d33b-optimised-1787327911730-8d6819d3.webp"
+        ],
         "tags": [
             "Branding",
             "Editorial",

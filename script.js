@@ -843,6 +843,433 @@ function applySiteContent(content) {
 
     updateFooterLinks(footer);
 }
+function sendVisualPreviewUpdate(path, value) {
+    if (!currentSiteContent || !path) {
+        return;
+    }
+
+    const parts = path.split('.');
+    let target = currentSiteContent;
+
+    for (let index = 0; index < parts.length - 1; index += 1) {
+        if (
+            !target[parts[index]] ||
+            typeof target[parts[index]] !== 'object'
+        ) {
+            return;
+        }
+
+        target = target[parts[index]];
+    }
+
+    target[parts[parts.length - 1]] = value;
+
+    window.parent.postMessage(
+        {
+            type: 'sada-site-content-preview-update',
+            path,
+            value
+        },
+        'https://admin.sadastudio.me'
+    );
+}
+
+function makeVisualPreviewTextEditable(
+    element,
+    path,
+    onChange
+) {
+    if (
+        !element ||
+        !path ||
+        element.dataset.sadaEditable === 'true'
+    ) {
+        return;
+    }
+
+    element.dataset.sadaEditable = 'true';
+
+    element.setAttribute(
+        'contenteditable',
+        'plaintext-only'
+    );
+
+    element.setAttribute('spellcheck', 'true');
+
+    element.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+    });
+
+    element.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            element.blur();
+        }
+
+        event.stopPropagation();
+    });
+
+    element.addEventListener('input', () => {
+        const value = element.textContent.trim();
+
+        sendVisualPreviewUpdate(path, value);
+
+        if (typeof onChange === 'function') {
+            onChange(value);
+        }
+    });
+}
+
+function makeVisualPreviewTextNodeEditable(node, path) {
+    if (
+        !node ||
+        node.nodeType !== Node.TEXT_NODE ||
+        !node.textContent.trim()
+    ) {
+        return;
+    }
+
+    const original = node.textContent;
+
+    const leadingSpace =
+        (original.match(/^\s*/) || [''])[0];
+
+    const trailingSpace =
+        (original.match(/\s*$/) || [''])[0];
+
+    const editable = document.createElement('span');
+
+    editable.textContent = original.trim();
+
+    const replacement = document.createDocumentFragment();
+
+    if (leadingSpace) {
+        replacement.appendChild(
+            document.createTextNode(leadingSpace)
+        );
+    }
+
+    replacement.appendChild(editable);
+
+    if (trailingSpace) {
+        replacement.appendChild(
+            document.createTextNode(trailingSpace)
+        );
+    }
+
+    node.parentNode.replaceChild(replacement, node);
+
+    makeVisualPreviewTextEditable(editable, path);
+}
+
+function installVisualPreviewStyles() {
+    if (document.getElementById('sada-visual-preview-styles')) {
+        return;
+    }
+
+    const style = document.createElement('style');
+
+    style.id = 'sada-visual-preview-styles';
+
+    style.textContent = `
+        [data-sada-editable="true"] {
+            cursor: text !important;
+            outline: 1px dashed transparent;
+            outline-offset: 5px;
+            transition: outline-color 0.15s ease;
+        }
+
+        [data-sada-editable="true"]:hover {
+            outline-color: rgba(245, 99, 153, 0.65);
+        }
+
+        [data-sada-editable="true"]:focus {
+            outline: 2px solid #f56399;
+            outline-offset: 5px;
+        }
+    `;
+
+    document.head.appendChild(style);
+}
+function enableVisualHomepageEditing() {
+    if (!document.querySelector('.hero-section')) {
+        return;
+    }
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.scroll-text'),
+        'homepage.scrollLabel'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.work-heading .main-heading'),
+        'homepage.featuredHeading'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.work-heading .tagline'),
+        'homepage.featuredTagline'
+    );
+
+    const callToAction = document.querySelector(
+        '.bottom-cta-text'
+    );
+
+    if (callToAction) {
+        const textNodes = Array.from(
+            callToAction.childNodes
+        ).filter(node => {
+            return (
+                node.nodeType === Node.TEXT_NODE &&
+                node.textContent.trim()
+            );
+        });
+
+        makeVisualPreviewTextNodeEditable(
+            textNodes[0],
+            'homepage.callToAction.before'
+        );
+
+        makeVisualPreviewTextNodeEditable(
+            textNodes[1],
+            'homepage.callToAction.after'
+        );
+
+        makeVisualPreviewTextEditable(
+            callToAction.querySelector('a span'),
+            'homepage.callToAction.button'
+        );
+    }
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.about-text h2'),
+        'homepage.aboutHeading'
+    );
+
+    document.querySelectorAll(
+        '.about-text > p'
+    ).forEach((paragraph, index) => {
+        makeVisualPreviewTextEditable(
+            paragraph,
+            'homepage.aboutParagraphs.' + index
+        );
+    });
+
+    document.querySelectorAll(
+        '.about-service-tags a'
+    ).forEach((service, index) => {
+        makeVisualPreviewTextEditable(
+            service,
+            'homepage.services.' + index,
+            value => {
+                service.href =
+                    'work.html?filter=' +
+                    encodeURIComponent(value);
+            }
+        );
+    });
+}
+
+function enableVisualWorkPageEditing() {
+    if (!document.querySelector('.work-page-main')) {
+        return;
+    }
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.work-page-title'),
+        'workPage.heading'
+    );
+
+    document.querySelectorAll(
+        '.work-page-description > p'
+    ).forEach((paragraph, index) => {
+        makeVisualPreviewTextEditable(
+            paragraph,
+            'workPage.introParagraphs.' + index
+        );
+    });
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.filter-toggle-label'),
+        'workPage.browseLabel'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.filter-current-label'),
+        'workPage.allWorkLabel',
+        value => {
+            const allWorkChip = document.querySelector(
+                '.filter-chip[data-filter-value="All"] ' +
+                '.filter-chip-label'
+            );
+
+            if (allWorkChip) {
+                allWorkChip.textContent = value;
+            }
+        }
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.secret-call-title'),
+        'workPage.calloutHeading'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.secret-call-cta'),
+        'workPage.calloutButton'
+    );
+}
+function enableVisualProjectPageEditing() {
+    if (!document.querySelector('.project-page-main')) {
+        return;
+    }
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.see-all-work-btn span'),
+        'projectPage.backLabel'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.not-found h1'),
+        'projectPage.notFoundHeading'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.not-found p'),
+        'projectPage.notFoundText'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.not-found a'),
+        'projectPage.notFoundButton'
+    );
+
+    makeVisualPreviewTextEditable(
+        document.querySelector('.project-gallery-empty'),
+        'projectPage.emptyGalleryText'
+    );
+}
+
+function enableVisualSharedEditing() {
+    makeVisualPreviewTextEditable(
+        document.querySelector('.menu-text'),
+        'navigation.menuLabel'
+    );
+
+    document.querySelectorAll(
+        '.nav-link-item'
+    ).forEach(link => {
+        const destination = link.getAttribute('href') || '';
+
+        let path = '';
+
+        if (destination === 'work.html') {
+            path = 'navigation.workLabel';
+        } else if (destination === 'index.html') {
+            path = 'navigation.homeLabel';
+        } else if (destination.includes('#about')) {
+            path = 'navigation.aboutLabel';
+        } else if (destination === '#contact') {
+            path = 'navigation.contactLabel';
+        }
+
+        if (path) {
+            makeVisualPreviewTextEditable(link, path);
+        }
+    });
+
+    const isProjectPage = Boolean(
+        document.querySelector('.project-page-main')
+    );
+
+    const taglinePath = isProjectPage
+        ? 'footer.projectTagline'
+        : 'footer.tagline';
+
+    const tagline = document.querySelector('.footer-tagline');
+
+    if (tagline) {
+        const nodes = Array.from(tagline.childNodes);
+
+        const highlightIndex = nodes.findIndex(node => {
+            return (
+                node.nodeType === Node.ELEMENT_NODE &&
+                node.classList.contains('sonar-word')
+            );
+        });
+
+        nodes.forEach((node, index) => {
+            if (
+                node.nodeType !== Node.TEXT_NODE ||
+                !node.textContent.trim()
+            ) {
+                return;
+            }
+
+            const section = index < highlightIndex
+                ? 'before'
+                : 'after';
+
+            makeVisualPreviewTextNodeEditable(
+                node,
+                taglinePath + '.' + section
+            );
+        });
+
+        makeVisualPreviewTextEditable(
+            tagline.querySelector('.sonar-word strong'),
+            taglinePath + '.highlight'
+        );
+    }
+
+    const email = document.querySelector('.footer-email-link');
+
+    makeVisualPreviewTextEditable(
+        email,
+        'footer.email',
+        value => {
+            email.href = 'mailto:' + value;
+        }
+    );
+
+    document.querySelectorAll(
+        '.footer-social-links a:not([href^="tel:"])'
+    ).forEach((link, index) => {
+        makeVisualPreviewTextEditable(
+            link,
+            'footer.socialLinks.' + index + '.label'
+        );
+    });
+
+    makeVisualPreviewTextEditable(
+        document.querySelector(
+            '.footer-social-links a[href^="tel:"]'
+        ),
+        'footer.phone.label'
+    );
+}
+
+function enableVisualWebsiteEditing() {
+    const parameters = new URLSearchParams(
+        window.location.search
+    );
+
+    const isPreview =
+        parameters.get('cmsPreview') === '1' &&
+        window.parent !== window;
+
+    if (!isPreview || !currentSiteContent) {
+        return;
+    }
+
+    installVisualPreviewStyles();
+
+    enableVisualSharedEditing();
+    enableVisualHomepageEditing();
+    enableVisualWorkPageEditing();
+    enableVisualProjectPageEditing();
+}
     async function fetchProjects() {
     try {
         const response = await fetch('projects.json', {
@@ -1416,6 +1843,7 @@ const allWorkDisplayLabel =
             populateWorkList(projects);
         }
         populateProjectDetail(projects);
+        enableVisualWebsiteEditing();
     }
 
     initializePage();

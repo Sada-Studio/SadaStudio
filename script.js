@@ -1464,7 +1464,10 @@ function updateProjectMetadata(project) {
     if (project) {
         updateProjectMetadata(project);
             const tagsHTML = project.tags.map(tag => createFilterTagLink(tag)).join('');
-            const galleryMedia = sanitizeMediaList(project.images);
+            const galleryMedia = sanitizeMediaList(project.images).filter(
+                mediaSrc => project.showCoverOnProject !== false ||
+                    mediaSrc !== project.thumbnail
+            );
 
             const imagesHTML = galleryMedia.map(mediaSrc => {
                 if (isVideo(mediaSrc)) {

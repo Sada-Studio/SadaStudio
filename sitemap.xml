@@ -7,33 +7,6 @@
     <loc>https://sadastudio.me/work.html</loc>
   </url>
   <url>
-    <loc>https://sadastudio.me/projects/throfee/</loc>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/throfee/throfee-cover.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/throfee/throfee-01.webp</image:loc>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://sadastudio.me/projects/m-fit/</loc>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-cover.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-01.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-02.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-03.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-04.webp</image:loc>
-    </image:image>
-  </url>
-  <url>
     <loc>https://sadastudio.me/projects/house-of-hush/</loc>
     <image:image>
       <image:loc>https://assets.sadastudio.me/projects/house-of-hush/house-of-hush-cover-02.webp</image:loc>
@@ -43,21 +16,21 @@
     </image:image>
   </url>
   <url>
-    <loc>https://sadastudio.me/projects/zanzibar-investment-summit/</loc>
+    <loc>https://sadastudio.me/projects/marsa-inn/</loc>
     <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-cover.webp</image:loc>
+      <image:loc>https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-02.webp</image:loc>
     </image:image>
     <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-01.webp</image:loc>
+      <image:loc>https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-01.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sadastudio.me/projects/throfee/</loc>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/throfee/throfee-cover.webp</image:loc>
     </image:image>
     <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-02.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-03.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-04.webp</image:loc>
+      <image:loc>https://assets.sadastudio.me/projects/throfee/throfee-01.webp</image:loc>
     </image:image>
   </url>
   <url>
@@ -67,30 +40,6 @@
     </image:image>
     <image:image>
       <image:loc>https://assets.sadastudio.me/projects/presstine/presstine-01.webp</image:loc>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://sadastudio.me/projects/the-super-power-father/</loc>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-cover.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-01.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-02.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-03.webp</image:loc>
-    </image:image>
-  </url>
-  <url>
-    <loc>https://sadastudio.me/projects/marsa-inn/</loc>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-02.webp</image:loc>
-    </image:image>
-    <image:image>
-      <image:loc>https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-01.webp</image:loc>
     </image:image>
   </url>
   <url>
@@ -142,6 +91,57 @@
     </image:image>
     <image:image>
       <image:loc>https://assets.sadastudio.me/projects/takawin/takawin-04.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sadastudio.me/projects/m-fit/</loc>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-cover.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-02.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-03.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/m-fit/m-fit-04.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sadastudio.me/projects/zanzibar-investment-summit/</loc>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-cover.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-02.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-03.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-04.webp</image:loc>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://sadastudio.me/projects/the-super-power-father/</loc>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-cover.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-01.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-02.webp</image:loc>
+    </image:image>
+    <image:image>
+      <image:loc>https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-03.webp</image:loc>
     </image:image>
   </url>
   <url>

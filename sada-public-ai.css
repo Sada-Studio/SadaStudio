@@ -1,0 +1,134 @@
+.sada-guide-root {
+  --sada-guide-bg: #0b0b0d;
+  --sada-guide-panel: #121216;
+  --sada-guide-panel-2: #18181d;
+  --sada-guide-line: rgba(255, 255, 255, 0.1);
+  --sada-guide-text: #f4f3f1;
+  --sada-guide-muted: #9d9ba2;
+  --sada-guide-quiet: #6f6d75;
+  --sada-guide-accent: #f56399;
+  --sada-guide-radius: 18px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.sada-guide-launch {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 9000;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(10,10,12,.9);
+  box-shadow: 0 14px 40px rgba(0,0,0,.28);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: -.01em;
+}
+
+.sada-guide-launch-mark {
+  color: var(--sada-guide-accent);
+  font-size: 16px;
+}
+
+.sada-guide-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9001;
+  opacity: 0;
+  visibility: hidden;
+  background: rgba(0,0,0,.48);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: opacity .2s ease, visibility .2s ease;
+}
+
+.sada-guide-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.sada-guide-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  z-index: 9002;
+  width: min(480px, 100vw);
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto auto;
+  transform: translateX(102%);
+  border-left: 1px solid var(--sada-guide-line);
+  color: var(--sada-guide-text);
+  background: var(--sada-guide-bg);
+  box-shadow: -24px 0 60px rgba(0,0,0,.34);
+  transition: transform .25s ease;
+}
+
+.sada-guide-drawer.open { transform: translateX(0); }
+.sada-guide-header { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 18px 14px; border-bottom:1px solid var(--sada-guide-line); }
+.sada-guide-kicker { margin-bottom:3px; color:var(--sada-guide-muted); font-size:9px; font-weight:700; letter-spacing:.17em; }
+.sada-guide-title { font-size:19px; font-weight:650; letter-spacing:-.03em; }
+.sada-guide-close { width:36px; height:36px; border:1px solid var(--sada-guide-line); border-radius:50%; color:var(--sada-guide-text); background:transparent; cursor:pointer; font-size:22px; line-height:1; }
+.sada-guide-context { padding:9px 18px; border-bottom:1px solid var(--sada-guide-line); color:var(--sada-guide-muted); font-size:10px; }
+.sada-guide-messages { min-height:0; overflow-y:auto; padding:20px 18px 28px; overscroll-behavior:contain; }
+.sada-guide-empty { padding:12px 0 26px; }
+.sada-guide-empty-title { margin-bottom:8px; font-size:21px; font-weight:650; letter-spacing:-.03em; }
+.sada-guide-empty-copy { max-width:390px; color:var(--sada-guide-muted); font-size:13px; line-height:1.55; }
+.sada-guide-prompts { display:grid; gap:8px; margin-top:20px; }
+.sada-guide-prompts button { width:100%; padding:12px 13px; border:1px solid var(--sada-guide-line); border-radius:12px; color:var(--sada-guide-text); background:var(--sada-guide-panel); cursor:pointer; text-align:left; font-size:12px; }
+.sada-guide-message { max-width:88%; margin-bottom:16px; }
+.sada-guide-message.user { margin-left:auto; }
+.sada-guide-message-label { margin:0 4px 5px; color:var(--sada-guide-quiet); font-size:9px; font-weight:650; letter-spacing:.08em; text-transform:uppercase; }
+.sada-guide-message.user .sada-guide-message-label { text-align:right; }
+.sada-guide-bubble { padding:11px 13px; border:1px solid var(--sada-guide-line); border-radius:14px; background:var(--sada-guide-panel); font-size:13px; line-height:1.55; overflow-wrap:anywhere; }
+.sada-guide-message.user .sada-guide-bubble { border-color:rgba(245,99,153,.2); background:rgba(245,99,153,.1); }
+.sada-guide-message.thinking { opacity:.65; }
+.sada-guide-projects { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin:-4px 0 20px; }
+.sada-guide-project-card { overflow:hidden; border:1px solid var(--sada-guide-line); border-radius:13px; color:var(--sada-guide-text); background:var(--sada-guide-panel); text-decoration:none; }
+.sada-guide-project-card img { width:100%; aspect-ratio:1.35 / 1; display:block; object-fit:cover; }
+.sada-guide-project-body { padding:10px; }
+.sada-guide-project-title { margin-bottom:3px; font-size:11px; font-weight:700; }
+.sada-guide-project-description { color:var(--sada-guide-muted); font-size:9px; line-height:1.35; }
+.sada-guide-submit-prompt { margin:4px 0 20px; padding:13px; border:1px solid rgba(245,99,153,.23); border-radius:14px; background:rgba(245,99,153,.07); font-size:11px; line-height:1.5; }
+.sada-guide-submit-prompt button { margin-top:10px; min-height:34px; padding:0 12px; border:0; border-radius:9px; color:#160d11; background:var(--sada-guide-accent); cursor:pointer; font-size:11px; font-weight:700; }
+.sada-guide-submit-panel { padding:14px 16px; border-top:1px solid var(--sada-guide-line); background:var(--sada-guide-panel); }
+.sada-guide-submit-title { margin-bottom:4px; font-size:13px; font-weight:700; }
+.sada-guide-submit-copy { margin-bottom:10px; color:var(--sada-guide-muted); font-size:10px; line-height:1.45; }
+.sada-guide-submit-grid { display:grid; grid-template-columns:1fr 1fr; gap:7px; }
+.sada-guide-contact { min-width:0; min-height:38px; padding:0 10px; border:1px solid var(--sada-guide-line); border-radius:9px; outline:none; color:var(--sada-guide-text); background:var(--sada-guide-bg); font-size:16px; }
+.sada-guide-contact:focus { border-color:rgba(245,99,153,.65); }
+.sada-guide-submit-actions { display:flex; justify-content:flex-end; gap:7px; margin-top:9px; }
+.sada-guide-submit-actions button { min-height:34px; padding:0 11px; border-radius:9px; cursor:pointer; font-size:10px; font-weight:650; }
+.sada-guide-submit-cancel { border:1px solid var(--sada-guide-line); color:var(--sada-guide-text); background:transparent; }
+.sada-guide-submit-button { border:0; color:#160d11; background:var(--sada-guide-accent); }
+.sada-guide-submit-error { min-height:14px; margin-top:6px; color:#ff8d8a; font-size:9px; }
+.sada-guide-composer { padding:11px 12px max(12px, env(safe-area-inset-bottom)); border-top:1px solid var(--sada-guide-line); background:var(--sada-guide-bg); }
+.sada-guide-input { width:100%; min-height:50px; max-height:160px; display:block; resize:none; padding:11px 12px; border:1px solid var(--sada-guide-line); border-radius:12px; outline:none; color:var(--sada-guide-text); background:var(--sada-guide-panel); font:inherit; font-size:16px; line-height:1.45; }
+.sada-guide-input:focus { border-color:rgba(245,99,153,.6); }
+.sada-guide-send { width:100%; min-height:38px; margin-top:7px; border:0; border-radius:10px; color:#160d11; background:var(--sada-guide-accent); cursor:pointer; font-size:11px; font-weight:750; }
+.sada-guide-send:disabled { opacity:.55; cursor:default; }
+.sada-guide-privacy { margin-top:8px; color:var(--sada-guide-quiet); font-size:8px; line-height:1.4; }
+body.sada-guide-open { overflow:hidden; }
+
+@media (max-width:700px) {
+  .sada-guide-launch { right:14px; bottom:max(14px, env(safe-area-inset-bottom)); }
+  .sada-guide-drawer { width:100vw; border-left:0; }
+  .sada-guide-header { padding-top:max(16px, env(safe-area-inset-top)); }
+  .sada-guide-message { max-width:94%; }
+  .sada-guide-projects { grid-template-columns:1fr; }
+  .sada-guide-submit-grid { grid-template-columns:1fr; }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .sada-guide-overlay,
+  .sada-guide-drawer { transition:none; }
+}

@@ -859,6 +859,21 @@ function updateFooterLinks(footer) {
         link.target = '_blank';
         link.rel = 'noopener noreferrer';
 
+        const isOfficialSadaInstagram =
+            address.hostname.replace(/^www\./, '').toLowerCase() ===
+                'instagram.com' &&
+            address.pathname.replace(/\/+$/, '').toLowerCase() ===
+                '/sadastudio.me';
+
+        if (isOfficialSadaInstagram) {
+            link.href = 'https://www.instagram.com/sadastudio.me/';
+            link.rel = 'me noopener noreferrer';
+            link.setAttribute(
+                'aria-label',
+                'Sada Studio on Instagram (@sadastudio.me)'
+            );
+        }
+
         socialContainer.appendChild(link);
     });
 

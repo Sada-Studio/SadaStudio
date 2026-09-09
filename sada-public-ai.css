@@ -59,7 +59,15 @@
 }
 
 /* Keep just the face in these reserved windows; the full sprites stay intact. */
-.sada-guide-echo-face[data-echo-set="neutral"] { object-position: center; }
+.sada-guide-echo-face[data-echo-set="neutral"],
+.sada-guide-echo-face[data-echo-set="sad"],
+.sada-guide-echo-face[data-echo-set="scared"] { object-position: center; }
+.sada-guide-echo-face[data-echo-set="angry"],
+.sada-guide-echo-face[data-echo-set="confused"] {
+  height: 116%;
+  object-fit: contain;
+  transform: translateY(-4%);
+}
 .sada-guide-echo-face[data-echo-set="loading"] { object-position: center bottom; }
 .sada-guide-header-actions { display: flex; align-items: center; gap: 12px; flex: 0 0 auto; }
 .sada-guide-launch:focus-visible,

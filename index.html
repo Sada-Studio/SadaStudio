@@ -84,15 +84,17 @@
       ]
     }
     </script>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="/sada-public-ai.css?v=20260909d">
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css?v=20260909f">
+    <link rel="stylesheet" href="/sada-studio.css?v=20260909f">
+    <link rel="stylesheet" href="/sada-public-ai.css?v=20260909f">
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&family=Noto+Sans+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <!-- Favicon -->
     <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
     <link rel="alternate icon" href="/favicon.ico">
     <link rel="apple-touch-icon" href="/favicon.png">
 </head>
-<body>
+<body id="top">
+    <a class="studio-skip-link" href="#main-content">Skip to content</a>
 
     <!-- Preloader -->
     <div id="preloader">
@@ -106,7 +108,7 @@
             <div class="logo">
                 <a href="/"><img src="https://assets.sadastudio.me/site/web_logo.png" alt="Sada Studio Logo"></a>
             </div>
-            <button class="menu-toggle" aria-label="Toggle navigation">
+            <button class="menu-toggle" aria-label="Open navigation" aria-expanded="false" aria-controls="studio-navigation">
                 <div class="burger-lines">
                     <span></span>
                     <span></span>
@@ -117,33 +119,54 @@
         </div>
     </header>
 
-    <nav class="full-screen-nav">
-        <button class="close-nav" aria-label="Close navigation">×</button>
+    <nav class="full-screen-nav" id="studio-navigation" aria-label="Main navigation" aria-hidden="true" inert>
+        <button class="close-nav" type="button" aria-label="Close navigation"><span>Close</span> ×</button>
+        <div class="studio-nav-top"><span>SADA STUDIO</span><span class="studio-arabic" lang="ar" dir="rtl">خلّينا نعمل صدى.</span></div>
         <ul>
-            <li><a href="work.html" class="nav-link-item">Work</a></li>
-            <li><a href="/#about" class="nav-link-item">About</a></li>
-            <li><a href="#contact" class="nav-link-item">Contact</a></li>
+            <li data-nav-number="01"><a href="/" class="nav-link-item" data-arabic="البداية">Home</a></li>
+            <li data-nav-number="02"><a href="/work.html" class="nav-link-item" data-arabic="شغلنا">Work</a></li>
+            <li data-nav-number="03"><a href="/#about" class="nav-link-item" data-arabic="عن صدى">About</a></li>
+            <li data-nav-number="04"><a href="#contact" class="nav-link-item" data-arabic="نحكي؟">Contact</a></li>
         </ul>
+        <div class="studio-nav-aside">
+            <p>Good things start<br>with a conversation.</p>
+            <a class="studio-nav-email" href="mailto:info@sadastudio.me">info@sadastudio.me ↗</a>
+            <button type="button" class="studio-echo-note" data-ask-sada aria-label="Ask Echo about Sada">
+                <span class="studio-echo-visual" data-sada-echo aria-hidden="true"></span>
+                <span>Or ask the cat.<small>Echo knows his way around. ↗</small></span>
+            </button>
+        </div>
+        <div class="studio-nav-bottom"><span>Independent minds. Lasting impressions.</span><span>Lebanon → Everywhere</span></div>
     </nav>
 
-    <main>
-        <section class="hero-section">
-            <img src="https://assets.sadastudio.me/site/color_logo_animation_1.gif" alt="Sada Studio Logo Animation" class="hero-video">
-            <a href="#work" class="scroll-down-indicator">
-                <div class="scroll-arrows">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+    <main id="main-content">
+        <section class="hero-section studio-hero" aria-labelledby="studio-hero-title">
+            <div class="container studio-hero-inner">
+                <div class="studio-hero-meta">
+                    <p class="studio-hero-eyebrow">Independent creative studio · Lebanon</p>
+                    <span class="studio-arabic" lang="ar" dir="rtl">من هون، لكل محل.</span>
                 </div>
-                <span class="scroll-text">Scroll Down</span>
-            </a>
+                <div class="studio-hero-art">
+                    <img src="https://assets.sadastudio.me/site/color_logo_animation_1.gif" alt="Sada — صدى" class="hero-video" fetchpriority="high" decoding="async">
+                </div>
+                <div class="studio-hero-type" data-echo-type>
+                    <span class="studio-type-impression" aria-hidden="true"></span>
+                    <span class="studio-type-impression" aria-hidden="true"></span>
+                    <h1 id="studio-hero-title">Make some SADA.</h1>
+                </div>
+                <div class="studio-hero-bottom">
+                    <p class="studio-hero-intro">Brands, images and experiences that stay with you.</p>
+                    <a href="#work" class="scroll-down-indicator"><span class="scroll-text">Take a look</span><span aria-hidden="true">↓</span></a>
+                </div>
+            </div>
         </section>
 
         <section id="work" class="work-section">
             <div class="container">
                 <div class="work-heading">
-                    <h2 class="main-heading">Our featured Work</h2>
-                    <p class="tagline">LET’S MAKE AN ECHO</p>
+                    <div class="studio-section-label"><span>01 / Selected projects</span><span class="studio-arabic" lang="ar" dir="rtl">شغلنا</span></div>
+                    <h2 class="main-heading">Selected work</h2>
+                    <p class="tagline">Different worlds. Same restless minds.</p>
                 </div>
                 <div class="work-grid" id="featured-work-grid" data-nosnippet>
                     <!-- SADA_FEATURED_START -->
@@ -156,11 +179,11 @@
             <div class="cta-section new-cta-section">
                 <div class="container">
                     <h2 class="bottom-cta-text">
-                        We do many
+                        There’s more
                         <a href="work.html" class="btn see-all-work-btn">
-                            <span>SEE ALL WORK</span>
+                            <span>Explore all work</span>
                         </a>
-                        things very well.
+                        where that came from.
                     </h2>
                 </div>
             </div>
@@ -176,10 +199,11 @@
             </div>
             <div class="container about-content-container">
                 <div class="about-text">
-                    <h2>About Us</h2>
-                    <p>SADA - صدى isn't just a label; it's our philosophy. It draws inspiration from the timeless act of communication and the profound power of reflection.</p>
-                    <p>At SADA - صدى, we are the ultimate reflectors and amplifiers. We take your core ideas, your unique vision, and your brand's very essence, then project them with unparalleled clarity, impact, and reach. Just as an echo fills a space with amplified sound, we ensure your brand fills its market, resonating with your audience and leaving an indelible mark.</p>
-                    <p>Our mission is singular: To provide comprehensive and innovative creative solutions that don't just elevate brands, but forge truly impactful experiences – both online and in physical form.</p>
+                    <div class="studio-section-label"><span>02 / The studio</span><span class="studio-arabic" lang="ar" dir="rtl">عن صدى</span></div>
+                    <h2>A little about the noise.</h2>
+                    <p>Sada means echo. We’re an independent creative studio in Lebanon, making brands that have something to say.</p>
+                    <p>We work across identity, packaging, motion and digital. From the first question to the smallest detail, we find what makes a brand itself — and give it a world to live in.</p>
+                    <p>Rooted here. Curious everywhere. We like a sharp idea, an unexpected detail, and work that stays with you.</p>
                     <div class="work-tags about-service-tags">
                         <a class="tag-link" href="work.html?filter=Branding">Branding</a>
                         <a class="tag-link" href="work.html?filter=Animation">Animation</a>
@@ -206,25 +230,35 @@
 
     </main>
 
-    <footer id="contact" class="main-footer">
+    <footer id="contact" class="main-footer studio-footer">
         <div class="container">
+            <div class="studio-section-label"><span>Let’s make something</span><span class="studio-arabic" lang="ar" dir="rtl">عندك فكرة؟</span></div>
             <div class="footer-content-wrapper">
                 <div class="footer-text-content">
-                    <p class="footer-tagline">Let’s Make Some <span class="sonar-word"><strong>SADA.</strong></span></p>
-                    <a href="mailto:info@sadastudio.me" class="footer-email-link">info@sadastudio.me</a>
-                    <div class="footer-social-links">
-                        <a href="https://www.instagram.com/sadastudio.me/" target="_blank" rel="me noopener noreferrer" aria-label="Sada Studio on Instagram (@sadastudio.me)">Instagram</a>
-                        <a href="https://wa.me/96103118825" target="_blank">WhatsApp</a>
-                        <a href="https://www.facebook.com/profile.php?id=61587700562066" target="_blank">Facebook</a>
-                        <a href="https://www.linkedin.com/company/sada-studio-lb" target="_blank">Linkedin</a>
-                        <a href="https://x.com/Sadastudiolb" target="_blank">x</a>
-                        <a href="tel:+9613118825">+961 3 118 825</a>
+                    <p class="footer-tagline">Have a good <span class="sonar-word"><strong>feeling?</strong></span></p>
+                    <div class="studio-contact-actions">
+                        <button type="button" class="studio-contact-start" data-ask-sada data-sada-prompt="I’d like to start a project with Sada. Help me put together a brief.">Start a project <span aria-hidden="true">↗</span></button>
+                        <a class="studio-whatsapp-link" href="https://wa.me/9613118825" target="_blank" rel="noopener noreferrer">Let’s WhatsApp ↗</a>
                     </div>
+                    <a href="mailto:info@sadastudio.me" class="footer-email-link">info@sadastudio.me</a>
                 </div>
-                <div class="footer-logo">
-                    <img src="https://assets.sadastudio.me/site/footer_logo.png" alt="Sada Studio decorative logo">
-                </div>
+                <button type="button" class="studio-echo-note studio-footer-echo" data-ask-sada aria-label="Ask Echo about Sada">
+                    <span class="studio-echo-visual" data-sada-echo aria-hidden="true"></span>
+                    <span>Small cat.<br>Big opinions.<small>Ask Echo ↗</small></span>
+                </button>
             </div>
+            <div class="studio-footer-bottom">
+                <div class="footer-social-links">
+                    <a href="https://www.instagram.com/sadastudio.me/" target="_blank" rel="me noopener noreferrer">Instagram</a>
+                    <a href="https://wa.me/9613118825" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                    <a href="https://www.facebook.com/profile.php?id=61587700562066" target="_blank" rel="noopener noreferrer">Facebook</a>
+                    <a href="https://www.linkedin.com/company/sada-studio-lb" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    <a href="https://x.com/Sadastudiolb" target="_blank" rel="noopener noreferrer">X</a>
+                    <a href="tel:+9613118825">+961 3 118 825</a>
+                </div>
+                <div class="footer-logo"><img src="https://assets.sadastudio.me/site/footer_logo.png" alt="Sada Studio" width="150" loading="lazy" decoding="async"></div>
+            </div>
+            <div class="studio-footer-colophon"><span>SADA STUDIO · LEBANON</span><span>Made to leave an echo.</span><a href="#top">Back to top ↑</a></div>
         </div>
     </footer>
 
@@ -238,7 +272,7 @@
     <div class="cursor cursor-trail"></div>
     <div class="cursor cursor-trail"></div>
 
-    <script src="script.js"></script>
-    <script src="/sada-public-ai.js?v=20260909e" defer></script>
+    <script src="/script.js?v=20260909f"></script>
+    <script src="/sada-public-ai.js?v=20260909f" defer></script>
 </body>
 </html>

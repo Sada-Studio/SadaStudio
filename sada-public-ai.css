@@ -451,3 +451,23 @@ body.sada-guide-open { overflow: hidden; }
   .sada-guide-send { transition: none; }
   .sada-guide-fetch-progress-fill { animation: none; transform: translateX(110%); }
 }
+
+/* Keep a generous hero, and bring the first prompts closer. */
+.sada-guide-echo-hero { padding: 12px 0 22px; }
+.sada-guide-echo-hero-visual { width: 196px; min-height: 268px; margin-bottom: 5px; }
+.sada-guide-echo-hero-image { width: 196px; }
+.sada-guide-echo-tagline { margin-top: 12px; }
+.sada-guide-empty-divider { margin-bottom: 22px; }
+.sada-guide-empty-title { font-size: 25px; }
+.sada-guide-empty-copy { font-size: 15px; }
+@media (max-width: 700px) {
+  .sada-guide-echo-hero { padding: 8px 0 20px; }
+  .sada-guide-echo-hero-visual { width: 184px; min-height: 252px; }
+  .sada-guide-echo-hero-image { width: 184px; }
+  .sada-guide-empty-title { font-size: 24px; }
+  .sada-guide-empty-copy { font-size: 15px; }
+}
+@media (max-height: 650px) and (max-width: 700px) {
+  .sada-guide-echo-hero-visual { width: 160px; min-height: 219px; }
+  .sada-guide-echo-hero-image { width: 160px; }
+}

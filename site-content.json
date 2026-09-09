@@ -11,19 +11,19 @@
       "title": "Sada Studio | Branding & Creative Agency in Lebanon",
       "description": "Sada Studio is a Lebanon-based creative studio specializing in branding, visual identity, packaging, social media, photography, and digital experiences."
     },
-    "scrollLabel": "Scroll Down",
-    "featuredHeading": "Our featured Work",
-    "featuredTagline": "LET’S MAKE AN ECHO",
+    "scrollLabel": "Take a look",
+    "featuredHeading": "Selected work",
+    "featuredTagline": "Different worlds. Same restless minds.",
     "callToAction": {
-      "before": "We do many",
-      "button": "SEE ALL WORK",
-      "after": "things very well."
+      "before": "There’s more",
+      "button": "Explore all work",
+      "after": "where that came from."
     },
-    "aboutHeading": "About Us",
+    "aboutHeading": "A little about the noise.",
     "aboutParagraphs": [
-      "SADA - صدى isn't just a label; it's our philosophy. It draws inspiration from the timeless act of communication and the profound power of reflection.",
-      "At SADA - صدى, we are the ultimate reflectors and amplifiers. We take your core ideas, your unique vision, and your brand's very essence, then project them with unparalleled clarity, impact, and reach. Just as an echo fills a space with amplified sound, we ensure your brand fills its market, resonating with your audience and leaving an indelible mark.",
-      "Our mission is singular: To provide comprehensive and innovative creative solutions that don't just elevate brands, but forge truly impactful experiences – both online and in physical form."
+      "Sada means echo. We’re an independent creative studio in Lebanon, making brands that have something to say.",
+      "We work across identity, packaging, motion and digital. From the first question to the smallest detail, we find what makes a brand itself — and give it a world to live in.",
+      "Rooted here. Curious everywhere. We like a sharp idea, an unexpected detail, and work that stays with you."
     ],
     "services": [
       "Branding",
@@ -41,23 +41,25 @@
       "Illustrations",
       "Packaging",
       "Website Design & Development"
-    ]
+    ],
+    "heroEyebrow": "Independent creative studio · Lebanon",
+    "heroHeadline": "Make some SADA.",
+    "heroIntro": "Brands, images and experiences that stay with you."
   },
   "workPage": {
     "seo": {
       "title": "Branding, Packaging & Creative Projects | Sada Studio",
       "description": "Explore branding, visual identity, packaging, social media, photography, and creative projects by Sada Studio, a Lebanon-based creative agency."
     },
-    "heading": "All Projects",
+    "heading": "Our work.",
     "introParagraphs": [
-      "We don’t just create brands; we create echoes",
-      "At SADA - صدى, we believe your vision deserves a single, powerful voice.",
-      "We're not just another creative agency; we are the architects of impact, providing an unparalleled A to Z experience that uniquely integrates innovative branding, strategic digital marketing, and bespoke interior concept development and execution."
+      "New identities. Different perspectives. A few good surprises.",
+      "Explore what we’ve made, or find the kind of work you have in mind."
     ],
-    "browseLabel": "Browse",
+    "browseLabel": "Filter",
     "allWorkLabel": "All work",
-    "calloutHeading": "Want Some more?",
-    "calloutButton": "Contact us"
+    "calloutHeading": "Something on your mind?",
+    "calloutButton": "Let’s hear it"
   },
   "projectPage": {
     "backLabel": "← Back",
@@ -68,14 +70,14 @@
   },
   "footer": {
     "tagline": {
-      "before": "Let’s Make Some",
-      "highlight": "SADA.",
+      "before": "Have a good",
+      "highlight": "feeling?",
       "after": ""
     },
     "projectTagline": {
-      "before": "ready to make an",
-      "highlight": "echo?",
-      "after": "lets talk"
+      "before": "Your idea.",
+      "highlight": "Our next obsession.",
+      "after": ""
     },
     "email": "info@sadastudio.me",
     "phone": {
@@ -89,18 +91,18 @@
       },
       {
         "label": "WhatsApp",
-        "url": "https://wa.me/96103118825"
+        "url": "https://wa.me/9613118825"
       },
       {
         "label": "Facebook",
         "url": "https://www.facebook.com/profile.php?id=61587700562066"
       },
       {
-        "label": "Linkedin",
+        "label": "LinkedIn",
         "url": "https://www.linkedin.com/company/sada-studio-lb"
       },
       {
-        "label": "x",
+        "label": "X",
         "url": "https://x.com/Sadastudiolb"
       }
     ]

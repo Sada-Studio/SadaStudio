@@ -44,22 +44,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('.main-header');
     const video = document.querySelector('.hero-video');
 
-    // --- Navigation Toggle ---
+    // --- Navigation: preserve scroll, keep focus inside the open menu. ---
     if (menuToggle && fullScreenNav && closeNavButton) {
-        const closeMenu = () => {
+        const backgroundState = new Map();
+        let previousOverflow = '';
+        const closeMenu = (restoreFocus = true) => {
+            if (!fullScreenNav.classList.contains('active')) return;
             fullScreenNav.classList.remove('active');
+            fullScreenNav.setAttribute('aria-hidden', 'true');
+            fullScreenNav.inert = true;
             menuToggle.classList.remove('active');
+            menuToggle.setAttribute('aria-expanded', 'false');
+            backgroundState.forEach((wasInert, element) => { element.inert = wasInert; });
+            backgroundState.clear();
             if (header) header.classList.remove('header-hidden');
-            document.body.style.overflow = '';
+            document.body.style.overflow = previousOverflow;
+            if (restoreFocus) menuToggle.focus({ preventScroll: true });
         };
         menuToggle.addEventListener('click', () => {
+            previousOverflow = document.body.style.overflow;
+            fullScreenNav.inert = false;
+            fullScreenNav.setAttribute('aria-hidden', 'false');
             fullScreenNav.classList.add('active');
             menuToggle.classList.add('active');
+            menuToggle.setAttribute('aria-expanded', 'true');
             if (header) header.classList.remove('header-hidden');
+            document.querySelectorAll('body > main, body > footer, .main-header, .sada-guide-root').forEach(element => {
+                backgroundState.set(element, element.inert);
+                element.inert = true;
+            });
             document.body.style.overflow = 'hidden';
+            closeNavButton.focus({ preventScroll: true });
         });
-        closeNavButton.addEventListener('click', closeMenu);
-        navLinkItems.forEach(link => link.addEventListener('click', closeMenu));
+        closeNavButton.addEventListener('click', () => closeMenu());
+        navLinkItems.forEach(link => link.addEventListener('click', () => closeMenu(false)));
+        fullScreenNav.addEventListener('click', event => {
+            if (event.target.closest('[data-ask-sada]')) closeMenu(false);
+        });
+        fullScreenNav.addEventListener('keydown', event => {
+            if (!fullScreenNav.classList.contains('active')) return;
+            if (event.key === 'Escape') { event.preventDefault(); closeMenu(); return; }
+            if (event.key !== 'Tab') return;
+            const controls = Array.from(fullScreenNav.querySelectorAll('a[href], button:not([disabled])'));
+            const first = controls[0], last = controls[controls.length - 1];
+            if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+            else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        });
     }
 
     // --- Header Background + Hide on Scroll Down ---
@@ -543,7 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'Videography',
         'Social Media Strategies',
         'Publications',
-        'Illustrations',
+        'Illustration',
         'Packaging',
         'Website Design & Development'
     ];
@@ -558,7 +588,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'SEO'
     ];
 
-    const normalizeTag = (tag = '') => tag.trim().toLowerCase().replace(/\s+/g, ' ');
+    const normalizeTag = (tag = '') => {
+        const value = String(tag).trim().toLowerCase().replace(/\s+/g, ' ');
+        return value === 'illustrations' ? 'illustration' : value;
+    };
     const hiddenFilterSet = new Set(hiddenFilterTags.map(tag => normalizeTag(tag)));
 
     const tagDisplayMap = new Map(baseServiceTags.map(tag => [normalizeTag(tag), tag]));
@@ -920,6 +953,9 @@ function applySiteContent(content) {
         applyPageSeo(homepage.seo);
 
         setSiteText('.scroll-text', homepage.scrollLabel);
+        setSiteText('.studio-hero-eyebrow', homepage.heroEyebrow);
+        setSiteText('#studio-hero-title', homepage.heroHeadline);
+        setSiteText('.studio-hero-intro', homepage.heroIntro);
 
         setSiteText(
             '.work-heading .main-heading',
@@ -1030,6 +1066,13 @@ function applySiteContent(content) {
     );
 
     updateFooterLinks(footer);
+    document.querySelectorAll('.studio-nav-email').forEach(link => {
+        if (footer.email) { link.textContent = footer.email + ' ↗'; link.href = 'mailto:' + footer.email; }
+    });
+    const whatsapp = (footer.socialLinks || []).find(link => /^https:\/\/wa\.me\//i.test(link.url || ''));
+    if (whatsapp) document.querySelectorAll('.studio-whatsapp-link').forEach(link => { link.href = whatsapp.url; });
+    decorateStudioNavigation();
+    syncStudioImpressions();
 }
 function sendVisualPreviewUpdate(path, value) {
     if (!currentSiteContent || !path) {
@@ -1184,6 +1227,10 @@ function enableVisualHomepageEditing() {
     if (!document.querySelector('.hero-section')) {
         return;
     }
+
+    makeVisualPreviewTextEditable(document.querySelector('.studio-hero-eyebrow'), 'homepage.heroEyebrow');
+    makeVisualPreviewTextEditable(document.querySelector('#studio-hero-title'), 'homepage.heroHeadline', syncStudioImpressions);
+    makeVisualPreviewTextEditable(document.querySelector('.studio-hero-intro'), 'homepage.heroIntro');
 
     makeVisualPreviewTextEditable(
         document.querySelector('.scroll-text'),
@@ -1363,7 +1410,7 @@ function enableVisualSharedEditing() {
         }
 
         if (path) {
-            makeVisualPreviewTextEditable(link, path);
+            makeVisualPreviewTextEditable(link.querySelector('.studio-nav-label') || link, path);
         }
     });
 
@@ -1553,6 +1600,92 @@ function updateProjectMetadata(project) {
 
     canonical.setAttribute('href', pageUrl);
 }
+    function decorateStudioNavigation() {
+        document.querySelectorAll('.nav-link-item[data-arabic]').forEach(link => {
+            if (link.querySelector('.studio-nav-label')) return;
+            const label = document.createElement('span');
+            label.className = 'studio-nav-label';
+            label.textContent = link.textContent;
+            const arabic = document.createElement('span');
+            arabic.className = 'studio-nav-arabic studio-arabic';
+            arabic.lang = 'ar';
+            arabic.dir = 'rtl';
+            arabic.setAttribute('aria-hidden', 'true');
+            arabic.textContent = link.dataset.arabic;
+            link.replaceChildren(label, arabic);
+        });
+    }
+
+    function syncStudioImpressions() {
+        const title = document.getElementById('studio-hero-title');
+        if (!title) return;
+        document.querySelectorAll('.studio-type-impression').forEach(layer => { layer.textContent = title.textContent; });
+    }
+
+    function setupStudioSignature() {
+        decorateStudioNavigation();
+        syncStudioImpressions();
+        const hero = document.querySelector('.studio-hero');
+        const type = document.querySelector('[data-echo-type]');
+        if (!hero || !type || prefersReducedMotion) return;
+        let scheduled = false;
+        const update = () => {
+            scheduled = false;
+            const rect = hero.getBoundingClientRect();
+            if (rect.bottom < 0 || document.hidden) return;
+            const travel = Math.max(0, Math.min(1, -rect.top / Math.max(1, rect.height)));
+            type.style.setProperty('--echo-shift', (8 + travel * 12).toFixed(1) + 'px');
+            type.style.setProperty('--echo-opacity', (.22 * (1 - travel)).toFixed(3));
+        };
+        window.addEventListener('scroll', () => {
+            if (!scheduled) { scheduled = true; requestAnimationFrame(update); }
+        }, { passive: true });
+        update();
+    }
+
+    function setupStudioServiceLinks(projects) {
+        // Services remain in the CMS; only categories with projects act as filters.
+        const present = new Set(projects.flatMap(project => (project.tags || []).map(normalizeTag)));
+        const isCmsPreview = new URLSearchParams(location.search).get('cmsPreview') === '1' && window.parent !== window;
+        if (isCmsPreview) return;
+        document.querySelectorAll('.about-service-tags .tag-link').forEach(link => {
+            const label = getTagLabel(link.textContent);
+            if (present.has(normalizeTag(label))) {
+                link.textContent = label;
+                link.href = '/work.html?filter=' + encodeURIComponent(label);
+            } else {
+                const service = document.createElement('span');
+                service.className = 'studio-service-label';
+                service.textContent = link.textContent;
+                link.replaceWith(service);
+            }
+        });
+    }
+
+    function setupWorkViews() {
+        if (!workPageList) return;
+        const buttons = document.querySelectorAll('[data-work-view]');
+        let view = new URLSearchParams(location.search).get('view');
+        if (view !== 'gallery' && view !== 'index') {
+            try { view = localStorage.getItem('sada-work-view-v1'); } catch { view = null; }
+        }
+        const applyView = (nextView, remember = false) => {
+            view = nextView === 'index' ? 'index' : 'gallery';
+            workPageList.dataset.view = view;
+            buttons.forEach(button => button.setAttribute('aria-pressed', String(button.dataset.workView === view)));
+            workPageList.querySelectorAll('video').forEach(video => { if (view === 'index') video.pause(); });
+            workPageList.dispatchEvent(new Event('sada:viewchange'));
+            if (remember) {
+                try { localStorage.setItem('sada-work-view-v1', view); } catch {}
+                const url = new URL(location.href);
+                url.searchParams.set('view', view);
+                history.replaceState(history.state, '', url);
+            }
+        };
+        buttons.forEach(button => button.addEventListener('click', () => applyView(button.dataset.workView, true)));
+        applyView(view);
+    }
+
     function populateFeaturedGrid(projects) {
         if (!featuredWorkGrid) return;
         const featuredProjects = projects.filter(p => p.featured);
@@ -1572,7 +1705,7 @@ function updateProjectMetadata(project) {
                         <source src="${project.thumbnail}" type="video/mp4">
                     </video>`;
             } else {
-                mediaHTML = `<img src="${project.thumbnail}" alt="${project.title} Project Thumbnail" class="work-img">`;
+                mediaHTML = `<img src="${project.thumbnail}" alt="${project.title} Project Thumbnail" class="work-img" loading="lazy" decoding="async">`;
             }
 
             projectItem.innerHTML = `
@@ -1594,43 +1727,61 @@ function updateProjectMetadata(project) {
 
     function populateWorkList(projects, activeFilter = 'all') {
         if (!workPageList) return;
-        workPageList.innerHTML = '';
-
-        const normalizedFilter = activeFilter === 'all' ? 'all' : normalizeTag(activeFilter);
+        workPageList.replaceChildren();
+        const normalizedFilter = normalizeTag(activeFilter);
         const visibleProjects = normalizedFilter === 'all'
             ? projects
-            : projects.filter(project => project.tags.some(tag => normalizeTag(tag) === normalizedFilter));
+            : projects.filter(project => (project.tags || []).some(tag => normalizeTag(tag) === normalizedFilter));
+        const status = document.getElementById('work-results-status');
+        if (status) status.textContent = visibleProjects.length + (visibleProjects.length === 1 ? ' project' : ' projects') + (normalizedFilter === 'all' ? '' : ' in ' + getTagLabel(activeFilter));
 
         if (!visibleProjects.length) {
-            const emptyState = document.createElement('div');
-            emptyState.className = 'project-filter-empty';
-            emptyState.innerHTML = `
-                <h3>No projects yet for ${getTagLabel(activeFilter)}</h3>
-                <p>Try another service or switch back to all work.</p>
-            `;
-            workPageList.appendChild(emptyState);
+            const empty = document.createElement('div');
+            empty.className = 'project-filter-empty';
+            const title = document.createElement('h3');
+            title.textContent = 'Nothing here just yet.';
+            const copy = document.createElement('p');
+            copy.textContent = 'We don’t have published work in ' + getTagLabel(activeFilter) + ' yet. There’s plenty more to explore.';
+            const reset = document.createElement('button');
+            reset.type = 'button'; reset.className = 'studio-reset-filter'; reset.textContent = 'Show all work →';
+            reset.addEventListener('click', () => workPageList.dispatchEvent(new Event('sada:resetfilter')));
+            empty.append(title, copy, reset);
+            workPageList.appendChild(empty);
             return;
         }
 
-        visibleProjects.forEach(project => {
-            const projectItem = document.createElement('a');
-            projectItem.href = getProjectLink(project);
-            projectItem.className = 'project-item';
-
-            if (!isVideo(project.thumbnail)) {
-                projectItem.dataset.image = project.thumbnail;
+        visibleProjects.forEach((project, index) => {
+            const item = document.createElement('a');
+            item.href = getProjectLink(project);
+            item.className = 'project-item';
+            const source = project.thumbnail || (project.images || [])[0];
+            const still = [source, ...(project.images || [])].find(url => url && !isVideo(url));
+            if (still) item.dataset.image = still;
+            const cover = document.createElement('div');
+            cover.className = 'studio-project-cover';
+            if (still) {
+                const image = document.createElement('img');
+                image.src = still; image.alt = ''; image.loading = index < 2 ? 'eager' : 'lazy'; image.decoding = 'async';
+                image.addEventListener('error', () => { image.remove(); cover.classList.add('studio-cover-unavailable'); }, { once: true });
+                cover.appendChild(image);
+            } else if (source && isVideo(source)) {
+                const video = document.createElement('video');
+                video.src = source; video.muted = true; video.playsInline = true; video.preload = 'metadata';
+                cover.appendChild(video);
             }
-
-            const tagsHTML = project.tags.map(tag => `<span>${getTagLabel(tag)}</span>`).join('');
-
-            projectItem.innerHTML = `
-                <div class="project-info">
-                    <span class="project-title">${project.title}</span>
-                    <span class="project-desc">${project.description}</span>
-                </div>
-                <div class="project-tags">${tagsHTML}</div>
-            `;
-            workPageList.appendChild(projectItem);
+            const info = document.createElement('div'); info.className = 'project-info';
+            const title = document.createElement('span'); title.className = 'project-title';
+            const number = document.createElement('span'); number.className = 'studio-project-number';
+            number.setAttribute('aria-hidden', 'true'); number.textContent = String(projects.indexOf(project) + 1).padStart(2, '0');
+            title.append(number, document.createTextNode(project.title || 'Untitled project'));
+            const description = document.createElement('span'); description.className = 'project-desc'; description.textContent = project.description || '';
+            info.append(title, description);
+            const tags = document.createElement('div'); tags.className = 'project-tags';
+            [...new Set((project.tags || []).map(getTagLabel))].forEach(label => {
+                const tag = document.createElement('span'); tag.textContent = label; tags.appendChild(tag);
+            });
+            item.append(cover, info, tags);
+            workPageList.appendChild(item);
         });
     }
 
@@ -1894,35 +2045,9 @@ const allWorkDisplayLabel =
             });
         });
 
-        baseServiceTags.forEach(tag => {
-            const normalized = normalizeTag(tag);
-            if (!normalized || hiddenFilterSet.has(normalized)) return;
-
-            if (!serviceMap.has(normalized)) {
-                serviceMap.set(normalized, getTagLabel(tag));
-            }
-
-            if (!visibleServiceCounts.has(normalized)) {
-                visibleServiceCounts.set(normalized, 0);
-            }
-
-            if (!allServiceCounts.has(normalized)) {
-                allServiceCounts.set(normalized, 0);
-            }
-        });
-
         const urlParams = new URLSearchParams(window.location.search);
         const requestedFilter = urlParams.get('filter');
         let activeFilter = requestedFilter ? getTagLabel(requestedFilter) : 'All';
-
-        if (
-            normalizeTag(activeFilter) !== 'all' &&
-            !hiddenFilterSet.has(normalizeTag(activeFilter)) &&
-            !serviceMap.has(normalizeTag(activeFilter))
-        ) {
-            serviceMap.set(normalizeTag(activeFilter), getTagLabel(activeFilter));
-            visibleServiceCounts.set(normalizeTag(activeFilter), allServiceCounts.get(normalizeTag(activeFilter)) || 0);
-        }
 
         const sortedServices = Array.from(serviceMap.entries())
             .sort((a, b) => {
@@ -1956,27 +2081,18 @@ const allWorkDisplayLabel =
         };
 
         const renderFilterButtons = () => {
-            filterPanel.innerHTML = filterLabels.map(label => {
+            filterPanel.replaceChildren();
+            filterLabels.forEach(label => {
                 const normalized = normalizeTag(label);
-                const isActive = normalized === normalizeTag(activeFilter);
-                const chipLabel =
-    normalized === 'all'
-        ? allWorkDisplayLabel
-        : label;
-                const chipCount = getCountForLabel(label);
-
-                return `
-                    <button
-                        type="button"
-                        class="filter-chip ${isActive ? 'active' : ''}"
-                        data-filter-value="${label}"
-                        aria-pressed="${isActive ? 'true' : 'false'}"
-                    >
-                        <span class="filter-chip-label">${chipLabel}</span>
-                        <span class="filter-chip-count">${chipCount}</span>
-                    </button>
-                `;
-            }).join('');
+                const active = normalized === normalizeTag(activeFilter);
+                const chip = document.createElement('button');
+                chip.type = 'button'; chip.className = 'filter-chip' + (active ? ' active' : '');
+                chip.dataset.filterValue = label; chip.setAttribute('aria-pressed', String(active));
+                const name = document.createElement('span'); name.className = 'filter-chip-label';
+                name.textContent = normalized === 'all' ? allWorkDisplayLabel : label;
+                const count = document.createElement('span'); count.className = 'filter-chip-count'; count.textContent = String(getCountForLabel(label));
+                chip.append(name, count); filterPanel.appendChild(chip);
+            });
 
             const normalizedActive = normalizeTag(activeFilter);
             const isAll = normalizedActive === 'all';
@@ -2004,6 +2120,15 @@ const allWorkDisplayLabel =
             renderFilterButtons();
             updateFilterQuery(activeFilter);
             closeFilterPanel();
+            filterToggle.focus({ preventScroll: true });
+        });
+
+        workPageList.addEventListener('sada:resetfilter', () => {
+            activeFilter = 'All';
+            renderFilterButtons();
+            updateFilterQuery(activeFilter);
+            closeFilterPanel();
+            filterToggle.focus({ preventScroll: true });
         });
 
         document.addEventListener('click', (event) => {
@@ -2013,8 +2138,9 @@ const allWorkDisplayLabel =
         });
 
         document.addEventListener('keydown', (event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' && filterToolbar.classList.contains('open')) {
                 closeFilterPanel();
+                filterToggle.focus({ preventScroll: true });
             }
         });
 
@@ -2055,6 +2181,7 @@ const allWorkDisplayLabel =
             animationFrameId = requestAnimationFrame(animate);
         };
 
+        workPageList.addEventListener('sada:viewchange', hideThumbnailViewer);
         window.addEventListener('pageshow', hideThumbnailViewer);
         window.addEventListener('pagehide', hideThumbnailViewer);
         window.addEventListener('blur', hideThumbnailViewer);
@@ -2065,7 +2192,7 @@ const allWorkDisplayLabel =
         if (canHoverPreview) {
             workPageList.addEventListener('mouseover', e => {
                 const projectItem = e.target.closest('.project-item');
-                if (projectItem && projectItem.dataset.image) {
+                if (workPageList.dataset.view === 'index' && projectItem && projectItem.dataset.image) {
                     thumbnailViewer.style.backgroundImage = `url(${projectItem.dataset.image})`;
                     thumbnailViewer.classList.add('visible');
                 }
@@ -2074,9 +2201,11 @@ const allWorkDisplayLabel =
             workPageList.addEventListener('mousemove', e => {
                 mouseX = e.clientX;
                 mouseY = e.clientY;
+                if (prefersReducedMotion) thumbnailViewer.style.transform = `translate(${mouseX + 15}px, ${mouseY + 15}px)`;
             });
 
             workPageList.addEventListener('mouseenter', e => {
+                if (workPageList.dataset.view !== 'index' || prefersReducedMotion) return;
                 lastMouseX = e.clientX;
                 stopThumbnailAnimation();
                 animate();
@@ -2107,6 +2236,8 @@ const allWorkDisplayLabel =
         }
 
         populateFeaturedGrid(projects);
+        setupStudioServiceLinks(projects);
+        setupWorkViews();
         setupWorkFilters(projects);
         if (!workPageList) {
             populateWorkList(projects);
@@ -2115,5 +2246,6 @@ const allWorkDisplayLabel =
         enableVisualWebsiteEditing();
     }
 
+    setupStudioSignature();
     initializePage();
 });

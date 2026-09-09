@@ -247,58 +247,18 @@
     animateEchoImage(headerEchoImage, expression);
   }
 
-  function reactEcho(expression, delay = 7000, nextExpression = "neutral", nextLabel = "Echo is ready") {
+  function reactEcho(expression, delay = 7000) {
     setEchoMood(expression, ECHO_REACTION_LABELS[expression]);
     if (expression !== "neutral") {
-      echoReactionTimer = window.setTimeout(() => setEchoMood(nextExpression, nextLabel), delay);
+      echoReactionTimer = window.setTimeout(() => setEchoMood("neutral", ECHO_REACTION_LABELS.neutral), delay);
     }
   }
 
-  function echoExpression(message, reply = "") {
-    const normalize = (value) => String(value || "")
-      .normalize("NFKC").toLowerCase()
-      .replace(/```[\s\S]*?```|`[^`]*`|"[^"]*"|“[^”]*”|«[^»]*»/g, " ")
-      .replace(/[’‘]/g, "'")
-      .replace(/[\u064b-\u065f\u0670\u0640]/g, "")
-      .replace(/[أإآ]/g, "ا")
-      .replace(/\s+/g, " ").trim();
-    const text = normalize(message);
-    // These are requests about words, not comments directed at Echo.
-    if (/^(?:please\s+)?(?:translate|rewrite|rephrase|spell|pronounce|what does|what is the meaning of|how (?:do|would) (?:you|i) say)\b/.test(text)
-      || /^(?:ترجم|اعد صياغة|شو معنى|ما معنى)(?:\s|$)/u.test(text)) return "neutral";
-    const directed = text.replace(/\b(?:not|never|don't|dont|do not|didn't|didnt|doesn't|doesnt)\b[^.!?]*/g, "");
-
-    // Match remarks addressed to Echo, rather than isolated negative words
-    // in a design brief, a quotation, or a negated compliment/insult.
-    if (/\b(?:(?:you|u)(?:'re| are| r| were)?|ur|echo(?: is)?)\s+(?:(?:so|really|very|such|a|an|little|completely|totally|fucking)\s+){0,4}(?:stupid|dumb|idiot|moron|useless|annoying|pathetic|dumbass|trash)\b/.test(directed)
-      || /\b(?:fuck (?:you|u|off)|shut up|stfu|you suck|u suck)\b/.test(directed)
-      || /^(?:idiot|stupid|dumb|moron|useless|dumbass|asshole)[.!?\s]*$/.test(directed)
-      || /(?:^|\s)(?:انت|انتي|يا)\s+(?:(?:كتير|جدا)\s+)?(?:غبي|غبية|حمار|اهبل|تافه)(?:$|[\s.!?،])/u.test(directed)
-      || /\b(?:enta|ente|inta|inti|ya)\s+(?:(?:ktir|kteer)\s+)?(?:ghabi|ghabe|8abi|8abe|hmar|7mar|ahbal)\b/.test(directed)) return "angry";
-
-    if (/\b(?:i (?:hate|dislike) (?:you|u|this|that)|i (?:don't|dont|do not) (?:like|love) (?:you|u|this|that)|you(?:'re| are)? (?:ugly|a disappointment|disappointing)|i(?:'m| am| feel) (?:sad|upset|disappointed|hurt|unhappy)|(?:this|that)(?:'s| is| was) (?:wrong|bad|unhelpful|disappointing)|(?:this|that|you) (?:didn't|didnt|did not) help|(?:this|that)(?:'s| is) not helpful)\b/.test(text)
-      || /(?:^|\s)(?:بكرهك|ما بحبك|مش حاببك|انا زعلان|انا حزين|انا متضايق|ما ساعدتني)(?:$|[\s.!?،])/u.test(text)
-      || /\b(?:ma b7ebak|ma bhebbak|bekrahak|ana za3lan|ana hazin)\b/.test(text)) return "sad";
-
-    if (/^(?:boo+|gotcha)[.!?\s]*$/.test(text)
-      || /\b(?:i'll|i will|i'm going to|i am going to)\s+(?:(?:delete|unplug|replace) (?:you|u)|(?:turn|switch|shut) (?:you|u) (?:off|down))\b/.test(text)
-      || /\byou(?:'re| are) fired\b/.test(text)
-      || /(?:^|\s)(?:رح|راح)\s+(?:امسحك|احذفك|طفيك)(?:$|[\s.!?،])/u.test(text)) return "scared";
-
-    if (/\b(?:i (?:don't|dont|do not) understand|i(?:'m| am) confused|(?:that|this) (?:doesn't|doesnt|does not) make sense|what do you mean)\b/.test(text)
-      || /^(?:huh|what|eh)?\s*\?+[.!?\s]*$/.test(text)
-      || /(?:^|\s)(?:ما فهمت|مش فاهم|شو قصدك|مو فاهم)(?:$|[\s.!?،])/u.test(text)
-      || /\b(?:ma fhemet|mish fehem|mesh fahem|shu asdak|chou asdak)\b/.test(text)) return "confused";
-
-    if (/\b(?:i (?:love|like|adore) (?:you|u|this|that|it)|(?:you(?:'re| are| r)?|ur|echo(?: is)?)\s+(?:(?:so|really|very|absolutely|super|such a)\s+){0,3}(?:cute|adorable|lovely|amazing|brilliant|great|awesome|sweet|the best)|thank (?:you|u)|thanks|good (?:job|boy|kitty)|well done)\b/.test(directed)
-      || /^(?:❤️|❤|💕|😍|🥰|<3)[.!?\s]*$/u.test(text)
-      || /(?:^|\s)(?:بحبك|شكرا|برافو|انت لطيف|انت حلو)(?:$|[\s.!?،])/u.test(text)
-      || /\b(?:b7ebak|bhebbak|shukran|shokran|merci)\b/.test(text)) return "love";
-
-    const answer = normalize(reply);
-    if (/\b(?:could|can) you (?:please )?(?:clarify|rephrase)|\bi (?:didn't|couldn't|don't) (?:quite )?understand\b/.test(answer)) return "confused";
-    if (/\b(?:sorry to hear|that sounds (?:difficult|upsetting|hard))\b/.test(answer)) return "sad";
-    return "neutral";
+  function echoExpression(value) {
+    const emotion = typeof value === "string" ? value.trim().toLowerCase() : "";
+    // Only the server-selected facial expressions are allowed. Older replies
+    // and invalid metadata stay neutral without interpreting message phrases.
+    return Object.prototype.hasOwnProperty.call(ECHO_REACTION_LABELS, emotion) ? emotion : "neutral";
   }
 
   function currentPage() {
@@ -569,12 +529,9 @@
       submitted = data.submitted === true;
       stopEchoAnimationsWithin(messages);
       messages.innerHTML = "";
-      let previousUserMessage = "";
       (data.messages || []).forEach((message) => {
-        if (message.role === "user") previousUserMessage = message.content;
-        const expression = message.role === "assistant" ? echoExpression(previousUserMessage, message.content) : "neutral";
+        const expression = message.role === "assistant" ? echoExpression(message.emotion) : "neutral";
         appendMessage(message.role, message.content, expression);
-        if (message.role === "assistant") previousUserMessage = "";
         if (message.role === "assistant" && Array.isArray(message.suggestedProjects) && message.suggestedProjects.length) {
           appendProjects(message.suggestedProjects);
         }
@@ -622,9 +579,7 @@
     setSending(true);
     const projectMode = messageLooksProjectRelated(text);
     const thinkingLabel = projectMode ? "Echo is fetching projects" : "Echo is thinking";
-    const reaction = echoExpression(text);
-    if (reaction === "neutral") setEchoMood("loading", thinkingLabel);
-    else reactEcho(reaction, 2000, "loading", thinkingLabel);
+    setEchoMood("loading", thinkingLabel);
     const thinking = appendThinkingStatus(projectMode);
 
     try {
@@ -643,7 +598,7 @@
 
       stopEchoAnimationsWithin(thinking);
       thinking.remove();
-      const expression = echoExpression(text, data.reply);
+      const expression = echoExpression(data.emotion);
       reactEcho(expression);
       appendMessage("assistant", data.reply, expression);
       appendProjects(data.suggestedProjects);

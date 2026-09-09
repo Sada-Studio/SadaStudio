@@ -1,0 +1,1 @@
+Echo UI follow-up: neutral fallback + non-overlapping mascot layout.

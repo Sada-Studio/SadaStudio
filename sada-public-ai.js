@@ -3,15 +3,26 @@
 
   const STORAGE_KEY = "sada-public-ai-conversation-v1";
   const API_BASE = "/api/sada-ai";
+  const ECHO_ASSET_BASE = "https://assets.sadastudio.me/echo/animation/compressed";
+  const ECHO_SETS = {
+    neutral: { frames: 5, fps: 2.2 },
+    angry: { frames: 4, fps: 4 },
+    confused: { frames: 3, fps: 3 },
+    loading: { frames: 5, fps: 6 },
+    love: { frames: 5, fps: 4 },
+    sad: { frames: 3, fps: 3 },
+    scared: { frames: 2, fps: 3 },
+    run: { frames: 3, fps: 7 }
+  };
 
   let conversationId = "";
   let loaded = false;
   let sending = false;
   let submitted = false;
+  let echoTimers = new Set();
 
   try {
-    conversationId =
-      localStorage.getItem(STORAGE_KEY) || "";
+    conversationId = localStorage.getItem(STORAGE_KEY) || "";
   } catch {
     conversationId = "";
   }
@@ -24,9 +35,7 @@
       '<span class="sada-guide-launch-mark">✦</span>',
       '<span>Ask Sada</span>',
     '</button>',
-
     '<div class="sada-guide-overlay" aria-hidden="true"></div>',
-
     '<aside class="sada-guide-drawer" aria-hidden="true" aria-label="Sada Guide">',
       '<div class="sada-guide-header">',
         '<div>',
@@ -35,11 +44,8 @@
         '</div>',
         '<button class="sada-guide-close" type="button" aria-label="Close">×</button>',
       '</div>',
-
       '<div class="sada-guide-context"></div>',
-
       '<div class="sada-guide-messages" aria-live="polite"></div>',
-
       '<div class="sada-guide-submit-panel" hidden>',
         '<div class="sada-guide-submit-title">Send this project to Sada</div>',
         '<div class="sada-guide-submit-copy">Add a way for the team to contact you. Your conversation is included with the request.</div>',
@@ -55,10 +61,11 @@
         '</div>',
         '<div class="sada-guide-submit-error" role="alert"></div>',
       '</div>',
-
       '<div class="sada-guide-composer">',
-        '<textarea class="sada-guide-input" rows="1" maxlength="2500" placeholder="Ask about Sada, our work, or your project..."></textarea>',
-        '<button class="sada-guide-send" type="button">Send</button>',
+        '<div class="sada-guide-input-row">',
+          '<textarea class="sada-guide-input" rows="1" maxlength="2500" placeholder="Ask about Sada, our work, or your project..."></textarea>',
+          '<button class="sada-guide-send" type="button" aria-label="Send message">↑</button>',
+        '</div>',
         '<div class="sada-guide-privacy">Conversations are stored by Sada Studio so we can understand inquiries and improve the experience. Avoid sharing sensitive information.</div>',
       '</div>',
     '</aside>'
@@ -79,27 +86,55 @@
   const submitCancel = root.querySelector(".sada-guide-submit-cancel");
   const submitError = root.querySelector(".sada-guide-submit-error");
 
+  function echoUrl(setName, frame) {
+    return ECHO_ASSET_BASE + "/" + setName + "/" + setName + "-" + frame + ".png";
+  }
+
+  function stopAllEchoAnimations() {
+    echoTimers.forEach((timer) => window.clearInterval(timer));
+    echoTimers.clear();
+  }
+
+  function animateEchoImage(image, setName, options = {}) {
+    if (!image || !ECHO_SETS[setName]) return null;
+
+    const config = ECHO_SETS[setName];
+    const fps = options.fps || config.fps || 4;
+    let frame = 1;
+    image.src = echoUrl(setName, frame);
+    image.dataset.echoSet = setName;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || config.frames < 2) {
+      return null;
+    }
+
+    const timer = window.setInterval(() => {
+      if (!image.isConnected) {
+        window.clearInterval(timer);
+        echoTimers.delete(timer);
+        return;
+      }
+      frame = frame >= config.frames ? 1 : frame + 1;
+      image.src = echoUrl(setName, frame);
+    }, Math.max(90, Math.round(1000 / fps)));
+
+    echoTimers.add(timer);
+    return timer;
+  }
+
   function currentPage() {
-    return {
-      path: window.location.pathname,
-      title: document.title
-    };
+    return { path: window.location.pathname, title: document.title };
   }
 
   function currentPageLabel() {
     const match = window.location.pathname.match(/^\/projects\/([^/]+)\/?$/i);
-
     if (match) {
       const heading = document.querySelector(".project-details-column h1");
       return heading && heading.textContent.trim()
         ? "Viewing: " + heading.textContent.trim()
         : "Viewing a Sada project";
     }
-
-    if (document.querySelector(".work-page-main")) {
-      return "Viewing: All Projects";
-    }
-
+    if (document.querySelector(".work-page-main")) return "Viewing: All Projects";
     return "Viewing: Sada Studio";
   }
 
@@ -113,16 +148,9 @@
     drawer.setAttribute("aria-hidden", "false");
     overlay.setAttribute("aria-hidden", "false");
     document.body.classList.add("sada-guide-open");
-
     updateContext();
-
-    if (!loaded) {
-      loadConversation();
-    }
-
-    if (!isMobile()) {
-      window.setTimeout(() => input.focus(), 80);
-    }
+    if (!loaded) loadConversation();
+    if (!isMobile()) window.setTimeout(() => input.focus(), 80);
   }
 
   function closeDrawer() {
@@ -144,12 +172,51 @@
     });
   }
 
+  function makeEchoImage(className, setName, altText) {
+    const image = document.createElement("img");
+    image.className = className;
+    image.alt = altText || "Echo";
+    image.decoding = "async";
+    animateEchoImage(image, setName);
+    return image;
+  }
+
   function renderEmptyState() {
+    stopAllEchoAnimations();
     messages.innerHTML = "";
 
     const empty = document.createElement("div");
     empty.className = "sada-guide-empty";
-    empty.innerHTML =
+
+    const hero = document.createElement("div");
+    hero.className = "sada-guide-echo-hero";
+    const heroImage = makeEchoImage("sada-guide-echo-hero-image", "neutral", "Echo, Sada AI mascot");
+    const echoName = document.createElement("div");
+    echoName.className = "sada-guide-echo-name";
+    echoName.textContent = "ECHO";
+    const tagline = document.createElement("div");
+    tagline.className = "sada-guide-echo-tagline";
+    tagline.innerHTML = "Your creative partner.<br>Ask me anything.";
+
+    const fetcher = document.createElement("div");
+    fetcher.className = "sada-guide-echo-fetcher";
+    const runImage = makeEchoImage("sada-guide-echo-run-image", "run", "Echo running");
+    const fetchLabel = document.createElement("div");
+    fetchLabel.className = "sada-guide-fetch-label";
+    fetchLabel.textContent = "Fetching projects...";
+    const progress = document.createElement("div");
+    progress.className = "sada-guide-fetch-progress";
+    progress.innerHTML = '<span class="sada-guide-fetch-progress-fill"></span>';
+    fetcher.append(runImage, fetchLabel, progress);
+
+    hero.append(heroImage, echoName, tagline, fetcher);
+
+    const divider = document.createElement("div");
+    divider.className = "sada-guide-empty-divider";
+
+    const intro = document.createElement("div");
+    intro.className = "sada-guide-empty-intro";
+    intro.innerHTML =
       '<div class="sada-guide-empty-title">What are you looking for?</div>' +
       '<div class="sada-guide-empty-copy">Explore our work, understand what Sada can do for your business, or tell us about something you’re planning.</div>';
 
@@ -164,7 +231,13 @@
     ].forEach((label) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = label;
+      const text = document.createElement("span");
+      text.textContent = label;
+      const arrow = document.createElement("span");
+      arrow.className = "sada-guide-prompt-arrow";
+      arrow.setAttribute("aria-hidden", "true");
+      arrow.textContent = "→";
+      button.append(text, arrow);
       button.addEventListener("click", () => {
         input.value = label;
         sendMessage();
@@ -172,28 +245,52 @@
       prompts.appendChild(button);
     });
 
-    empty.appendChild(prompts);
+    empty.append(hero, divider, intro, prompts);
     messages.appendChild(empty);
   }
 
-  function appendMessage(role, content) {
+  function appendMessage(role, content, expression = "neutral") {
     const wrapper = document.createElement("div");
     wrapper.className = "sada-guide-message " + role;
 
+    if (role === "assistant") {
+      const avatar = makeEchoImage("sada-guide-message-avatar", expression, "Echo");
+      wrapper.appendChild(avatar);
+    }
+
+    const body = document.createElement("div");
+    body.className = "sada-guide-message-body";
+
     const label = document.createElement("div");
     label.className = "sada-guide-message-label";
-    label.textContent = role === "user" ? "You" : "Sada";
+    label.textContent = role === "user" ? "You" : "Echo";
 
     const bubble = document.createElement("div");
     bubble.className = "sada-guide-bubble";
     bubble.innerHTML = safeMarkdown(content);
 
-    wrapper.appendChild(label);
-    wrapper.appendChild(bubble);
+    body.append(label, bubble);
+    wrapper.appendChild(body);
     messages.appendChild(wrapper);
     scrollMessages();
-
     return wrapper;
+  }
+
+  function appendThinkingStatus(projectMode) {
+    const status = document.createElement("div");
+    status.className = "sada-guide-thinking-status";
+    const image = makeEchoImage(
+      "sada-guide-thinking-image" + (projectMode ? " run" : ""),
+      projectMode ? "run" : "loading",
+      projectMode ? "Echo fetching projects" : "Echo thinking"
+    );
+    const copy = document.createElement("div");
+    copy.className = "sada-guide-thinking-copy";
+    copy.textContent = projectMode ? "Fetching projects..." : "Echo is thinking...";
+    status.append(image, copy);
+    messages.appendChild(status);
+    scrollMessages();
+    return status;
   }
 
   function safeMarkdown(value) {
@@ -201,44 +298,25 @@
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
+      .replace(/\"/g, "&quot;")
       .replace(/'/g, "&#39;");
-
-    text = text.replace(
-      /\*\*([^*\n]+)\*\*/g,
-      "<strong>$1</strong>"
-    );
-
-    text = text.replace(
-      /(^|[^*])\*([^*\n]+)\*(?!\*)/g,
-      "$1<em>$2</em>"
-    );
-
+    text = text.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+    text = text.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g, "$1<em>$2</em>");
     text = text.replace(/\n/g, "<br>");
-
     return text;
   }
 
   function appendProjects(projects) {
-    if (!Array.isArray(projects) || !projects.length) {
-      return;
-    }
-
+    if (!Array.isArray(projects) || !projects.length) return;
     const group = document.createElement("div");
     group.className = "sada-guide-projects";
-
     projects.slice(0, 4).forEach((project) => {
-      if (!project || !project.url || !project.title) {
-        return;
-      }
-
+      if (!project || !project.url || !project.title) return;
       const card = document.createElement("a");
       card.className = "sada-guide-project-card";
       card.href = project.url;
-
       card.target = "_blank";
       card.rel = "noopener";
-
       if (project.thumbnail) {
         const image = document.createElement("img");
         image.src = project.thumbnail;
@@ -246,57 +324,39 @@
         image.loading = "lazy";
         card.appendChild(image);
       }
-
       const body = document.createElement("div");
       body.className = "sada-guide-project-body";
-
       const title = document.createElement("div");
       title.className = "sada-guide-project-title";
       title.textContent = project.title;
-
       const description = document.createElement("div");
       description.className = "sada-guide-project-description";
       description.textContent = project.description || "";
-
-      body.appendChild(title);
-      body.appendChild(description);
+      body.append(title, description);
       card.appendChild(body);
       group.appendChild(card);
     });
-
     messages.appendChild(group);
     scrollMessages();
   }
 
   function appendSubmitPrompt() {
-    if (submitted || messages.querySelector(".sada-guide-submit-prompt")) {
-      return;
-    }
-
+    if (submitted || messages.querySelector(".sada-guide-submit-prompt")) return;
     const box = document.createElement("div");
     box.className = "sada-guide-submit-prompt";
-
     const text = document.createElement("div");
-    text.innerHTML =
-      "<strong>Want Sada to review this?</strong><br>" +
-      "You can send this conversation as a project request.";
-
+    text.innerHTML = "<strong>Want Sada to review this?</strong><br>You can send this conversation as a project request.";
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = "Submit project request";
     button.addEventListener("click", showSubmitPanel);
-
-    box.appendChild(text);
-    box.appendChild(button);
+    box.append(text, button);
     messages.appendChild(box);
     scrollMessages();
   }
 
   function showSubmitPanel() {
-    if (submitted) {
-      return;
-    }
-
+    if (submitted) return;
     submitPanel.hidden = false;
     submitError.textContent = "";
     scrollMessages();
@@ -309,49 +369,32 @@
 
   async function loadConversation() {
     loaded = true;
-
     if (!conversationId) {
       renderEmptyState();
       return;
     }
 
     try {
-      const response = await fetch(
-        API_BASE + "/conversation?id=" + encodeURIComponent(conversationId),
-        {
-          headers: {
-            "Accept": "application/json"
-          },
-          cache: "no-store"
-        }
-      );
-
+      const response = await fetch(API_BASE + "/conversation?id=" + encodeURIComponent(conversationId), {
+        headers: { "Accept": "application/json" },
+        cache: "no-store"
+      });
       const data = await response.json();
-
       if (!response.ok || !data.ok || !data.conversationId) {
         resetConversation();
         renderEmptyState();
         return;
       }
-
       submitted = data.submitted === true;
+      stopAllEchoAnimations();
       messages.innerHTML = "";
-
       (data.messages || []).forEach((message) => {
         appendMessage(message.role, message.content);
-
-        if (
-          message.role === "assistant" &&
-          Array.isArray(message.suggestedProjects) &&
-          message.suggestedProjects.length
-        ) {
+        if (message.role === "assistant" && Array.isArray(message.suggestedProjects) && message.suggestedProjects.length) {
           appendProjects(message.suggestedProjects);
         }
       });
-
-      if (!(data.messages || []).length) {
-        renderEmptyState();
-      }
+      if (!(data.messages || []).length) renderEmptyState();
     } catch (error) {
       console.warn("Could not restore Sada conversation:", error);
       renderEmptyState();
@@ -361,33 +404,29 @@
   function resetConversation() {
     conversationId = "";
     submitted = false;
-
-    try {
-      localStorage.removeItem(STORAGE_KEY);
-    } catch {
-    }
+    try { localStorage.removeItem(STORAGE_KEY); } catch {}
   }
 
   function setSending(value) {
     sending = Boolean(value);
     send.disabled = sending;
     input.disabled = sending;
-    send.textContent = sending ? "..." : "Send";
+    send.classList.toggle("is-sending", sending);
+    send.textContent = "↑";
+  }
+
+  function messageLooksProjectRelated(text) {
+    return /(project|work|portfolio|branding|brand|identity|packaging|social|similar|example|case study)/i.test(text);
   }
 
   async function sendMessage() {
-    if (sending) {
-      return;
-    }
-
+    if (sending) return;
     const text = input.value.trim();
-
-    if (!text) {
-      return;
-    }
+    if (!text) return;
 
     const empty = messages.querySelector(".sada-guide-empty");
     if (empty) {
+      stopAllEchoAnimations();
       empty.remove();
     }
 
@@ -397,76 +436,45 @@
     hideSubmitPanel();
     setSending(true);
 
-    const thinking = appendMessage("assistant", "Thinking…");
-    thinking.classList.add("thinking");
+    const thinking = appendThinkingStatus(messageLooksProjectRelated(text));
 
     try {
       const response = await fetch(API_BASE + "/chat", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          conversationId,
-          message: text,
-          page: currentPage()
-        })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ conversationId, message: text, page: currentPage() })
       });
-
       const data = await response.json();
-
-      if (!response.ok || !data.ok) {
-        throw new Error(data.error || "Sada Guide could not answer.");
-      }
+      if (!response.ok || !data.ok) throw new Error(data.error || "Sada Guide could not answer.");
 
       conversationId = data.conversationId || conversationId;
-
       if (conversationId) {
-        try {
-          localStorage.setItem(STORAGE_KEY, conversationId);
-        } catch {
-        }
+        try { localStorage.setItem(STORAGE_KEY, conversationId); } catch {}
       }
 
       thinking.remove();
-      appendMessage("assistant", data.reply);
+      appendMessage("assistant", data.reply, "neutral");
       appendProjects(data.suggestedProjects);
-
-      if (data.suggestSubmit) {
-        appendSubmitPrompt();
-      }
+      if (data.suggestSubmit) appendSubmitPrompt();
     } catch (error) {
       thinking.remove();
-      appendMessage(
-        "assistant",
-        "I couldn’t answer that just now. Please try again."
-      );
+      appendMessage("assistant", "I couldn’t answer that just now. Please try again.", "sad");
       console.error(error);
     } finally {
       setSending(false);
-
-      if (isMobile()) {
-        input.blur();
-      } else {
-        input.focus();
-      }
+      if (isMobile()) input.blur();
+      else input.focus();
     }
   }
 
   async function submitRequest() {
-    if (!conversationId || submitted) {
-      return;
-    }
-
+    if (!conversationId || submitted) return;
     const values = {};
-
     root.querySelectorAll(".sada-guide-contact").forEach((field) => {
       values[field.dataset.field] = field.value.trim();
     });
-
     if (!values.email && !values.phone) {
-      submitError.textContent =
-        "Add an email address or phone / WhatsApp number.";
+      submitError.textContent = "Add an email address or phone / WhatsApp number.";
       return;
     }
 
@@ -477,9 +485,7 @@
     try {
       const response = await fetch(API_BASE + "/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           conversationId,
           name: values.name,
@@ -488,26 +494,17 @@
           phone: values.phone
         })
       });
-
       const data = await response.json();
-
-      if (!response.ok || !data.ok) {
-        throw new Error(data.error || "Could not submit the request.");
-      }
-
+      if (!response.ok || !data.ok) throw new Error(data.error || "Could not submit the request.");
       submitted = true;
       hideSubmitPanel();
-      appendMessage("assistant", data.reply);
-
-      root
-        .querySelectorAll(".sada-guide-submit-prompt")
-        .forEach((item) => item.remove());
+      appendMessage("assistant", data.reply, "love");
+      root.querySelectorAll(".sada-guide-submit-prompt").forEach((item) => item.remove());
     } catch (error) {
       submitError.textContent = error.message;
     } finally {
       submitButton.disabled = submitted;
-      submitButton.textContent =
-        submitted ? "Submitted" : "Submit request";
+      submitButton.textContent = submitted ? "Submitted" : "Submit request";
     }
   }
 
@@ -527,14 +524,11 @@
 
   input.addEventListener("input", () => {
     input.style.height = "auto";
-    input.style.height =
-      Math.min(input.scrollHeight, 160) + "px";
+    input.style.height = Math.min(input.scrollHeight, 160) + "px";
   });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && drawer.classList.contains("open")) {
-      closeDrawer();
-    }
+    if (event.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
   });
 
   updateContext();

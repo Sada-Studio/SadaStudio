@@ -3,7 +3,9 @@
 
   const STORAGE_KEY = "sada-public-ai-conversation-v1";
   const API_BASE = "/api/sada-ai";
-  const ECHO_ASSET_BASE = "https://assets.sadastudio.me/echo/animation/compressed";
+  const ECHO_COMPRESSED_BASE = "https://assets.sadastudio.me/echo/animation/compressed";
+  const ECHO_HIGHRES_BASE = "https://assets.sadastudio.me/echo/animation";
+  const ECHO_VERSION = "20260909b";
   const ECHO_SETS = {
     neutral: { frames: 5, fps: 2.2 },
     angry: { frames: 4, fps: 4 },
@@ -19,7 +21,7 @@
   let loaded = false;
   let sending = false;
   let submitted = false;
-  let echoTimers = new Set();
+  const echoTimers = new Set();
 
   try {
     conversationId = localStorage.getItem(STORAGE_KEY) || "";
@@ -29,7 +31,6 @@
 
   const root = document.createElement("div");
   root.className = "sada-guide-root";
-
   root.innerHTML = [
     '<button class="sada-guide-launch" type="button" aria-label="Ask Sada">',
       '<span class="sada-guide-launch-mark">✦</span>',
@@ -70,7 +71,6 @@
       '</div>',
     '</aside>'
   ].join("");
-
   document.body.appendChild(root);
 
   const launch = root.querySelector(".sada-guide-launch");
@@ -86,8 +86,39 @@
   const submitCancel = root.querySelector(".sada-guide-submit-cancel");
   const submitError = root.querySelector(".sada-guide-submit-error");
 
-  function echoUrl(setName, frame) {
-    return ECHO_ASSET_BASE + "/" + setName + "/" + setName + "-" + frame + ".png";
+  function highResEchoUrl(setName, frame) {
+    if (setName === "loading" && frame === 1) {
+      return ECHO_HIGHRES_BASE + "/loading/sprite%20animations_1.png?v=" + ECHO_VERSION;
+    }
+    return ECHO_HIGHRES_BASE + "/" + setName + "/sprite%20animations_" + setName + "-" + frame + ".png?v=" + ECHO_VERSION;
+  }
+
+  function echoCandidates(setName, frame) {
+    const compressed = ECHO_COMPRESSED_BASE + "/" + setName + "/" + setName + "-" + frame + ".png?v=" + ECHO_VERSION;
+    const underscore = ECHO_COMPRESSED_BASE + "/" + setName + "/" + setName + "_" + frame + ".png?v=" + ECHO_VERSION;
+    const highres = highResEchoUrl(setName, frame);
+    return [compressed, underscore, highres];
+  }
+
+  function setEchoFrame(image, setName, frame) {
+    if (!image) return;
+    const candidates = echoCandidates(setName, frame);
+    let index = 0;
+    image.dataset.echoSet = setName;
+    image.dataset.echoFrame = String(frame);
+    image.onerror = () => {
+      index += 1;
+      if (index < candidates.length) {
+        image.src = candidates[index];
+      } else {
+        image.onerror = null;
+        image.classList.add("sada-guide-echo-missing");
+      }
+    };
+    image.onload = () => {
+      image.classList.remove("sada-guide-echo-missing");
+    };
+    image.src = candidates[index];
   }
 
   function stopAllEchoAnimations() {
@@ -97,12 +128,10 @@
 
   function animateEchoImage(image, setName, options = {}) {
     if (!image || !ECHO_SETS[setName]) return null;
-
     const config = ECHO_SETS[setName];
     const fps = options.fps || config.fps || 4;
     let frame = 1;
-    image.src = echoUrl(setName, frame);
-    image.dataset.echoSet = setName;
+    setEchoFrame(image, setName, frame);
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || config.frames < 2) {
       return null;
@@ -115,11 +144,20 @@
         return;
       }
       frame = frame >= config.frames ? 1 : frame + 1;
-      image.src = echoUrl(setName, frame);
+      setEchoFrame(image, setName, frame);
     }, Math.max(90, Math.round(1000 / fps)));
 
     echoTimers.add(timer);
     return timer;
+  }
+
+  function makeEchoImage(className, setName, altText) {
+    const image = document.createElement("img");
+    image.className = className;
+    image.alt = altText || "Echo";
+    image.decoding = "async";
+    animateEchoImage(image, setName);
+    return image;
   }
 
   function currentPage() {
@@ -142,6 +180,10 @@
     context.textContent = currentPageLabel();
   }
 
+  function isMobile() {
+    return window.matchMedia("(max-width: 700px)").matches;
+  }
+
   function openDrawer() {
     drawer.classList.add("open");
     overlay.classList.add("open");
@@ -162,23 +204,10 @@
     input.blur();
   }
 
-  function isMobile() {
-    return window.matchMedia("(max-width: 700px)").matches;
-  }
-
   function scrollMessages() {
     window.requestAnimationFrame(() => {
       messages.scrollTop = messages.scrollHeight;
     });
-  }
-
-  function makeEchoImage(className, setName, altText) {
-    const image = document.createElement("img");
-    image.className = className;
-    image.alt = altText || "Echo";
-    image.decoding = "async";
-    animateEchoImage(image, setName);
-    return image;
   }
 
   function renderEmptyState() {
@@ -190,26 +219,33 @@
 
     const hero = document.createElement("div");
     hero.className = "sada-guide-echo-hero";
-    const heroImage = makeEchoImage("sada-guide-echo-hero-image", "neutral", "Echo, Sada AI mascot");
+
+    const heroVisual = document.createElement("div");
+    heroVisual.className = "sada-guide-echo-hero-visual";
+    heroVisual.appendChild(makeEchoImage("sada-guide-echo-hero-image", "neutral", "Echo, Sada AI mascot"));
+
     const echoName = document.createElement("div");
     echoName.className = "sada-guide-echo-name";
     echoName.textContent = "ECHO";
+
     const tagline = document.createElement("div");
     tagline.className = "sada-guide-echo-tagline";
     tagline.innerHTML = "Your creative partner.<br>Ask me anything.";
 
     const fetcher = document.createElement("div");
     fetcher.className = "sada-guide-echo-fetcher";
-    const runImage = makeEchoImage("sada-guide-echo-run-image", "run", "Echo running");
+    const runVisual = document.createElement("div");
+    runVisual.className = "sada-guide-echo-run-visual";
+    runVisual.appendChild(makeEchoImage("sada-guide-echo-run-image", "run", "Echo running"));
     const fetchLabel = document.createElement("div");
     fetchLabel.className = "sada-guide-fetch-label";
     fetchLabel.textContent = "Fetching projects...";
     const progress = document.createElement("div");
     progress.className = "sada-guide-fetch-progress";
     progress.innerHTML = '<span class="sada-guide-fetch-progress-fill"></span>';
-    fetcher.append(runImage, fetchLabel, progress);
+    fetcher.append(runVisual, fetchLabel, progress);
 
-    hero.append(heroImage, echoName, tagline, fetcher);
+    hero.append(heroVisual, echoName, tagline, fetcher);
 
     const divider = document.createElement("div");
     divider.className = "sada-guide-empty-divider";
@@ -222,7 +258,6 @@
 
     const prompts = document.createElement("div");
     prompts.className = "sada-guide-prompts";
-
     [
       "Show me branding projects",
       "What can Sada do for my business?",
@@ -254,21 +289,20 @@
     wrapper.className = "sada-guide-message " + role;
 
     if (role === "assistant") {
-      const avatar = makeEchoImage("sada-guide-message-avatar", expression, "Echo");
-      wrapper.appendChild(avatar);
+      const avatarWrap = document.createElement("div");
+      avatarWrap.className = "sada-guide-message-avatar-wrap";
+      avatarWrap.appendChild(makeEchoImage("sada-guide-message-avatar", expression, "Echo"));
+      wrapper.appendChild(avatarWrap);
     }
 
     const body = document.createElement("div");
     body.className = "sada-guide-message-body";
-
     const label = document.createElement("div");
     label.className = "sada-guide-message-label";
     label.textContent = role === "user" ? "You" : "Echo";
-
     const bubble = document.createElement("div");
     bubble.className = "sada-guide-bubble";
     bubble.innerHTML = safeMarkdown(content);
-
     body.append(label, bubble);
     wrapper.appendChild(body);
     messages.appendChild(wrapper);
@@ -279,15 +313,17 @@
   function appendThinkingStatus(projectMode) {
     const status = document.createElement("div");
     status.className = "sada-guide-thinking-status";
-    const image = makeEchoImage(
+    const visual = document.createElement("div");
+    visual.className = "sada-guide-thinking-visual";
+    visual.appendChild(makeEchoImage(
       "sada-guide-thinking-image" + (projectMode ? " run" : ""),
       projectMode ? "run" : "loading",
       projectMode ? "Echo fetching projects" : "Echo thinking"
-    );
+    ));
     const copy = document.createElement("div");
     copy.className = "sada-guide-thinking-copy";
     copy.textContent = projectMode ? "Fetching projects..." : "Echo is thinking...";
-    status.append(image, copy);
+    status.append(visual, copy);
     messages.appendChild(status);
     scrollMessages();
     return status;
@@ -435,7 +471,6 @@
     input.style.height = "auto";
     hideSubmitPanel();
     setSending(true);
-
     const thinking = appendThinkingStatus(messageLooksProjectRelated(text));
 
     try {

@@ -5,9 +5,10 @@
   const API_BASE = "/api/sada-ai";
   const ECHO_COMPRESSED_BASE = "https://assets.sadastudio.me/echo/animation/compressed";
   const ECHO_HIGHRES_BASE = "https://assets.sadastudio.me/echo/animation";
-  const ECHO_VERSION = "20260909b";
+  const ECHO_VERSION = "20260909c";
   const ECHO_SETS = {
-    neutral: { frames: 5, fps: 2.2 },
+    // The uploaded files are named "neurtal" inside the "neutral" folder.
+    neutral: { frames: 5, fps: 2.2, filename: "neurtal" },
     angry: { frames: 4, fps: 4 },
     confused: { frames: 3, fps: 3 },
     loading: { frames: 5, fps: 6 },
@@ -21,7 +22,9 @@
   let loaded = false;
   let sending = false;
   let submitted = false;
-  const echoTimers = new Set();
+  const echoFrames = new Map();
+  const echoAnimations = new Map();
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   try {
     conversationId = localStorage.getItem(STORAGE_KEY) || "";
@@ -32,18 +35,21 @@
   const root = document.createElement("div");
   root.className = "sada-guide-root";
   root.innerHTML = [
-    '<button class="sada-guide-launch" type="button" aria-label="Ask Sada">',
-      '<span class="sada-guide-launch-mark">✦</span>',
+    '<button class="sada-guide-launch" type="button" aria-label="Ask Sada" aria-expanded="false" aria-controls="sada-guide-drawer">',
+      '<span class="sada-guide-launch-visual" aria-hidden="true"></span>',
       '<span>Ask Sada</span>',
     '</button>',
     '<div class="sada-guide-overlay" aria-hidden="true"></div>',
-    '<aside class="sada-guide-drawer" aria-hidden="true" aria-label="Sada Guide">',
+    '<aside id="sada-guide-drawer" class="sada-guide-drawer" aria-hidden="true" aria-label="Ask Sada">',
       '<div class="sada-guide-header">',
         '<div>',
           '<div class="sada-guide-kicker">SADA STUDIO</div>',
           '<div class="sada-guide-title">Ask Sada</div>',
         '</div>',
-        '<button class="sada-guide-close" type="button" aria-label="Close">×</button>',
+        '<div class="sada-guide-header-actions">',
+          '<div class="sada-guide-header-echo" role="img" aria-label="Echo is ready"></div>',
+          '<button class="sada-guide-close" type="button" aria-label="Close">×</button>',
+        '</div>',
       '</div>',
       '<div class="sada-guide-context"></div>',
       '<div class="sada-guide-messages" aria-live="polite"></div>',
@@ -85,6 +91,12 @@
   const submitButton = root.querySelector(".sada-guide-submit-button");
   const submitCancel = root.querySelector(".sada-guide-submit-cancel");
   const submitError = root.querySelector(".sada-guide-submit-error");
+  const headerEcho = root.querySelector(".sada-guide-header-echo");
+  const headerEchoImage = makeEchoImage("sada-guide-echo-face", "neutral", "");
+  headerEcho.appendChild(headerEchoImage);
+  root.querySelector(".sada-guide-launch-visual").appendChild(
+    makeEchoImage("sada-guide-echo-face sada-guide-launch-image", "neutral", "")
+  );
 
   function highResEchoUrl(setName, frame) {
     if (setName === "loading" && frame === 1) {
@@ -94,70 +106,134 @@
   }
 
   function echoCandidates(setName, frame) {
+    const filename = ECHO_SETS[setName].filename || setName;
+    const uploaded = ECHO_COMPRESSED_BASE + "/" + setName + "/" + filename + "-" + frame + ".png?v=" + ECHO_VERSION;
     const compressed = ECHO_COMPRESSED_BASE + "/" + setName + "/" + setName + "-" + frame + ".png?v=" + ECHO_VERSION;
     const underscore = ECHO_COMPRESSED_BASE + "/" + setName + "/" + setName + "_" + frame + ".png?v=" + ECHO_VERSION;
     const highres = highResEchoUrl(setName, frame);
-    return [compressed, underscore, highres];
+    return [...new Set([uploaded, compressed, underscore, highres])];
   }
 
-  function setEchoFrame(image, setName, frame) {
-    if (!image) return;
-    const candidates = echoCandidates(setName, frame);
-    let index = 0;
-    image.dataset.echoSet = setName;
-    image.dataset.echoFrame = String(frame);
-    image.onerror = () => {
-      index += 1;
-      if (index < candidates.length) {
-        image.src = candidates[index];
-      } else {
-        image.onerror = null;
-        image.classList.add("sada-guide-echo-missing");
+  function loadEchoFrame(setName, frame) {
+    const key = setName + ":" + frame;
+    if (!echoFrames.has(key)) {
+      // Resolve each asset once, offscreen. Animation never interrupts a load
+      // or repeatedly retries a missing filename in the visible image.
+      echoFrames.set(key, new Promise((resolve) => {
+        const candidates = echoCandidates(setName, frame);
+        const tryCandidate = (index) => {
+          if (index >= candidates.length) {
+            resolve(null);
+            return;
+          }
+          const preload = new Image();
+          const finish = (ok) => {
+            window.clearTimeout(timeout);
+            preload.onload = null;
+            preload.onerror = null;
+            if (ok) resolve({ url: candidates[index], setName, frame });
+            else tryCandidate(index + 1);
+          };
+          const timeout = window.setTimeout(() => finish(false), 12000);
+          preload.onload = () => finish(true);
+          preload.onerror = () => finish(false);
+          preload.src = candidates[index];
+        };
+        tryCandidate(0);
+      }).then((frame) => {
+        if (!frame) echoFrames.delete(key);
+        return frame;
+      }));
+    }
+    return echoFrames.get(key);
+  }
+
+  function showEchoFrame(image, frame) {
+    if (!frame) return;
+    image.dataset.echoSet = frame.setName;
+    image.dataset.echoFrame = String(frame.frame);
+    image.src = frame.url;
+    image.classList.remove("sada-guide-echo-missing");
+  }
+
+  function stopEchoAnimation(image) {
+    const animation = echoAnimations.get(image);
+    if (animation) window.clearInterval(animation.timer);
+    echoAnimations.delete(image);
+  }
+
+  function stopEchoAnimationsWithin(container) {
+    echoAnimations.forEach((animation, image) => {
+      if (container.contains(image)) stopEchoAnimation(image);
+    });
+  }
+
+  function refreshEchoAnimations() {
+    const drawerOpen = drawer.classList.contains("open");
+    echoAnimations.forEach((animation, image) => {
+      window.clearInterval(animation.timer);
+      if (!image.isConnected) {
+        stopEchoAnimation(image);
+        return;
       }
-    };
-    image.onload = () => {
-      image.classList.remove("sada-guide-echo-missing");
-    };
-    image.src = candidates[index];
-  }
-
-  function stopAllEchoAnimations() {
-    echoTimers.forEach((timer) => window.clearInterval(timer));
-    echoTimers.clear();
+      const visible = image.classList.contains("sada-guide-launch-image") ? !drawerOpen : drawerOpen;
+      if (!visible || document.hidden || reducedMotion.matches || animation.frames.length < 2) return;
+      animation.timer = window.setInterval(() => {
+        animation.index = (animation.index + 1) % animation.frames.length;
+        showEchoFrame(image, animation.frames[animation.index]);
+      }, animation.delay);
+    });
   }
 
   function animateEchoImage(image, setName, options = {}) {
     if (!image || !ECHO_SETS[setName]) return null;
+    stopEchoAnimation(image);
     const config = ECHO_SETS[setName];
-    const fps = options.fps || config.fps || 4;
-    let frame = 1;
-    setEchoFrame(image, setName, frame);
-
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || config.frames < 2) {
-      return null;
-    }
-
-    const timer = window.setInterval(() => {
-      if (!image.isConnected) {
-        window.clearInterval(timer);
-        echoTimers.delete(timer);
-        return;
-      }
-      frame = frame >= config.frames ? 1 : frame + 1;
-      setEchoFrame(image, setName, frame);
-    }, Math.max(90, Math.round(1000 / fps)));
-
-    echoTimers.add(timer);
-    return timer;
+    const animation = {
+      frames: [], index: 0, timer: null,
+      delay: Math.max(90, Math.round(1000 / (options.fps || config.fps)))
+    };
+    echoAnimations.set(image, animation);
+    const isCurrent = () => echoAnimations.get(image) === animation;
+    let firstFrameShown = false;
+    const count = options.animate === false || reducedMotion.matches ? 1 : config.frames;
+    Promise.all(Array.from({ length: count }, (_, index) =>
+      loadEchoFrame(setName, index + 1).then((frame) => {
+        if (isCurrent() && frame && !firstFrameShown) {
+          firstFrameShown = true;
+          showEchoFrame(image, frame);
+        }
+        return frame;
+      })
+    ))
+      .then(async (frames) => {
+        if (!isCurrent()) return;
+        animation.frames = frames.filter(Boolean);
+        if (!animation.frames.length && setName !== "neutral") {
+          const fallback = await loadEchoFrame("neutral", 1);
+          if (!isCurrent()) return;
+          if (fallback) animation.frames = [fallback];
+        }
+        showEchoFrame(image, animation.frames[0]);
+        refreshEchoAnimations();
+      });
+    return animation;
   }
 
-  function makeEchoImage(className, setName, altText) {
+  function makeEchoImage(className, setName, altText = "Echo", options = {}) {
     const image = document.createElement("img");
-    image.className = className;
-    image.alt = altText || "Echo";
+    image.className = className + " sada-guide-echo-missing";
+    image.alt = altText;
     image.decoding = "async";
-    animateEchoImage(image, setName);
+    image.width = 328;
+    image.height = 448;
+    animateEchoImage(image, setName, options);
     return image;
+  }
+
+  function setEchoMood(expression, label) {
+    headerEcho.setAttribute("aria-label", label);
+    animateEchoImage(headerEchoImage, expression);
   }
 
   function currentPage() {
@@ -190,6 +266,8 @@
     drawer.setAttribute("aria-hidden", "false");
     overlay.setAttribute("aria-hidden", "false");
     document.body.classList.add("sada-guide-open");
+    launch.setAttribute("aria-expanded", "true");
+    refreshEchoAnimations();
     updateContext();
     if (!loaded) loadConversation();
     if (!isMobile()) window.setTimeout(() => input.focus(), 80);
@@ -201,6 +279,8 @@
     drawer.setAttribute("aria-hidden", "true");
     overlay.setAttribute("aria-hidden", "true");
     document.body.classList.remove("sada-guide-open");
+    launch.setAttribute("aria-expanded", "false");
+    refreshEchoAnimations();
     input.blur();
   }
 
@@ -211,7 +291,7 @@
   }
 
   function renderEmptyState() {
-    stopAllEchoAnimations();
+    stopEchoAnimationsWithin(messages);
     messages.innerHTML = "";
 
     const empty = document.createElement("div");
@@ -291,7 +371,7 @@
     if (role === "assistant") {
       const avatarWrap = document.createElement("div");
       avatarWrap.className = "sada-guide-message-avatar-wrap";
-      avatarWrap.appendChild(makeEchoImage("sada-guide-message-avatar", expression, "Echo"));
+      avatarWrap.appendChild(makeEchoImage("sada-guide-message-avatar", expression, "Echo", { animate: false }));
       wrapper.appendChild(avatarWrap);
     }
 
@@ -422,7 +502,7 @@
         return;
       }
       submitted = data.submitted === true;
-      stopAllEchoAnimations();
+      stopEchoAnimationsWithin(messages);
       messages.innerHTML = "";
       (data.messages || []).forEach((message) => {
         appendMessage(message.role, message.content);
@@ -462,7 +542,7 @@
 
     const empty = messages.querySelector(".sada-guide-empty");
     if (empty) {
-      stopAllEchoAnimations();
+      stopEchoAnimationsWithin(messages);
       empty.remove();
     }
 
@@ -471,7 +551,9 @@
     input.style.height = "auto";
     hideSubmitPanel();
     setSending(true);
-    const thinking = appendThinkingStatus(messageLooksProjectRelated(text));
+    const projectMode = messageLooksProjectRelated(text);
+    setEchoMood("loading", projectMode ? "Echo is fetching projects" : "Echo is thinking");
+    const thinking = appendThinkingStatus(projectMode);
 
     try {
       const response = await fetch(API_BASE + "/chat", {
@@ -487,12 +569,16 @@
         try { localStorage.setItem(STORAGE_KEY, conversationId); } catch {}
       }
 
+      stopEchoAnimationsWithin(thinking);
       thinking.remove();
+      setEchoMood("neutral", "Echo is ready");
       appendMessage("assistant", data.reply, "neutral");
       appendProjects(data.suggestedProjects);
       if (data.suggestSubmit) appendSubmitPrompt();
     } catch (error) {
+      stopEchoAnimationsWithin(thinking);
       thinking.remove();
+      setEchoMood("sad", "Echo could not answer. Please try again.");
       appendMessage("assistant", "I couldn’t answer that just now. Please try again.", "sad");
       console.error(error);
     } finally {
@@ -517,6 +603,7 @@
     submitButton.textContent = "Submitting…";
     submitError.textContent = "";
 
+    setEchoMood("loading", "Echo is sending your project request");
     try {
       const response = await fetch(API_BASE + "/submit", {
         method: "POST",
@@ -533,10 +620,12 @@
       if (!response.ok || !data.ok) throw new Error(data.error || "Could not submit the request.");
       submitted = true;
       hideSubmitPanel();
+      setEchoMood("love", "Echo has sent your project request");
       appendMessage("assistant", data.reply, "love");
       root.querySelectorAll(".sada-guide-submit-prompt").forEach((item) => item.remove());
     } catch (error) {
       submitError.textContent = error.message;
+      setEchoMood("sad", "Echo could not send your project request");
     } finally {
       submitButton.disabled = submitted;
       submitButton.textContent = submitted ? "Submitted" : "Submit request";
@@ -565,6 +654,9 @@
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
   });
+
+  document.addEventListener("visibilitychange", refreshEchoAnimations);
+  reducedMotion.addEventListener("change", refreshEchoAnimations);
 
   updateContext();
 })();

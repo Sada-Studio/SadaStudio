@@ -1,0 +1,44 @@
+name: Prepare Echo Playground v11 production release
+
+on:
+  push:
+    branches:
+      - deploy/echo-playground-v11
+
+permissions:
+  contents: write
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: deploy/echo-playground-v11
+          fetch-depth: 0
+
+      - name: Reconstruct and verify exact production HTML
+        shell: bash
+        run: |
+          set -euo pipefail
+          ARCHIVE="$RUNNER_TEMP/echo-prod-html.tar.gz"
+          cat .deploy/prodhtml.part.* | base64 -d > "$ARCHIVE"
+          echo "3aa20f83d1502bafcb700365ca3c168d337b06661a749467e0a2374feb66413f  $ARCHIVE" | sha256sum -c -
+          tar -xzf "$ARCHIVE" -C .
+          sha256sum -c .deploy/prod-sha256.txt
+          grep -q '<!-- SADA_ECHO_CMS:1 -->' index.html
+          grep -q 'name="robots" content="index,follow"' index.html
+          grep -q 'https://sadastudio.me/' index.html
+
+      - name: Commit verified production release
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf .deploy
+          rm -f .github/workflows/promote-echo-v11-prod.yml
+          git config user.name 'Sada-Studio'
+          git config user.email 'sadaagency2025@gmail.com'
+          git add -A
+          git diff --cached --quiet && exit 0
+          git commit -m 'Prepare verified Sada Echo Playground v11 production release'
+          git push origin HEAD:deploy/echo-playground-v11

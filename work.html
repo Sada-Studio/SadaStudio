@@ -1,333 +1,73 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+<!-- SADA_ECHO_CMS:1 -->
 <head>
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-T1WNB7QR0E"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <base href="/">
+<script data-cms-base>window.SADA_STATIC_ROUTE="/work";if(location.protocol==="file:")document.querySelector("base").href=new URL("./index.html",location.href).href;</script>
+  
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Branding, Packaging &amp; Creative Projects | Sada Studio</title>
+  <meta name="description" content="Explore branding, visual identity, packaging, social media, photography, and creative projects by Sada Studio, a Lebanon-based creative agency.">
+  <meta property="og:image" content="https://sadastudio.me/sada-share.png?v=1">
+  <meta property="og:image:alt" content="Sada Studio logo">
+  <meta name="twitter:image" content="https://sadastudio.me/sada-share.png?v=1">
+  <script>
+  (()=>{const path=location.pathname, q=new URLSearchParams(location.search);let route=window.SADA_STATIC_ROUTE||'/';
+  if(/^\/projects\//.test(path))route='/project/'+path.split('/')[2];
+  else if(/project\.html$/.test(path))route='/project/'+encodeURIComponent(q.get('slug')||q.get('id')||'');
+  else if(/work(?:\.html|\/)?$/.test(path))route='/work';
+  else if(/about(?:\.html|\/)?$/.test(path))route='/about';
+  else if(/contact(?:\.html|\/)?$/.test(path))route='/contact';
+  window.SADA_ROUTE=route;document.documentElement.dataset.home=String((location.hash.slice(1)||route)==='/');})();
+  </script>
+  <link rel="stylesheet" href="style.css?v=8">
+  <link rel="stylesheet" href="scroll-scenes.css?v=8">
+  <link rel="stylesheet" href="brand.css?v=9">
+  <link rel="stylesheet" href="sada-public-ai.css?v=11">
+  <link rel="stylesheet" href="cms.css?v=11">
+  <link rel="icon" href="assets/sada-icon.png">
 
-  gtag('config', 'G-T1WNB7QR0E');
-</script>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Branding, Packaging &amp; Creative Projects | Sada Studio</title>
-    <meta name="description" content="Explore branding, visual identity, packaging, social media, photography, and creative projects by Sada Studio, a Lebanon-based creative agency.">
-    <meta name="robots" content="index, follow, max-image-preview:large">
-    <link rel="canonical" href="https://sadastudio.me/work.html">
-    <link rel="me" href="https://www.instagram.com/sadastudio.me/">
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Sada Studio">
-    <meta property="og:title" content="Branding, Packaging &amp; Creative Projects | Sada Studio">
-    <meta property="og:description" content="Explore branding, visual identity, packaging, social media, photography, and creative projects by Sada Studio.">
-    <meta property="og:url" content="https://sadastudio.me/work.html">
-    <meta property="og:image" content="https://sadastudio.me/sada-share.png?v=1">
-    <meta property="og:image:type" content="image/png">
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="Sada Studio logo">
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Branding, Packaging &amp; Creative Projects | Sada Studio">
-    <meta name="twitter:description" content="Explore branding, visual identity, packaging, social media, photography, and creative projects by Sada Studio.">
-    <meta name="twitter:image" content="https://sadastudio.me/sada-share.png?v=1">
-    <!-- SADA_WORK_STRUCTURED_DATA_START -->
-    <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "@id": "https://sadastudio.me/work.html#webpage",
-  "url": "https://sadastudio.me/work.html",
-  "name": "Branding, Packaging & Creative Projects | Sada Studio",
-  "mainEntity": {
-    "@type": "ItemList",
-    "numberOfItems": 20,
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "House of Hush",
-        "url": "https://sadastudio.me/projects/house-of-hush/",
-        "image": "https://assets.sadastudio.me/projects/house-of-hush/house-of-hush-cover-02.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "Marsa Inn",
-        "url": "https://sadastudio.me/projects/marsa-inn/",
-        "image": "https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-02.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
-        "name": "Throfee",
-        "url": "https://sadastudio.me/projects/throfee/",
-        "image": "https://assets.sadastudio.me/projects/throfee/throfee-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 4,
-        "name": "Presstine",
-        "url": "https://sadastudio.me/projects/presstine/",
-        "image": "https://assets.sadastudio.me/projects/presstine/presstine-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 5,
-        "name": "Ideal Mena",
-        "url": "https://sadastudio.me/projects/ideal-mena/",
-        "image": "https://assets.sadastudio.me/projects/ideal-mena/ideal-mena-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 6,
-        "name": "Takawin",
-        "url": "https://sadastudio.me/projects/takawin/",
-        "image": "https://assets.sadastudio.me/projects/takawin/takawin-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 7,
-        "name": "M FIT",
-        "url": "https://sadastudio.me/projects/m-fit/",
-        "image": "https://assets.sadastudio.me/projects/m-fit/m-fit-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 8,
-        "name": "Zanzibar Investment Summit",
-        "url": "https://sadastudio.me/projects/zanzibar-investment-summit/",
-        "image": "https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 9,
-        "name": "The Super Power Father",
-        "url": "https://sadastudio.me/projects/the-super-power-father/",
-        "image": "https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 10,
-        "name": "C Cater",
-        "url": "https://sadastudio.me/projects/c-cater/",
-        "image": "https://assets.sadastudio.me/projects/c-cater/c-cater-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 11,
-        "name": "Karaj",
-        "url": "https://sadastudio.me/projects/karaj/",
-        "image": "https://assets.sadastudio.me/projects/karaj/karaj-cover.png"
-      },
-      {
-        "@type": "ListItem",
-        "position": 12,
-        "name": "Loop Scooters",
-        "url": "https://sadastudio.me/projects/loop-scooters/",
-        "image": "https://assets.sadastudio.me/projects/loop-scooters/loop-scooters-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 13,
-        "name": "Aseel Water",
-        "url": "https://sadastudio.me/projects/aseel/",
-        "image": "https://assets.sadastudio.me/projects/aseel-water/aseel-water-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 14,
-        "name": "Tayo",
-        "url": "https://sadastudio.me/projects/tayo/",
-        "image": "https://assets.sadastudio.me/projects/tayo/tayo-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 15,
-        "name": "Over Ground",
-        "url": "https://sadastudio.me/projects/overground/",
-        "image": "https://assets.sadastudio.me/projects/over-ground/over-ground-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 16,
-        "name": "Hadethna Podcast",
-        "url": "https://sadastudio.me/projects/hadethna-podcast/",
-        "image": "https://assets.sadastudio.me/projects/hadethna-podcast/hadethna-podcast-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 17,
-        "name": "EVMC",
-        "url": "https://sadastudio.me/projects/evmc/",
-        "image": "https://assets.sadastudio.me/projects/evmc/evmc-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 18,
-        "name": "Alghad Al Moshreq Kindergarten",
-        "url": "https://sadastudio.me/projects/alghad-al-moshreq-kindergarten/",
-        "image": "https://assets.sadastudio.me/projects/alghad-al-moshreq-kindergarten/alghad-al-moshreq-kindergarten-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 19,
-        "name": "Al Mirqab Exchange",
-        "url": "https://sadastudio.me/projects/al-mirqab-exchange/",
-        "image": "https://assets.sadastudio.me/projects/al-mirqab-exchange/al-mirqab-exchange-cover.webp"
-      },
-      {
-        "@type": "ListItem",
-        "position": 20,
-        "name": "Battlezone Entertainment",
-        "url": "https://sadastudio.me/projects/battlezone/",
-        "image": "https://assets.sadastudio.me/projects/battlezone-entertainment/battlezone-entertainment-cover.webp"
-      }
-    ]
-  }
-}
-    </script>
-                    <!-- SADA_WORK_STRUCTURED_DATA_END -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="/sada-public-ai.css?v=20260909d">
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
-    <!-- Favicon -->
-    <link rel="icon" href="/favicon.png" type="image/png" sizes="512x512">
-    <link rel="alternate icon" href="/favicon.ico">
-    <link rel="apple-touch-icon" href="/favicon.png">
+
+
+
+
+
+
+
+
+
+<link rel="canonical" href="https://sadastudio.me/work.html">
+<meta property="og:title" content="Branding, Packaging &amp; Creative Projects | Sada Studio">
+<meta property="og:description" content="Explore branding, visual identity, packaging, social media, photography, and creative projects by Sada Studio, a Lebanon-based creative agency.">
+<meta property="og:url" content="https://sadastudio.me/work.html">
+<script type="application/ld+json" data-cms-seo>{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"ListItem","position":1,"url":"https://sadastudio.me/projects/house-of-hush/","name":"House of Hush"},{"@type":"ListItem","position":2,"url":"https://sadastudio.me/projects/marsa-inn/","name":"Marsa Inn"},{"@type":"ListItem","position":3,"url":"https://sadastudio.me/projects/throfee/","name":"Throfee"},{"@type":"ListItem","position":4,"url":"https://sadastudio.me/projects/presstine/","name":"Presstine"},{"@type":"ListItem","position":5,"url":"https://sadastudio.me/projects/ideal-mena/","name":"Ideal Mena"},{"@type":"ListItem","position":6,"url":"https://sadastudio.me/projects/takawin/","name":"Takawin"},{"@type":"ListItem","position":7,"url":"https://sadastudio.me/projects/m-fit/","name":"M FIT"},{"@type":"ListItem","position":8,"url":"https://sadastudio.me/projects/zanzibar-investment-summit/","name":"Zanzibar Investment Summit"},{"@type":"ListItem","position":9,"url":"https://sadastudio.me/projects/the-super-power-father/","name":"The Super Power Father"},{"@type":"ListItem","position":10,"url":"https://sadastudio.me/projects/c-cater/","name":"C Cater"},{"@type":"ListItem","position":11,"url":"https://sadastudio.me/projects/karaj/","name":"Karaj"},{"@type":"ListItem","position":12,"url":"https://sadastudio.me/projects/loop-scooters/","name":"Loop Scooters"},{"@type":"ListItem","position":13,"url":"https://sadastudio.me/projects/aseel/","name":"Aseel Water"},{"@type":"ListItem","position":14,"url":"https://sadastudio.me/projects/tayo/","name":"Tayo"},{"@type":"ListItem","position":15,"url":"https://sadastudio.me/projects/overground/","name":"Over Ground"},{"@type":"ListItem","position":16,"url":"https://sadastudio.me/projects/hadethna-podcast/","name":"Hadethna Podcast"},{"@type":"ListItem","position":17,"url":"https://sadastudio.me/projects/evmc/","name":"EVMC"},{"@type":"ListItem","position":18,"url":"https://sadastudio.me/projects/alghad-al-moshreq-kindergarten/","name":"Alghad Al Moshreq Kindergarten"},{"@type":"ListItem","position":19,"url":"https://sadastudio.me/projects/al-mirqab-exchange/","name":"Al Mirqab Exchange"},{"@type":"ListItem","position":20,"url":"https://sadastudio.me/projects/battlezone/","name":"Battlezone Entertainment"}]}</script>
 </head>
 <body>
-
-    <!-- Preloader -->
-    <div id="preloader">
-        <img src="https://assets.sadastudio.me/site/loading_animation.gif" alt="Loading Animation" decoding="async">
-    </div>
-
-    <div id="dots-background"></div>
-
-    <div class="project-thumbnail-preview" id="project-thumbnail-viewer"></div>
-
-    <header class="main-header">
-        <div class="container">
-            <div class="logo">
-                <a href="/"><img src="https://assets.sadastudio.me/site/web_logo.png" alt="Sada Studio Logo"></a>
-            </div>
-            <button class="menu-toggle" aria-label="Toggle navigation">
-                <div class="burger-lines">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <span class="menu-text">Menu</span>
-            </button>
-        </div>
-    </header>
-
-    <nav class="full-screen-nav">
-        <button class="close-nav" aria-label="Close navigation">×</button>
-        <ul>
-            <li><a href="/" class="nav-link-item">Home</a></li>
-            <li><a href="/#about" class="nav-link-item">About</a></li>
-            <li><a href="#contact" class="nav-link-item">Contact</a></li>
-        </ul>
-    </nav>
-
-    <main class="work-page-main">
-        <header class="work-page-header">
-            <div class="container">
-                <h1 class="work-page-title">All Projects</h1>
-                <div class="work-page-description" style="display: block; max-width: 800px; margin: 40px auto; text-align: left; color: #aaa;">
-                    <p>We don’t just create brands; we create echoes</p>
-                    <p>At SADA - صدى, we believe your vision deserves a single, powerful voice.</p>
-                    <p>We're not just another creative agency; we are the architects of impact, providing an unparalleled A to Z experience that uniquely integrates innovative branding, strategic digital marketing, and bespoke interior concept development and execution.</p>
-                </div>
-            </div>
-        </header>
-<section class="project-list-section">
-            <div class="container">
-                <div class="work-filter-toolbar" id="work-filter-toolbar">
-                    <button class="work-filter-toggle" id="work-filter-toggle" type="button" aria-expanded="false" aria-controls="work-filter-panel">
-                        <span class="filter-toggle-label">Browse</span>
-                        <span class="filter-current-wrap">
-                            <span class="filter-current-label" id="filter-current-label">All work</span>
-                            <span class="filter-current-count" id="filter-current-count"><!-- SADA_PROJECT_COUNT -->20<!-- SADA_PROJECT_COUNT_END --></span>
-                        </span>
-                    </button>
-                    <div class="work-filter-panel" id="work-filter-panel"></div>
-                </div>
-                <div class="project-list" id="work-page-list" data-nosnippet>
-                    <!-- SADA_WORK_LIST_START -->
-                    <a href="/projects/house-of-hush/" class="project-item" data-image="https://assets.sadastudio.me/projects/house-of-hush/house-of-hush-cover-02.webp"><div class="project-info"><span class="project-title">House of Hush</span><span class="project-desc">Sleepwear &amp; Loungewear Brand</span></div><div class="project-tags"><span>Branding</span><span>Art Direction</span></div></a>
-                    <a href="/projects/marsa-inn/" class="project-item" data-image="https://assets.sadastudio.me/projects/marsa-inn/marsa-inn-cover-02.webp"><div class="project-info"><span class="project-title">Marsa Inn</span><span class="project-desc">Seaside Seafood Restaurant &amp; Guesthouse in Lebanon</span></div><div class="project-tags"><span>Branding</span><span>Art Direction</span></div></a>
-                    <a href="/projects/throfee/" class="project-item" data-image="https://assets.sadastudio.me/projects/throfee/throfee-cover.webp"><div class="project-info"><span class="project-title">Throfee</span><span class="project-desc">Concept Café &amp; Streetwear Brand</span></div><div class="project-tags"><span>Branding</span><span>Illustration</span></div></a>
-                    <a href="/projects/presstine/" class="project-item" data-image="https://assets.sadastudio.me/projects/presstine/presstine-cover.webp"><div class="project-info"><span class="project-title">Presstine</span><span class="project-desc">Lebanese Custom &amp; Ready-Made Stamp Brand</span></div><div class="project-tags"><span>Branding</span><span>Art Direction</span><span>Illustration</span><span>Animation</span></div></a>
-                    <a href="/projects/ideal-mena/" class="project-item" data-image="https://assets.sadastudio.me/projects/ideal-mena/ideal-mena-cover.webp"><div class="project-info"><span class="project-title">Ideal Mena</span><span class="project-desc">Consulting Company based in Lebanon and Iraq</span></div><div class="project-tags"><span>Branding</span><span>Social Media</span><span>Packaging</span></div></a>
-                    <a href="/projects/takawin/" class="project-item" data-image="https://assets.sadastudio.me/projects/takawin/takawin-cover.webp"><div class="project-info"><span class="project-title">Takawin</span><span class="project-desc">Lebanese Perfume Brand</span></div><div class="project-tags"><span>Branding</span><span>Packaging</span></div></a>
-                    <a href="/projects/m-fit/" class="project-item" data-image="https://assets.sadastudio.me/projects/m-fit/m-fit-cover.webp"><div class="project-info"><span class="project-title">M FIT</span><span class="project-desc">Personal Training &amp; Fitness Brand</span></div><div class="project-tags"><span>Branding</span><span>Social Media</span></div></a>
-                    <a href="/projects/zanzibar-investment-summit/" class="project-item" data-image="https://assets.sadastudio.me/projects/zanzibar-investment-summit/zanzibar-investment-summit-cover.webp"><div class="project-info"><span class="project-title">Zanzibar Investment Summit</span><span class="project-desc">Investment Summit in Zanzibar</span></div><div class="project-tags"><span>Event Branding</span></div></a>
-                    <a href="/projects/the-super-power-father/" class="project-item" data-image="https://assets.sadastudio.me/projects/the-super-power-father/the-super-power-father-cover.webp"><div class="project-info"><span class="project-title">The Super Power Father</span><span class="project-desc">Interactive Fatherhood &amp; Parenting Workshop</span></div><div class="project-tags"><span>Branding</span><span>Editorial</span><span>Presentation</span></div></a>
-                    <a href="/projects/c-cater/" class="project-item" data-image="https://assets.sadastudio.me/projects/c-cater/c-cater-cover.webp"><div class="project-info"><span class="project-title">C Cater</span><span class="project-desc">Catering</span></div><div class="project-tags"><span>Social Media</span><span>Packaging</span><span>Videography</span><span>Photography</span></div></a>
-                    <a href="/projects/karaj/" class="project-item" data-image="https://assets.sadastudio.me/projects/karaj/karaj-cover.png"><div class="project-info"><span class="project-title">Karaj</span><span class="project-desc">Lebanese Mobile App</span></div><div class="project-tags"><span>Branding</span></div></a>
-                    <a href="/projects/loop-scooters/" class="project-item" data-image="https://assets.sadastudio.me/projects/loop-scooters/loop-scooters-cover.webp"><div class="project-info"><span class="project-title">Loop Scooters</span><span class="project-desc">Scooter rent company in Qatar</span></div><div class="project-tags"><span>Social Media</span></div></a>
-                    <a href="/projects/aseel/" class="project-item" data-image="https://assets.sadastudio.me/projects/aseel-water/aseel-water-cover.webp"><div class="project-info"><span class="project-title">Aseel Water</span><span class="project-desc">Water Company in Qatar</span></div><div class="project-tags"><span>Social Media</span></div></a>
-                    <a href="/projects/tayo/" class="project-item" data-image="https://assets.sadastudio.me/projects/tayo/tayo-cover.webp"><div class="project-info"><span class="project-title">Tayo</span><span class="project-desc">Asian Fusion Restaurant in Qatar</span></div><div class="project-tags"><span>Social Media</span><span>Menu Design</span></div></a>
-                    <a href="/projects/overground/" class="project-item" data-image="https://assets.sadastudio.me/projects/over-ground/over-ground-cover.webp"><div class="project-info"><span class="project-title">Over Ground</span><span class="project-desc">Gaming Cafe in Qatar</span></div><div class="project-tags"><span>Branding</span></div></a>
-                    <a href="/projects/hadethna-podcast/" class="project-item" data-image="https://assets.sadastudio.me/projects/hadethna-podcast/hadethna-podcast-cover.webp"><div class="project-info"><span class="project-title">Hadethna Podcast</span><span class="project-desc">Qatar Based young Podcast</span></div><div class="project-tags"><span>Branding</span><span>Animation</span></div></a>
-                    <a href="/projects/evmc/" class="project-item" data-image="https://assets.sadastudio.me/projects/evmc/evmc-cover.webp"><div class="project-info"><span class="project-title">EVMC</span><span class="project-desc">Equine veterinary Medical Center in Qatar</span></div><div class="project-tags"><span>Social Media</span></div></a>
-                    <a href="/projects/alghad-al-moshreq-kindergarten/" class="project-item" data-image="https://assets.sadastudio.me/projects/alghad-al-moshreq-kindergarten/alghad-al-moshreq-kindergarten-cover.webp"><div class="project-info"><span class="project-title">Alghad Al Moshreq Kindergarten</span><span class="project-desc">Kindergarten in Qatar</span></div><div class="project-tags"><span>Social Media</span></div></a>
-                    <a href="/projects/al-mirqab-exchange/" class="project-item" data-image="https://assets.sadastudio.me/projects/al-mirqab-exchange/al-mirqab-exchange-cover.webp"><div class="project-info"><span class="project-title">Al Mirqab Exchange</span><span class="project-desc">Exchange Company in Qatar</span></div><div class="project-tags"><span>Social Media</span></div></a>
-                    <a href="/projects/battlezone/" class="project-item" data-image="https://assets.sadastudio.me/projects/battlezone-entertainment/battlezone-entertainment-cover.webp"><div class="project-info"><span class="project-title">Battlezone Entertainment</span><span class="project-desc">Paintball Arena in Qatar</span></div><div class="project-tags"><span>Social Media</span></div></a>
-                    <!-- SADA_WORK_LIST_END -->
-                </div>
-            </div>
-        </section>
-
-    
-
-<!-- Secret Projects Callout -->
-<section class="secret-call">
-    <a href="#contact" class="secret-call-link">
-        <h2 class="secret-call-title">Want Some more?</h2>
-        <img src="https://assets.sadastudio.me/site/eye.png" alt="Eye icon" class="secret-call-eye">
-        <p class="secret-call-cta">Contact us</p>
-    </a>
-</section>
-
-</main>
-
-    <footer id="contact" class="main-footer">
-        <div class="container">
-            <div class="footer-content-wrapper">
-                <div class="footer-text-content">
-                    <p class="footer-tagline">Let’s Make Some <span class="sonar-word"><strong>SADA.</strong></span></p>
-                    <a href="mailto:info@sadastudio.me" class="footer-email-link">info@sadastudio.me</a>
-                    <div class="footer-social-links">
-                        <a href="https://www.instagram.com/sadastudio.me/" target="_blank" rel="me noopener noreferrer" aria-label="Sada Studio on Instagram (@sadastudio.me)">Instagram</a>
-                        <a href="https://wa.me/96103118825" target="_blank">WhatsApp</a>
-                        <a href="https://www.facebook.com/profile.php?id=61587700562066" target="_blank">Facebook</a>
-                        <a href="https://www.linkedin.com/company/sada-studio-lb" target="_blank">Linkedin</a>
-                        <a href="https://x.com/Sadastudiolb" target="_blank">x</a>
-                        <a href="tel:+9613118825">+961 3 118 825</a>
-                    </div>
-                </div>
-                <div class="footer-logo">
-                    <img src="https://assets.sadastudio.me/site/footer_logo.png" alt="Sada Studio decorative logo">
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <div class="cursor" id="cursor-leader"></div>
-    <div class="cursor cursor-trail"></div>
-    <div class="cursor cursor-trail"></div>
-    <div class="cursor cursor-trail"></div>
-    <div class="cursor cursor-trail"></div>
-    <div class="cursor cursor-trail"></div>
-    <div class="cursor cursor-trail"></div>
-    <div class="cursor cursor-trail"></div>
-    <div class="cursor cursor-trail"></div>
-
-    <script src="script.js"></script>
-    <script src="/sada-public-ai.js?v=20260909e" defer></script>
+  <div id="preloader" aria-hidden="true"><img src="assets/loading_animation.gif" alt="" decoding="async"></div>
+  <a class="skip" href="#main">Skip to content</a>
+  <header class="header"><a class="brand" href="#/" aria-label="Sada Studio home"><img src="assets/sada-logo.png" alt="Sada Studio"></a><nav aria-label="Main navigation"><a href="#/"><span data-cms="navigation.homeLabel">Home</span></a><a href="#/work"><span data-cms="navigation.workLabel">Work</span></a><a href="#/about"><span data-cms="navigation.aboutLabel">Studio</span></a><a href="#/contact"><span data-cms="navigation.contactLabel">Let's talk</span> <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 19 19 5M5 5h14v14"/></svg></a></nav><a class="mobile-home" href="#/"><span data-cms="navigation.homeLabel">Home</span></a><button class="sound-toggle" type="button" aria-pressed="false">Sound off</button><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="mobile-menu">Menu +</button></header>
+  <div id="mobile-menu" class="mobile-menu" hidden><a href="#/"><span data-cms="navigation.homeLabel">Home</span></a><a href="#/work"><span data-cms="navigation.workLabel">Work</span></a><a href="#/about"><span data-cms="navigation.aboutLabel">Studio</span></a><a href="#/contact"><span data-cms="navigation.contactLabel">Let's talk</span></a></div>
+  <main id="main" tabindex="-1"><noscript><h1>All Projects</h1><ul><li><a href="https://sadastudio.me/projects/house-of-hush/">House of Hush</a><p>Sleepwear &amp; Loungewear Brand</p></li><li><a href="https://sadastudio.me/projects/marsa-inn/">Marsa Inn</a><p>Seaside Seafood Restaurant &amp; Guesthouse in Lebanon</p></li><li><a href="https://sadastudio.me/projects/throfee/">Throfee</a><p>Concept Café &amp; Streetwear Brand</p></li><li><a href="https://sadastudio.me/projects/presstine/">Presstine</a><p>Lebanese Custom &amp; Ready-Made Stamp Brand</p></li><li><a href="https://sadastudio.me/projects/ideal-mena/">Ideal Mena</a><p>Consulting Company based in Lebanon and Iraq</p></li><li><a href="https://sadastudio.me/projects/takawin/">Takawin</a><p>Lebanese Perfume Brand</p></li><li><a href="https://sadastudio.me/projects/m-fit/">M FIT</a><p>Personal Training &amp; Fitness Brand</p></li><li><a href="https://sadastudio.me/projects/zanzibar-investment-summit/">Zanzibar Investment Summit</a><p>Investment Summit in Zanzibar</p></li><li><a href="https://sadastudio.me/projects/the-super-power-father/">The Super Power Father</a><p>Interactive Fatherhood &amp; Parenting Workshop</p></li><li><a href="https://sadastudio.me/projects/c-cater/">C Cater</a><p>Catering</p></li><li><a href="https://sadastudio.me/projects/karaj/">Karaj</a><p>Lebanese Mobile App</p></li><li><a href="https://sadastudio.me/projects/loop-scooters/">Loop Scooters</a><p>Scooter rent company in Qatar</p></li><li><a href="https://sadastudio.me/projects/aseel/">Aseel Water</a><p>Water Company in Qatar</p></li><li><a href="https://sadastudio.me/projects/tayo/">Tayo</a><p>Asian Fusion Restaurant in Qatar</p></li><li><a href="https://sadastudio.me/projects/overground/">Over Ground</a><p>Gaming Cafe in Qatar</p></li><li><a href="https://sadastudio.me/projects/hadethna-podcast/">Hadethna Podcast</a><p>Qatar Based young Podcast</p></li><li><a href="https://sadastudio.me/projects/evmc/">EVMC</a><p>Equine veterinary Medical Center in Qatar</p></li><li><a href="https://sadastudio.me/projects/alghad-al-moshreq-kindergarten/">Alghad Al Moshreq Kindergarten</a><p>Kindergarten in Qatar</p></li><li><a href="https://sadastudio.me/projects/al-mirqab-exchange/">Al Mirqab Exchange</a><p>Exchange Company in Qatar</p></li><li><a href="https://sadastudio.me/projects/battlezone/">Battlezone Entertainment</a><p>Paintball Arena in Qatar</p></li></ul></noscript></main>
+  <footer id="footer"></footer>
+  <div id="cursor" aria-hidden="true"></div>
+  <dialog id="lightbox" aria-label="Project image viewer"><button class="lightbox-close" aria-label="Close image">Close ×</button><button class="lightbox-prev" aria-label="Previous image"><svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 12H3M11 4l-8 8 8 8"/></svg></button><img alt=""><button class="lightbox-next" aria-label="Next image"><svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12h18M13 4l8 8-8 8"/></svg></button><p class="lightbox-count"></p></dialog>
+  <script src="content.js"></script>
+  <script src="asset-map.js"></script>
+  <script src="cms.js?v=11"></script>
+  <script src="logo-points.js"></script>
+  <script src="echo-frames.js"></script>
+  <script src="brand.js?v=8"></script>
+  <script src="sound.js?v=8"></script>
+  <script src="point-cloud.js?v=8"></script>
+  <script src="echo-game.js?v=8"></script>
+  <script src="paper-renderer.js?v=8"></script>
+  <script src="scroll-scenes.js?v=10"></script>
+  <script src="atmosphere.js?v=8"></script>
+  <script src="preloader.js?v=8"></script>
+  <script src="app.js?v=11"></script>
+  <script src="sada-public-ai.js?v=11"></script>
 </body>
 </html>

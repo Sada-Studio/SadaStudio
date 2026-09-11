@@ -1,0 +1,236 @@
+/* Native document scrolling drives both experiences. No wheel interception. */
+.home-universe{--header-height:88px;position:relative;isolation:isolate;background:#090909;color:#f7f7f5}
+.universe-layer{position:sticky;top:var(--header-height);height:calc(100svh - var(--header-height));margin-bottom:calc(var(--header-height) - 100svh);overflow:hidden;pointer-events:none;z-index:1}
+.universe-layer canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.universe-layer .technical-field{z-index:0}
+.universe-layer .journey-logo{z-index:1;max-width:none}
+.home-universe .hero{z-index:2;overflow:visible;background:transparent}
+.home-universe .logo-anchor{pointer-events:none}
+.home-universe .logo-anchor .logo-note{pointer-events:auto;cursor:pointer;bottom:5%;padding:10px;min-height:44px;font-size:12px;color:#aaa}
+.home-universe .logo-anchor .logo-note:hover{color:white}
+.home-universe .hero-topline{color:#c4c4c4}
+.home-universe .hero-copy{pointer-events:none}
+.home-universe .hero-copy a{pointer-events:auto}
+.home-universe .hero .echo-run{background:linear-gradient(transparent,#09090999 30%)}
+.home-universe .hero.is-playing .echo-run{background:#090909e6}
+.journey-intro{position:relative;height:90svh;min-height:480px;padding:0 var(--gutter);z-index:2;pointer-events:none}
+.journey-intro-top{position:sticky;top:calc(var(--header-height) + 28px);display:flex;justify-content:space-between;gap:30px;color:#909090;padding:28px 0}
+.journey-intro-top span:last-child{color:#d4d4d4}
+.journey-intro-bottom{position:absolute;bottom:8%;left:var(--gutter);font-size:clamp(28px,3.4vw,54px);font-weight:600;line-height:1.02;letter-spacing:-.05em}
+.featured-voyage{position:relative;z-index:2}
+.voyage-stop{position:relative;height:165svh;min-height:1100px;padding:0 var(--gutter)}
+.voyage-project{position:sticky;top:calc(var(--header-height) + 10svh);width:60%;will-change:transform,opacity}
+.voyage-right .voyage-project{margin-left:auto}
+.voyage-left .voyage-project{margin-right:auto}
+.voyage-heading{display:flex;justify-content:space-between;gap:20px;align-items:center;border-top:1px solid #525252;padding:16px 0;color:#ccc}
+.voyage-image{position:relative;display:block;aspect-ratio:1.63;max-height:47svh;overflow:hidden;background:#141414}
+.voyage-image img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.voyage-image:hover img{transform:scale(1.025)}
+.voyage-open{position:absolute;right:18px;bottom:18px;display:grid;place-items:center;width:52px;height:52px;background:#f7f7f5;color:#090909;font-size:27px;border-radius:50%;transition:transform .4s var(--ease)}
+.voyage-image:hover .voyage-open{transform:rotate(45deg)}
+.voyage-caption{display:flex;justify-content:space-between;align-items:flex-start;gap:30px;margin-top:22px}
+.voyage-caption h2{font-size:clamp(32px,4.5vw,72px);letter-spacing:-.06em;line-height:.97;font-weight:750}
+.voyage-caption p{font-size:16px;line-height:1.4;color:#aaa;max-width:450px;margin-top:12px}
+.voyage-tags{display:flex;gap:6px;flex-wrap:wrap;max-width:28%;justify-content:flex-end;flex-shrink:0}
+.voyage-tags span{font:12px var(--mono);line-height:1.3;border:1px solid #4c4c4c;padding:7px 9px;white-space:nowrap}
+.voyage-link{margin-top:22px;font-size:14px}
+.journey-end{height:68svh;min-height:420px;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:50px var(--gutter) 70px;gap:20px;text-align:center}
+.journey-end>.mono{color:#aaa}
+.journey-end>p{font-size:20px;font-weight:500;letter-spacing:-.025em;line-height:1.35;max-width:400px;color:#999;margin-top:7px}
+.home-universe+.studio-intro{position:relative;z-index:3}
+
+.work-stack-page{--header-height:88px;padding:0;background:#f3f3f1}
+.work-toolbar{position:sticky;top:var(--header-height);z-index:32;display:flex;align-items:center;justify-content:space-between;gap:25px;height:100px;padding:0 var(--gutter);background:#f3f3f1f5}
+.work-toolbar h1{font-size:36px;letter-spacing:-.065em;line-height:1;white-space:nowrap}
+.work-toolbar h1 span{font-family:var(--mono);font-size:12px;font-weight:400;letter-spacing:0;vertical-align:middle;margin-left:15px;color:#777}
+.work-toolbar-note{color:#777;text-align:center}
+.stack-filters{position:relative;z-index:40}
+.stack-filters summary{display:flex;justify-content:space-between;align-items:center;gap:22px;list-style:none;cursor:pointer;min-height:44px;padding:11px 0 11px 14px;border-bottom:1px solid #adadad;font-size:14px;min-width:130px}
+.stack-filters summary::-webkit-details-marker{display:none}
+.stack-filters summary>span{display:inline-block;font-size:21px;transition:transform .2s}
+.stack-filters[open] summary>span{transform:rotate(45deg)}
+.stack-filters .filters{position:absolute;right:0;top:calc(100% + 9px);width:min(680px,82vw);background:#fff;padding:24px;border:1px solid #cacac7;box-shadow:0 14px 50px #00000013;max-height:60svh;overflow:auto;gap:7px}
+.stack-filters .filter{font-size:14px}
+.paper-scroll{position:relative;min-height:calc(100svh - 188px);--stack-top:188px;--stage-height:calc(100svh - var(--stack-top))}
+.paper-stage{position:sticky;top:var(--stack-top);height:max(180px,var(--stage-height));overflow:hidden;isolation:isolate;background:#f3f3f1}
+.paper-stage:focus{outline:none}
+.paper-stage:focus-visible{outline:1px solid #999;outline-offset:-8px}
+.paper-progress{position:absolute;left:var(--gutter);right:var(--gutter);top:0;height:1px;background:#d3d3cf;z-index:38}
+.paper-progress span{display:block;width:100%;height:1px;background:#111;transform-origin:left;transform:scaleX(.05);transition:transform .4s var(--ease)}
+.paper-deck{position:absolute;inset:0;z-index:5;isolation:isolate;pointer-events:none}
+
+.paper-card:not(:first-child){visibility:hidden}
+.paper-card.is-current{pointer-events:auto}
+.paper-card{position:absolute;left:0;top:0;display:block;width:var(--paper-width,220px);height:var(--paper-height,142px);padding:0;background:none;isolation:isolate;transform-origin:center;pointer-events:none;text-decoration:none;will-change:transform}
+.paper-image{position:relative;width:100%;height:100%;overflow:hidden;background:#e6e6e3;transform-origin:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.paper-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.paper-card.is-rendered .paper-image{opacity:0}
+.paper-image img{width:100%;height:100%;object-fit:cover}
+.paper-copy,.paper-roles,[data-paper-number]{filter:blur(var(--meta-blur,0px));-webkit-filter:blur(var(--meta-blur,0px));opacity:var(--meta-opacity,1)}
+.paper-edge{display:flex;justify-content:space-between;align-items:center;gap:10px;height:32px;flex-shrink:0;font:12px var(--mono);line-height:1;white-space:nowrap}
+.paper-edge span:nth-child(2){overflow:hidden;text-overflow:ellipsis;text-align:center;max-width:65%;font-size:12px}
+.paper-edge span:last-child{font-size:20px}
+.paper-sidebar{position:absolute;left:var(--gutter);top:30px;bottom:88px;width:19%;z-index:10;pointer-events:none}
+.paper-sidebar-label{font-size:12px;line-height:1.5;color:#888}
+.paper-roles{position:absolute;top:24%;left:0;right:0}
+.paper-role .mono{display:block;color:#888;margin-bottom:12px}
+.paper-role p{font-size:14px;font-weight:500;line-height:1.4;margin-bottom:25px}
+.paper-count{position:absolute;left:0;bottom:0}
+.paper-count>.mono{font-size:12px;color:#888;display:block;margin-bottom:13px}
+.paper-count>div{display:flex;gap:22px;align-items:flex-start}
+.paper-count strong{display:block;font-size:clamp(130px,15vw,235px);font-weight:500;letter-spacing:-.105em;line-height:.72;font-variant-numeric:tabular-nums;margin-left:-.065em}
+.paper-count>div>span{font:14px var(--mono);margin-top:4px}
+.paper-copy{position:absolute;right:var(--gutter);top:45%;transform:translateY(-50%);width:23%;z-index:10;text-align:center}
+.paper-sector{font-size:14px;line-height:1.35;color:#878783;margin-bottom:18px}
+.paper-info h2{font-size:clamp(27px,2.8vw,43px);line-height:1.03;letter-spacing:-.055em;font-weight:700;margin-bottom:23px}
+.paper-summary{font-size:16px;line-height:1.5;letter-spacing:-.015em;margin-bottom:25px}
+.paper-info .text-link{font-size:14px}
+.paper-bottom{position:absolute;bottom:0;left:var(--gutter);right:var(--gutter);height:75px;display:flex;align-items:center;justify-content:space-between;gap:20px;z-index:38;background:none}
+.paper-bottom>.mono{font-size:12px;color:#797976}
+.paper-controls{position:absolute;left:50%;transform:translateX(-50%);display:flex;gap:10px}
+.paper-controls button{border:1px solid #9f9f9b;border-radius:50%;font-size:22px;width:45px;height:45px;background:#f3f3f1;transition:background .2s,color .2s}
+.paper-controls button:hover:not(:disabled){color:white;background:#111;border-color:#111}
+.paper-controls button:disabled{opacity:.22;cursor:default}
+.paper-bottom-note{text-align:right;max-width:30%}
+.work-afterword{position:relative;z-index:33;background:#f3f3f1;border-top:1px solid #cfcfcb}
+.work-afterword>h2{font-size:clamp(40px,5.5vw,85px);max-width:950px;margin:0 0 50px;line-height:1.01}
+.work-afterword .work-intro{border:0;padding:0 0 35px}
+.work-afterword .work-callout{margin-top:15px}
+.work-stack-page>.empty{min-height:60svh}
+
+@media(min-width:1800px){.paper-copy{width:24%;max-width:450px}.paper-info h2{font-size:47px}.paper-summary{font-size:19px}.paper-count strong{font-size:260px}}
+@media(max-width:1100px) and (min-width:761px){.paper-copy{width:24%;right:25px}.paper-sidebar{width:20%;left:25px}.paper-info h2{font-size:27px}.paper-summary{font-size:14px;line-height:1.4}.paper-sector{font-size:13px}.paper-count strong{font-size:145px}.paper-count>div{gap:15px}.paper-roles{top:20%}.voyage-project{width:64%}.voyage-caption{display:block}.voyage-tags{justify-content:flex-start;max-width:none;margin-top:14px}.voyage-caption h2{font-size:44px}.voyage-caption p{font-size:16px}}
+@media(max-width:760px){
+  .home-universe,.work-stack-page{--header-height:76px}
+  .home-universe .hero{min-height:calc(100svh - 76px)}
+  .home-universe .logo-anchor .logo-note{font-size:12px;width:100%;right:0;bottom:6%;padding:10px 0}
+  .journey-intro{height:82svh;min-height:480px}
+  .journey-intro-top{font-size:12px;gap:20px;top:calc(var(--header-height) + 12px);padding-top:28px}
+  .journey-intro-top span{max-width:48%}
+  .journey-intro-top span:last-child{text-align:right;max-width:120px}
+  .journey-intro-bottom{font-size:34px;bottom:10%}
+  .voyage-stop{height:160svh;min-height:1000px}
+  .voyage-project{width:100%;top:calc(var(--header-height) + 23svh)}
+  .voyage-heading{font-size:12px;padding:12px 0}
+  .voyage-image{aspect-ratio:1.52;max-height:35svh}
+  .voyage-caption{gap:15px;display:block;margin-top:18px}
+  .voyage-caption h2{font-size:clamp(32px,9vw,47px);line-height:1.03}
+  .voyage-caption p{font-size:14px;margin-top:9px;max-width:none;line-height:1.35}
+  .voyage-tags{justify-content:flex-start;max-width:none;gap:5px;margin-top:14px}
+  .voyage-tags span{font-size:12px;padding:5px 8px}
+  .voyage-link{font-size:14px;margin-top:17px}
+  .voyage-open{height:42px;width:42px;right:12px;bottom:12px;font-size:23px}
+  .journey-end{min-height:470px;height:70svh;padding-bottom:55px}
+  .journey-end>p{font-size:18px}
+  .work-toolbar{height:90px;padding:0 var(--gutter);gap:15px}
+  .work-toolbar h1{font-size:29px}
+  .work-toolbar h1 span{font-size:12px;margin-left:8px}
+  .work-toolbar-note{display:none}
+  .stack-filters summary{font-size:14px;min-width:120px;gap:15px;max-width:180px}
+  .stack-filters .filters{width:calc(100vw - 44px);padding:18px;right:0;max-height:65svh}
+  .paper-scroll{--stack-top:166px;--stage-height:calc(100svh - 166px)}
+
+  .paper-edge{height:28px;font-size:12px;gap:8px}
+  .paper-edge span:nth-child(2){font-size:12px;max-width:58%}
+  .paper-sidebar{top:22px;left:var(--gutter);right:var(--gutter);bottom:auto;width:auto;height:87px}
+  .paper-sidebar-label{display:none}
+  .paper-count{left:0;top:0;bottom:auto}
+  .paper-count>.mono{font-size:12px;margin-bottom:12px}
+  .paper-count strong{font-size:75px;font-weight:550;line-height:.7}
+  .paper-count>div{gap:17px}
+  .paper-count>div>span{font-size:12px;margin-top:0}
+  .paper-roles{top:0;left:auto;right:0;max-width:55%;text-align:right}
+  .paper-role>.mono{font-size:12px;margin-bottom:7px}
+  .paper-role p{font-size:12px;line-height:1.4;margin:0}
+  .paper-role>.mono:not(:first-child),.paper-role p:not(:first-of-type){display:none}
+  .paper-copy{left:var(--gutter);right:var(--gutter);width:auto;top:auto;bottom:67px;transform:none;text-align:center;padding:17px 14px 3px;background:linear-gradient(#f3f3f100,#f3f3f1 16%);z-index:15}
+  .paper-info h2{font-size:clamp(23px,6.7vw,32px);line-height:1.06;margin-bottom:12px;letter-spacing:-.05em}
+  .paper-sector{font-size:12px;line-height:1.3;margin-bottom:9px;max-width:95%;margin-left:auto;margin-right:auto}
+  .paper-summary{display:none}
+  .paper-info .text-link{font-size:14px}
+  .paper-bottom{height:62px;gap:10px}
+  .paper-bottom>.mono{font-size:12px;max-width:90px;line-height:1.35}
+  .paper-controls{gap:8px}
+  .paper-controls button{height:42px;width:42px;font-size:22px}
+  .paper-bottom-note{display:none}
+  .work-afterword{padding-top:55px}
+  .work-afterword>h2{font-size:42px;margin-bottom:35px}
+}
+@media(max-height:700px) and (min-width:761px){.work-toolbar{height:76px}.paper-copy{top:43%;width:25%}.paper-info h2{font-size:28px;margin-bottom:12px}.paper-sector{margin-bottom:10px}.paper-summary{font-size:14px;line-height:1.35;margin-bottom:15px}.paper-count strong{font-size:120px}.paper-sidebar{top:22px;bottom:75px}.paper-roles{top:18%}.voyage-project{top:calc(var(--header-height) + 7svh)}.voyage-image{max-height:40svh}.voyage-caption h2{font-size:42px}.voyage-tags{display:none}}
+@media(max-width:760px) and (max-height:740px){.paper-count strong{font-size:59px}.paper-sidebar{top:18px}.paper-copy{bottom:58px;padding-top:12px}.paper-info h2{font-size:23px;margin-bottom:9px}.paper-sector{font-size:12px;margin-bottom:6px}.paper-bottom{height:55px}.paper-count>.mono{font-size:12px}.voyage-project{top:calc(var(--header-height) + 18svh)}.voyage-image{max-height:30svh}.voyage-caption h2{font-size:31px}.voyage-caption p{font-size:14px}.voyage-tags{margin-top:8px}.voyage-link{margin-top:12px}}
+@media(prefers-reduced-motion:reduce){.voyage-project{will-change:auto}.voyage-image:hover img{transform:none}.paper-progress span{transition:none}}
+@media(max-width:760px) and (max-height:500px){.work-toolbar{height:64px}.paper-sidebar{top:15px;width:15%;right:auto}.paper-roles{display:none}.paper-count>.mono{display:none}.paper-count strong{font-size:48px}.paper-count>div{gap:10px}.paper-copy{left:auto;right:var(--gutter);width:28%;top:18%;bottom:auto;padding:0;background:none}.paper-sector{font-size:12px}.paper-info h2{font-size:23px}.paper-info .text-link{font-size:14px}.paper-bottom{height:52px}.paper-bottom>.mono{max-width:none}.paper-edge span:nth-child(2){display:none}}
+
+
+/* Project details keep the original Sada reading pattern. */
+.case-study-layout{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,3fr);gap:clamp(50px,7vw,130px);align-items:start;padding:48px var(--gutter) 0;max-width:2000px;margin:0 auto}
+.case-study-notes{position:sticky;top:120px;display:flex;flex-direction:column;max-height:calc(100svh - 152px);min-width:0}
+.case-study-copy{overflow-y:auto;min-height:0;padding-right:16px;scrollbar-width:thin;scrollbar-color:#aaa transparent}
+.case-study-copy:focus{outline:none}
+.case-study-copy:focus-visible{outline:1px solid #999;outline-offset:4px}
+.case-study-copy .section-label{padding-bottom:17px;gap:20px;font-size:12px}
+.case-study-copy h1{font-size:clamp(36px,3.8vw,64px);line-height:1.03;letter-spacing:-.055em;text-transform:uppercase;font-weight:850;margin:32px 0 21px;overflow-wrap:anywhere}
+.case-study-subtitle{font-size:18px;line-height:1.45;color:#666;margin-bottom:28px;max-width:460px}
+.case-study-copy .detail-tags{gap:8px;margin-bottom:30px}
+.case-study-copy .detail-tags a{font-size:14px;text-transform:none;padding:7px 12px;line-height:1.4}
+.case-study-description{font-size:16px;line-height:1.7;max-width:530px;white-space:pre-line}
+.case-study-description p{line-height:inherit}
+.case-study-description p+p{margin-top:20px}
+.case-study-notes .project-back{margin:28px 0 0;min-height:44px;display:inline-flex;align-items:center;align-self:flex-start;flex-shrink:0;font-size:14px}
+.case-study-layout .project-gallery{padding:0;min-width:0;background:transparent}
+.case-study-layout .gallery-media{margin:0 0 28px}
+.case-study-layout .gallery-media:last-child{margin-bottom:0}
+.case-study-layout .gallery-media figcaption{font-size:12px;line-height:1.45;padding:10px 0 0}
+.case-study-layout .gallery-media video{height:auto;max-height:calc(100svh - 160px)}
+.project-page .next-project{margin-top:60px}
+@media(max-width:1100px) and (min-width:901px){.case-study-layout{gap:44px;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}.case-study-copy h1{font-size:36px}.case-study-copy{padding-right:10px}.case-study-subtitle{font-size:16px}}
+@media(max-width:900px){
+  .case-study-layout{display:block;padding-top:35px}
+  .case-study-notes{position:static;max-height:none;margin-bottom:38px}
+  .case-study-copy{overflow:visible;padding:0}
+  .case-study-copy h1{font-size:clamp(38px,8vw,62px);margin-top:28px;max-width:680px}
+  .case-study-subtitle{font-size:18px;max-width:600px}
+  .case-study-description{max-width:680px}
+  .case-study-notes .project-back{margin-top:23px}
+  .case-study-copy .detail-tags{margin-bottom:25px}
+  .case-study-layout .gallery-media{margin-bottom:22px}
+  .case-study-layout .gallery-media video{max-height:75svh}
+  .project-page .next-project{margin-top:40px}
+}
+
+
+/* Compact, airy project stage on phones. Card surfaces stay isolated. */
+.work-route .echo-launch{z-index:45}
+@media(max-width:760px){
+  .work-toolbar{height:64px}
+  .paper-scroll{--stage-height:calc(100svh - var(--stack-top))}
+  .paper-sidebar{top:20px;height:76px;bottom:auto}
+  .paper-roles{display:none}
+  .paper-count strong{font-size:64px;font-weight:500;letter-spacing:-.095em;line-height:.85}
+  .paper-count>.mono{font-size:12px;margin-bottom:10px}
+  .paper-count>div{gap:13px}
+  .paper-copy{left:var(--gutter);right:var(--gutter);width:auto;top:var(--copy-top);bottom:auto;padding:0;transform:none;background:none;text-align:center;max-height:calc(var(--stage-height) - var(--copy-top) - 56px);overflow-y:auto;scrollbar-width:thin}
+  .paper-sector{font-size:14px;line-height:1.35;margin:0 auto 10px;max-width:95%;color:#747470}
+  .paper-info h2{font-size:clamp(24px,6.2vw,32px);line-height:1.12;letter-spacing:-.045em;margin-bottom:12px}
+  .paper-info .text-link{font-size:14px;min-height:36px;display:inline-flex;align-items:center;gap:5px}
+  .paper-bottom{height:54px;background:none}
+  .paper-bottom>.mono{display:none}
+  .paper-controls{left:50%;right:auto;gap:10px}
+  .paper-controls button{height:42px;width:42px;background:#f3f3f1}
+  .work-route .echo-launch{width:46px;height:46px;padding:0;right:14px;bottom:14px;justify-content:center}
+  .work-route .echo-launch span{display:none}
+  .work-route .echo-launch img{width:34px;height:40px;object-fit:contain}
+}
+@media(max-width:760px) and (max-height:600px){
+  .paper-count strong{font-size:48px}
+  .paper-count>.mono{display:none}
+  .paper-sector{font-size:12px;margin-bottom:7px}
+  .paper-info h2{font-size:23px;margin-bottom:5px}
+}
+@media(max-width:760px) and (max-height:500px){
+  .paper-sidebar{top:15px}
+  .paper-copy{left:auto;right:var(--gutter);width:27%;top:18%;max-height:calc(var(--stage-height) - 75px);text-align:center}
+  .paper-copy .paper-sector{display:none}
+  .paper-info h2{font-size:20px;line-height:1.12}
+}
+@media(prefers-reduced-motion:reduce){.paper-copy,.paper-roles,[data-paper-number]{filter:none;-webkit-filter:none;opacity:1}.paper-card{will-change:auto}}

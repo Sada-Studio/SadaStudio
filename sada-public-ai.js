@@ -3,6 +3,8 @@
 
   const STORAGE_KEY = "sada-public-ai-conversation-v1";
   const API_BASE = "/api/sada-ai";
+  const liveApi = ['sadastudio.me','www.sadastudio.me'].includes(location.hostname) && !window.SadaCMS?.preview;
+  const sendArrow = '<svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V3M4 11l8-8 8 8"/></svg>';
   const ECHO_COMPRESSED_BASE = "https://assets.sadastudio.me/echo/animation/compressed";
   const ECHO_HIGHRES_BASE = "https://assets.sadastudio.me/echo/animation";
   const ECHO_VERSION = "20260909c";
@@ -44,16 +46,16 @@
   const root = document.createElement("div");
   root.className = "sada-guide-root";
   root.innerHTML = [
-    '<button class="sada-guide-launch" type="button" aria-label="Ask Sada" aria-expanded="false" aria-controls="sada-guide-drawer">',
+    '<button class="sada-guide-launch echo-launch" type="button" aria-label="Ask Echo" aria-expanded="false" aria-controls="sada-guide-drawer">',
       '<span class="sada-guide-launch-visual" aria-hidden="true"></span>',
-      '<span>Ask Sada</span>',
+      '<span>Ask Echo <svg class="ui-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span>',
     '</button>',
     '<div class="sada-guide-overlay" aria-hidden="true"></div>',
-    '<aside id="sada-guide-drawer" class="sada-guide-drawer" aria-hidden="true" aria-label="Ask Sada">',
+    '<aside id="sada-guide-drawer" class="sada-guide-drawer" aria-hidden="true" aria-label="Ask Echo">',
       '<div class="sada-guide-header">',
         '<div>',
           '<div class="sada-guide-kicker">SADA STUDIO</div>',
-          '<div class="sada-guide-title">Ask Sada</div>',
+          '<div class="sada-guide-title">Ask Echo</div>',
         '</div>',
         '<div class="sada-guide-header-actions">',
           '<div class="sada-guide-header-echo" role="img" aria-label="Echo is ready"></div>',
@@ -80,7 +82,7 @@
       '<div class="sada-guide-composer">',
         '<div class="sada-guide-input-row">',
           '<textarea class="sada-guide-input" rows="1" maxlength="2500" placeholder="Ask about Sada, our work, or your project..."></textarea>',
-          '<button class="sada-guide-send" type="button" aria-label="Send message">↑</button>',
+          '<button class="sada-guide-send" type="button" aria-label="Send message">&#8593;&#65038;</button>',
         '</div>',
         '<div class="sada-guide-privacy">Conversations are stored by Sada Studio so we can understand inquiries and improve the experience. Avoid sharing sensitive information.</div>',
       '</div>',
@@ -120,7 +122,7 @@
     const compressed = ECHO_COMPRESSED_BASE + "/" + setName + "/" + setName + "-" + frame + ".png?v=" + ECHO_VERSION;
     const underscore = ECHO_COMPRESSED_BASE + "/" + setName + "/" + setName + "_" + frame + ".png?v=" + ECHO_VERSION;
     const highres = highResEchoUrl(setName, frame);
-    return [...new Set([uploaded, compressed, underscore, highres])];
+    return [...new Set([...(setName === "neutral" ? [new URL("assets/echo-neutral-" + frame + ".png", document.baseURI).href] : []), uploaded, compressed, underscore, highres])];
   }
 
   function loadEchoFrame(setName, frame) {
@@ -262,18 +264,20 @@
   }
 
   function currentPage() {
-    return { path: window.location.pathname, title: document.title };
+    const route = location.hash.slice(1) || window.SADA_ROUTE || '/';
+    const path = route.startsWith('/project/') ? '/projects/' + route.slice(9).split('?')[0] + '/' : route.split('?')[0] === '/work' ? '/work.html' : route;
+    return {path, title:document.title};
   }
 
   function currentPageLabel() {
-    const match = window.location.pathname.match(/^\/projects\/([^/]+)\/?$/i);
+    const match = currentPage().path.match(/^\/projects\/([^/]+)\/?$/i);
     if (match) {
-      const heading = document.querySelector(".project-details-column h1");
+      const heading = document.querySelector("#project-title");
       return heading && heading.textContent.trim()
         ? "Viewing: " + heading.textContent.trim()
         : "Viewing a Sada project";
     }
-    if (document.querySelector(".work-page-main")) return "Viewing: All Projects";
+    if (document.querySelector(".work-page")) return "Viewing: All Projects";
     return "Viewing: Sada Studio";
   }
 
@@ -455,9 +459,14 @@
       if (!project || !project.url || !project.title) return;
       const card = document.createElement("a");
       card.className = "sada-guide-project-card";
-      card.href = project.url;
-      card.target = "_blank";
-      card.rel = "noopener";
+      let address;
+      try { address = new URL(project.url, 'https://sadastudio.me'); } catch { return; }
+      if (!['http:','https:'].includes(address.protocol)) return;
+      const slug = address.pathname.match(/^\/projects\/([^/]+)\/?$/);
+      if (slug && ['sadastudio.me','www.sadastudio.me'].includes(address.hostname)) {
+        card.href = '#/project/' + slug[1];
+        card.addEventListener('click', closeDrawer);
+      } else {card.href=address.href;card.target='_blank';card.rel='noopener noreferrer';}
       if (project.thumbnail) {
         const image = document.createElement("img");
         image.src = project.thumbnail;
@@ -510,6 +519,12 @@
 
   async function loadConversation() {
     loaded = true;
+    if (!liveApi) {
+      renderEmptyState();
+      root.querySelector('.sada-guide-privacy').innerHTML = 'The live Echo chat is available on <a href="https://sadastudio.me/" target="_blank" rel="noopener noreferrer">sadastudio.me</a>. This preview does not store conversations.';
+      input.disabled = true;send.disabled = true;
+      return;
+    }
     if (!conversationId) {
       renderEmptyState();
       return;
@@ -554,7 +569,7 @@
     send.disabled = sending;
     input.disabled = sending;
     send.classList.toggle("is-sending", sending);
-    send.textContent = "↑";
+    send.innerHTML = sendArrow;
   }
 
   function messageLooksProjectRelated(text) {
@@ -562,6 +577,7 @@
   }
 
   async function sendMessage() {
+    if (!liveApi) return;
     if (sending) return;
     const text = input.value.trim();
     if (!text) return;
@@ -617,6 +633,7 @@
   }
 
   async function submitRequest() {
+    if (!liveApi) return;
     if (!conversationId || submitted) return;
     const values = {};
     root.querySelectorAll(".sada-guide-contact").forEach((field) => {
@@ -686,5 +703,19 @@
   document.addEventListener("visibilitychange", refreshEchoAnimations);
   reducedMotion.addEventListener("change", refreshEchoAnimations);
 
+  window.addEventListener('sada-route-change',updateContext);
+  // Keep keyboard focus inside the open drawer and restore it to the launcher.
+  drawer.setAttribute('role','dialog');drawer.setAttribute('aria-modal','true');
+  drawer.inert = true;
+  new MutationObserver(()=>{drawer.inert=!drawer.classList.contains('open');}).observe(drawer,{attributes:true,attributeFilter:['class']});
+  drawer.addEventListener('keydown',event=>{
+    if(event.key!=='Tab')return;
+    const nodes=[...drawer.querySelectorAll('button,a[href],textarea,input')].filter(el=>!el.disabled&&el.getClientRects().length);
+    const first=nodes[0],last=nodes[nodes.length-1];
+    if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus();}
+    else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus();}
+  });
+  send.innerHTML = sendArrow;
   updateContext();
 })();
+

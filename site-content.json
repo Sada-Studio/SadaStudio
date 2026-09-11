@@ -3,20 +3,20 @@
     "menuLabel": "Menu",
     "homeLabel": "Home",
     "workLabel": "Work",
-    "aboutLabel": "About",
-    "contactLabel": "Contact"
+    "aboutLabel": "Studio",
+    "contactLabel": "Let's talk"
   },
   "homepage": {
     "seo": {
-      "title": "Sada Studio | Branding & Creative Agency in Lebanon",
+      "title": "Sada Studio — Let’s make an echo.",
       "description": "Sada Studio is a Lebanon-based creative studio specializing in branding, visual identity, packaging, social media, photography, and digital experiences."
     },
-    "scrollLabel": "Scroll Down",
+    "scrollLabel": "Scroll to make an echo",
     "featuredHeading": "Our featured Work",
-    "featuredTagline": "LET’S MAKE AN ECHO",
+    "featuredTagline": "Good ideas\ngo places.",
     "callToAction": {
       "before": "We do many",
-      "button": "SEE ALL WORK",
+      "button": "All {count} projects",
       "after": "things very well."
     },
     "aboutHeading": "About Us",
@@ -60,7 +60,7 @@
     "calloutButton": "Contact us"
   },
   "projectPage": {
-    "backLabel": "← Back",
+    "backLabel": "Back to work",
     "notFoundHeading": "Project Not Found",
     "notFoundText": "The project you are looking for does not exist.",
     "notFoundButton": "View All Work",
@@ -68,14 +68,14 @@
   },
   "footer": {
     "tagline": {
-      "before": "Let’s Make Some",
+      "before": "LET’S MAKE\nSOME",
       "highlight": "SADA.",
       "after": ""
     },
     "projectTagline": {
-      "before": "ready to make an",
-      "highlight": "echo?",
-      "after": "lets talk"
+      "before": "LET’S MAKE\nSOME",
+      "highlight": "SADA.",
+      "after": ""
     },
     "email": "info@sadastudio.me",
     "phone": {
@@ -104,5 +104,63 @@
         "url": "https://x.com/Sadastudiolb"
       }
     ]
+  },
+  "experience": {
+    "opening": {
+      "make": "MAKE",
+      "echoPrefix": "AN",
+      "echoWord": "ECHO.",
+      "contactLabel": "Let's make yours",
+      "studioLabel": "INDEPENDENT CREATIVE STUDIO\nLEBANON · EVERYWHERE"
+    },
+    "journey": {
+      "followLabel": "FOLLOW THE ECHO",
+      "selectedLabel": "SELECTED ECHO",
+      "exploreLabel": "Explore the project",
+      "endLabel": "THE JOURNEY CONTINUES."
+    },
+    "studio": {
+      "eyebrow": "THINK. MAKE. RESONATE.",
+      "statement": "THE IDEA\nIS YOURS.\nTHE ECHO\nIS",
+      "highlight": "OURS.",
+      "servicesLine": "Branding. Strategy. Content. Digital experiences.",
+      "link": "Meet Sada"
+    },
+    "work": {
+      "title": "WORK",
+      "scrollLabel": "SCROLL THROUGH THE ECHOES",
+      "portfolioLabel": "SADA STUDIO\nTHE PORTFOLIO",
+      "rolesLabel": "WHAT WE DID",
+      "viewLabel": "View project",
+      "shuffleLabel": "SCROLL TO SHUFFLE",
+      "nextLabel": "NEXT ECHO"
+    },
+    "about": {
+      "eyebrow": "SADA STUDIO / ABOUT US",
+      "heading": "WE MAKE\nIDEAS",
+      "highlight": "RESONATE.",
+      "philosophyLabel": "OUR PHILOSOPHY",
+      "servicesHeading": "WE DO MANY\nTHINGS VERY WELL.",
+      "seoTitle": "About Sada Studio — Ideas that resonate.",
+      "seoDescription": "Sada Studio is a Lebanon-based creative studio specializing in branding, visual identity, packaging, social media, photography, and digital experiences."
+    },
+    "contact": {
+      "eyebrow": "LET’S TALK",
+      "intro": "GOOD THINGS START WITH A HELLO.",
+      "heading": "GOT AN\nIDEA",
+      "subheading": "Let's make\nsome Sada.",
+      "seoTitle": "Let’s talk | Sada Studio",
+      "seoDescription": "Sada Studio is a Lebanon-based creative studio specializing in branding, visual identity, packaging, social media, photography, and digital experiences."
+    },
+    "footer": {
+      "eyebrow": "HAVE SOMETHING IN MIND?",
+      "topLabel": "BACK TO TOP"
+    },
+    "game": {
+      "intro": "A little play before the work.",
+      "playLabel": "Play Echo Run",
+      "instruction": "HOP OVER THE BLOCKS. KEEP THE IDEAS MOVING.",
+      "skipLabel": "Or, straight to the work"
+    }
   }
 }

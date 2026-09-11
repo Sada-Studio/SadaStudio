@@ -31,7 +31,6 @@
   let sending = false;
   let submitted = false;
   let echoReactionTimer = null;
-  let drawerOpener = null;
   const echoFrames = new Map();
   const echoAnimations = new Map();
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -287,7 +286,6 @@
   }
 
   function openDrawer() {
-    drawerOpener = document.activeElement;
     drawer.classList.add("open");
     overlay.classList.add("open");
     drawer.setAttribute("aria-hidden", "false");
@@ -309,8 +307,6 @@
     launch.setAttribute("aria-expanded", "false");
     refreshEchoAnimations();
     input.blur();
-    if (drawerOpener && drawerOpener.isConnected && !drawerOpener.closest("[inert]")) drawerOpener.focus({ preventScroll: true });
-    else launch.focus({ preventScroll: true });
   }
 
   function scrollMessages() {
@@ -341,7 +337,20 @@
     tagline.className = "sada-guide-echo-tagline";
     tagline.innerHTML = "Your creative partner.<br>Ask me anything.";
 
-    hero.append(heroVisual, echoName, tagline);
+    const fetcher = document.createElement("div");
+    fetcher.className = "sada-guide-echo-fetcher";
+    const runVisual = document.createElement("div");
+    runVisual.className = "sada-guide-echo-run-visual";
+    runVisual.appendChild(makeEchoImage("sada-guide-echo-run-image", "run", "Echo running"));
+    const fetchLabel = document.createElement("div");
+    fetchLabel.className = "sada-guide-fetch-label";
+    fetchLabel.textContent = "Fetching projects...";
+    const progress = document.createElement("div");
+    progress.className = "sada-guide-fetch-progress";
+    progress.innerHTML = '<span class="sada-guide-fetch-progress-fill"></span>';
+    fetcher.append(runVisual, fetchLabel, progress);
+
+    hero.append(heroVisual, echoName, tagline, fetcher);
 
     const divider = document.createElement("div");
     divider.className = "sada-guide-empty-divider";
@@ -350,7 +359,7 @@
     intro.className = "sada-guide-empty-intro";
     intro.innerHTML =
       '<div class="sada-guide-empty-title">What are you looking for?</div>' +
-      '<div class="sada-guide-empty-copy">Find a project, explore an idea, or tell me what you’re planning.</div>';
+      '<div class="sada-guide-empty-copy">Explore our work, understand what Sada can do for your business, or tell us about something you’re planning.</div>';
 
     const prompts = document.createElement("div");
     prompts.className = "sada-guide-prompts";
@@ -650,30 +659,6 @@
       submitButton.textContent = submitted ? "Submitted" : "Submit request";
     }
   }
-
-  // Small appearances reuse the same original artwork and fallback loader.
-  // They are still images, so offscreen page decorations never run animation loops.
-  document.querySelectorAll("[data-sada-echo]").forEach((slot) => {
-    const image = makeEchoImage("studio-echo-image", "neutral", "", { animate: false });
-    slot.appendChild(image);
-    const button = slot.closest("[data-ask-sada]");
-    if (!button) return;
-    const show = (state) => animateEchoImage(image, state, { animate: false });
-    button.addEventListener("pointerenter", () => show("love"));
-    button.addEventListener("pointerleave", () => show("neutral"));
-    button.addEventListener("focus", () => show("love"));
-    button.addEventListener("blur", () => show("neutral"));
-  });
-  document.addEventListener("click", (event) => {
-    const trigger = event.target.closest("[data-ask-sada]");
-    if (!trigger) return;
-    event.preventDefault();
-    openDrawer();
-    if (trigger.dataset.sadaPrompt && !sending) {
-      input.value = trigger.dataset.sadaPrompt;
-      input.dispatchEvent(new Event("input"));
-    }
-  });
 
   launch.addEventListener("click", openDrawer);
   close.addEventListener("click", closeDrawer);

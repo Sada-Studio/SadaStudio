@@ -17,14 +17,12 @@ jobs:
           ref: deploy/echo-playground-v11
           fetch-depth: 0
 
-      - name: Reconstruct and verify exact production HTML
+      - name: Verify and apply exact production HTML
         shell: bash
         run: |
           set -euo pipefail
-          ARCHIVE="$RUNNER_TEMP/echo-prod-html.tar.gz"
-          cat .deploy/prodhtml.part.* | base64 -d > "$ARCHIVE"
-          echo "3aa20f83d1502bafcb700365ca3c168d337b06661a749467e0a2374feb66413f  $ARCHIVE" | sha256sum -c -
-          tar -xzf "$ARCHIVE" -C .
+          echo "3aa20f83d1502bafcb700365ca3c168d337b06661a749467e0a2374feb66413f  .deploy/prodhtml.tar.gz" | sha256sum -c -
+          tar -xzf .deploy/prodhtml.tar.gz -C .
           sha256sum -c .deploy/prod-sha256.txt
           grep -q '<!-- SADA_ECHO_CMS:1 -->' index.html
           grep -q 'name="robots" content="index,follow"' index.html

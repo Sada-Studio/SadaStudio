@@ -23,6 +23,8 @@ jobs:
           set -euo pipefail
           ORIGIN='https://sada-echo-playground.bayak674.chatgpt.site'
           STAGE="$RUNNER_TEMP/echo-v11"
+          HTML_B64="$RUNNER_TEMP/echo-html.b64"
+          HTML_TAR="$RUNNER_TEMP/echo-html.tar.gz"
           rm -rf "$STAGE"
           mkdir -p "$STAGE"
 
@@ -33,7 +35,11 @@ jobs:
               "$ORIGIN/$path" -o "$STAGE/$path"
           done < .deploy/echo-v11-nonhtml-paths.txt
 
-          base64 -d .deploy/echo-v11-html.tar.gz.b64 | tar -xz -C "$STAGE"
+          cat .deploy/html.part.* > "$HTML_B64"
+          base64 -d "$HTML_B64" > "$HTML_TAR"
+          printf '%s  %s\n' '1c746f26027bbe17a2716e963c073ad700a213feae10c7e3b0aa767ece3e638f' "$HTML_TAR" | sha256sum -c -
+          tar -xzf "$HTML_TAR" -C "$STAGE"
+
           (cd "$STAGE" && sha256sum -c "$GITHUB_WORKSPACE/.deploy/echo-v11-sha256.txt")
 
           for f in CNAME favicon.ico favicon.png googled28a6a1ac5a61018.html sada-share.png robots.txt .nojekyll; do
